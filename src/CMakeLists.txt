@@ -13,7 +13,7 @@ else (STARPU_FOUND)
 message(FATAL_ERROR "StarPU not found")
 endif()
 
-add_executable(a.out main.cpp frontend.cpp nodetypes.cpp)
+add_executable(a.out main.cpp nodetypes.cpp frontend.cpp)
 target_include_directories(a.out PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
 
