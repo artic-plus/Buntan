@@ -74,6 +74,12 @@ void and_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A & *B;
+    
+    std::cout << "AND GATE" << std::endl;
+    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
+    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
+    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+
 }
 
 struct starpu_codelet and_cl = {
@@ -86,9 +92,9 @@ struct starpu_codelet and_cl = {
 
 void insert_and(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&and_cl,
-        STARPU_R, gate.inputs[0].first,  
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -109,9 +115,9 @@ struct starpu_codelet nand_cl = {
 
 void insert_nand(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&nand_cl,
-        STARPU_R, gate.inputs[0].first,  
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -132,9 +138,9 @@ struct starpu_codelet andnot_cl = {
 
 void insert_andnot(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&andnot_cl,
-        STARPU_R, gate.inputs[0].first,  
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -142,6 +148,11 @@ void or_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A | *B;
+    
+    std::cout << "OR GATE" << std::endl;
+    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
+    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
+    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
 }
 
 
@@ -156,9 +167,9 @@ struct starpu_codelet or_cl = {
 
 void insert_or(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&or_cl,
-        STARPU_R, gate.inputs[0].first,  
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -180,9 +191,9 @@ struct starpu_codelet nor_cl = {
 
 void insert_nor(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&nor_cl,
-        STARPU_R, gate.inputs[0].first,  
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -203,9 +214,9 @@ struct starpu_codelet ornot_cl = {
 
 void insert_ornot(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&ornot_cl,
-        STARPU_R, gate.inputs[0].first,  
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -213,6 +224,11 @@ void xor_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A ^ *B;
+    
+    std::cout << "XOR GATE" << std::endl;
+    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
+    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
+    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
 }
 
 struct starpu_codelet xor_cl = {
@@ -226,9 +242,9 @@ struct starpu_codelet xor_cl = {
 
 void insert_xor(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&xor_cl,
-        STARPU_R, gate.inputs[0].first,  
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -249,9 +265,9 @@ struct starpu_codelet xnor_cl = {
 
 void insert_xnor(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&xnor_cl,
-        STARPU_R, gate.inputs[0].first,  
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -271,8 +287,8 @@ struct starpu_codelet not_cl = {
 
 void insert_not(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&not_cl,
-        STARPU_R, gate.inputs[0].first,  
-        STARPU_W, handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -299,11 +315,11 @@ struct starpu_codelet dff_p_cl = {
 
 void insert_dff_p(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&dff_p_cl,
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[0]),
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[1]),
-        STARPU_R, gate.inputs[0].first,
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[0]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -331,11 +347,11 @@ struct starpu_codelet dff_n_cl = {
 
 void insert_dff_n(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&dff_n_cl,
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[0]),
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[1]),
-        STARPU_R, gate.inputs[0].first,
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[0]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -369,12 +385,12 @@ struct starpu_codelet adff_pp1_cl = {
 
 void insert_adff_pp1(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&adff_pp1_cl,
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[0]),
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[1]),
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[2]),
-        STARPU_R, gate.inputs[0].first,
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[0]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[2]),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -406,12 +422,12 @@ struct starpu_codelet adff_pp0_cl = {
 
 void insert_adff_pp0(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&adff_pp0_cl,
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[0]),
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[1]),
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[2]),
-        STARPU_R, gate.inputs[0].first,
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[0]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[2]),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -439,12 +455,12 @@ struct starpu_codelet dffe_pp_cl = {
 
 void insert_dffe_pp(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&dffe_pp_cl,
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[0]),
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[1]),
-        STARPU_RW, &(((starpu_data_handle_t*)gate.dff_mem)[3]),
-        STARPU_R, gate.inputs[0].first,
-        STARPU_R, gate.inputs[1].first,
-        STARPU_W, handle_output,  
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[0]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[3]),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -465,10 +481,10 @@ struct starpu_codelet mux_cl = {
 
 void insert_mux(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&mux_cl,
-        STARPU_R, gate.inputs[0].first,  
-        STARPU_R, gate.inputs[1].first,  
-        STARPU_R, gate.inputs[2].first,
-        STARPU_W, handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[2].first),
+        STARPU_W, *handle_output,  
         0);
 }
 
@@ -489,9 +505,9 @@ struct starpu_codelet nmux_cl = {
 
 void insert_nmux(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&nmux_cl,
-        STARPU_R, gate.inputs[0].first,  
-        STARPU_R, gate.inputs[1].first,  
-        STARPU_R, gate.inputs[2].first,
-        STARPU_W, handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[2].first),
+        STARPU_W, *handle_output,  
         0);
 }

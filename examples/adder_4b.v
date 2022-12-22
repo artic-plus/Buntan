@@ -12,7 +12,7 @@ module FA(A,B,Ci,S,Co);
 	wire t1,t2,t3;
 	HA HA1(A,B,t1,t2);
 	HA HA2(t1,Ci,S,t3);
-	assign Co = t2 & t3;
+	assign Co = t2 | t3;
 endmodule
 	
 

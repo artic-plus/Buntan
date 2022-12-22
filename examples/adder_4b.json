@@ -191,7 +191,7 @@
       "cells": {
         "$abc$85$auto$blifparse.cc:386:parse_blif$86": {
           "hide_name": 1,
-          "type": "$_AND_",
+          "type": "$_OR_",
           "parameters": {
           },
           "attributes": {

@@ -130,11 +130,17 @@ int parsemodule(
                         {
                             node* dep = in_loc->second.second[i]->dep->front();
                             io_gl->dep->push(dep);
-                            for(int i = 0; i < dep->num_inputs; i++){
-                                if(dep->inputs[i].second == in_loc->second.second[i]){
-                                    dep->inputs[i].second = io_gl;
+                            bool flag = false;
+                            for(int j = 0; j < dep->num_inputs; j++){
+                                if(dep->inputs[j].second == in_loc->second.second[i]){
+                                    dep->inputs[j].second = io_gl;
+                                    flag = true;
                                     break;
                                 }
+                            }
+                            if(!flag){
+                                std::cout << "connecting module '" << in_loc->first << "[" << i << "]' failed !" <<std::endl;
+                                return -1;
                             }
                             in_loc->second.second[i]->dep->pop();
                         }
@@ -184,11 +190,17 @@ int parsemodule(
             {
                 node* dep = second->dep->front();
                 first->dep->push(dep);
+                bool flag = false;
                 for(int i = 0; i < dep->num_inputs; i++){
                     if(dep->inputs[i].second == second){
                         dep->inputs[i].second = first;
+                        flag = true;
                         break;
                     }
+                }
+                if(!flag){
+                    std::cout << "merge to imm failed" <<std::endl;
+                    return -1;
                 }
                 second->dep->pop();
             }
@@ -209,11 +221,17 @@ int parsemodule(
             {
                 node* dep = first->dep->front();
                 second->dep->push(dep);
+                bool flag = false;
                 for(int i = 0; i < dep->num_inputs; i++){
                     if(dep->inputs[i].second == first){
+                        flag = true;
                         dep->inputs[i].second = second;
                         break;
                     }
+                }
+                if(!flag){
+                    std::cout << "merge failed" <<std::endl;
+                    return -1;
                 }
                 first->dep->pop();
             }
@@ -239,6 +257,24 @@ int parsemodule(
             } else {
                 io[i] = ImmFalse;
             }
+            auto newqueue = new std::queue<node*>;
+            bool flag;
+            while (!io[i]->dep->empty())
+            {
+                newqueue->push(io[i]->dep->front());
+                for(int j = 0; j < io[i]->dep->front()->num_inputs; j++){
+                    if(io[i]->dep->front()->inputs[j].second == io[i]) {
+                        flag = true;
+                    }
+                }
+                if(!flag){
+                    std::cout << "i-o error of '" << it->first << "[" << i << "]" << std::endl;
+                    return 1;
+                }
+                io[i]->dep->pop();
+            }
+            io[i]->dep = newqueue;
+            
 		}
 		if(direction == "input"){
 			inputs->insert(std::make_pair(it->first,std::make_pair(bits.size(),io)));
@@ -276,7 +312,7 @@ int shownodes(
     }
     std::cout << std::endl;    
     for(auto it = outputs.begin(); it != outputs.end(); it++){
-        std::cout << it->first <<" " << it->second.first << "bit" << std::endl;
+        std::cout << "output:" << it->first <<" " << it->second.first << "bit" << std::endl;
     }
     for(auto FF = FFs.begin(); FF != FFs.end(); FF++){
         //std::cout << "FF   :" << FF->first << " " << FF->second->num_outputs << "bit" << std::endl;
@@ -302,7 +338,9 @@ int shownodes(
         auto newqueue = new std::queue<node*>;
         while (!next->dep->empty())
         {
-            next->dep->front()->d_counter--;
+            for(int i = 0; i < next->dep->front()->num_inputs; i++){
+                if(next->dep->front()->inputs[i].second == next) next->dep->front()->d_counter--;
+            }
             if((next->dep->front()->d_counter == 0) && !(next->dep->front()->type->isFF)){
                 for(int i = 0; i < next->dep->front()->num_outputs; i++){
                     wires.push(next->dep->front()->outputs[i]);
