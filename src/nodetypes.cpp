@@ -74,12 +74,12 @@ void and_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A & *B;
-    
+#ifdef dump_mode
     std::cout << "AND GATE" << std::endl;
     std::cout << "IN A:" << (*A?"true":"false") << std::endl;
     std::cout << "IN B:" << (*B?"true":"false") << std::endl;
     std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
-
+#endif
 }
 
 struct starpu_codelet and_cl = {
@@ -102,6 +102,13 @@ void nand_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = !( *A & *B);
+#ifdef dump_mode
+    std::cout << "NAND GATE" << std::endl;
+    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
+    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
+    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+#endif
+
 }
 
 struct starpu_codelet nand_cl = {
@@ -125,6 +132,12 @@ void andnot_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A & !*B;
+#ifdef dump_mode
+    std::cout << "ANDNOT GATE" << std::endl;
+    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
+    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
+    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+#endif
 }
 
 struct starpu_codelet andnot_cl = {
@@ -148,11 +161,13 @@ void or_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A | *B;
-    
+
+#ifdef dump_mode
     std::cout << "OR GATE" << std::endl;
     std::cout << "IN A:" << (*A?"true":"false") << std::endl;
     std::cout << "IN B:" << (*B?"true":"false") << std::endl;
     std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+#endif
 }
 
 
@@ -178,6 +193,12 @@ void nor_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = !(*A | *B);
+#ifdef dump_mode
+    std::cout << "NOR GATE" << std::endl;
+    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
+    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
+    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+#endif
 }
 
 struct starpu_codelet nor_cl = {
@@ -201,6 +222,12 @@ void ornot_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A | ! *B;
+#ifdef dump_mode
+    std::cout << "ORNOT GATE" << std::endl;
+    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
+    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
+    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+#endif
 }
 
 struct starpu_codelet ornot_cl = {
@@ -224,11 +251,13 @@ void xor_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A ^ *B;
-    
+
+#ifdef dump_mode
     std::cout << "XOR GATE" << std::endl;
     std::cout << "IN A:" << (*A?"true":"false") << std::endl;
     std::cout << "IN B:" << (*B?"true":"false") << std::endl;
     std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+#endif
 }
 
 struct starpu_codelet xor_cl = {
@@ -252,6 +281,12 @@ void xnor_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = !(*A ^ *B);
+#ifdef dump_mode
+    std::cout << "XNOR GATE" << std::endl;
+    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
+    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
+    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+#endif
 }
 
 struct starpu_codelet xnor_cl = {
@@ -274,6 +309,11 @@ void insert_xnor(node gate, starpu_data_handle_t* handle_output){
 void not_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[1]) = !*A;
+#ifdef dump_mode
+    std::cout << "NOT GATE" << std::endl;
+    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
+    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[1]) ? "true" : "false") << std::endl;
+#endif
 }
 
 struct starpu_codelet not_cl = {
@@ -297,19 +337,24 @@ void dff_p_plain(void *buffers[], void *cl_arg){
 	bool *fCLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]); //buf to detect edge
     bool *D = (bool*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     bool *CLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[3]);
-	if(*CLK == true && *fCLK == false){
+	if((*CLK == true) && (*fCLK == false)){
 		*state = *D;
 	}
 	*fCLK = *CLK;
-    *(bool*)STARPU_VARIABLE_GET_PTR(buffers[4]) = *state;
+#ifdef dump_mode
+    std::cout << "DFF_P" << std::endl;
+    std::cout << "IN D:" << (*D?"true":"false") << std::endl;
+    std::cout << "IN CLK:" << (*CLK?"true":"false") << std::endl;
+    std::cout << "Q :" << (*state ? "true" : "false") << std::endl;
+#endif
 }
 
 struct starpu_codelet dff_p_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {dff_p_plain},	
 #endif
-    .nbuffers = 5,
-    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_W}
+    .nbuffers = 4,
+    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R}
 };
 
 
@@ -319,7 +364,6 @@ void insert_dff_p(node gate, starpu_data_handle_t* handle_output){
         STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
-        STARPU_W, *handle_output,  
         0);
 }
 
@@ -328,19 +372,24 @@ void dff_n_plain(void *buffers[], void *cl_arg){
 	bool *fCLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]); //buf to detect edge
     bool *D = (bool*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     bool *CLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[3]);
-	if(*CLK == false && *fCLK == true){
+	if((*CLK == false) && (*fCLK == true)){
 		*state = *D;
 	}
 	*fCLK = *CLK;
-    *(bool*)STARPU_VARIABLE_GET_PTR(buffers[4]) = *state;
+#ifdef dump_mode
+    std::cout << "DFF_Q" << std::endl;
+    std::cout << "IN D:" << (*D?"true":"false") << std::endl;
+    std::cout << "IN CLK:" << (*CLK?"true":"false") << std::endl;
+    std::cout << "Q :" << (*state ? "true" : "false") << std::endl;
+#endif
 }
 
 struct starpu_codelet dff_n_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {dff_n_plain},	
 #endif
-    .nbuffers = 5,
-    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_W}
+    .nbuffers = 4,
+    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R}
 };
 
 
@@ -351,7 +400,6 @@ void insert_dff_n(node gate, starpu_data_handle_t* handle_output){
         STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
-        STARPU_W, *handle_output,  
         0);
 }
 
@@ -362,23 +410,29 @@ void adff_pp1_plain(void *buffers[], void *cl_arg){
     bool *D = (bool*)STARPU_VARIABLE_GET_PTR(buffers[3]);
     bool *CLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[4]);
     bool *RST = (bool*)STARPU_VARIABLE_GET_PTR(buffers[5]);
-	if(*CLK == true && *fCLK == false){
+	if((*CLK == true) && (*fCLK == false)){
 		*state = *D;
 	}
 	*fCLK = *CLK;
-	if(*RST == true && *fRST == false){
+	if((*RST == true) && (*fRST == false)){
 		*state = true;
 	}
 	*fRST = *RST;
-    *(bool*)STARPU_VARIABLE_GET_PTR(buffers[6]) = *state;
+#ifdef dump_mode
+    std::cout << "ADFF_PP1" << std::endl;
+    std::cout << "IN D:" << (*D?"true":"false") << std::endl;
+    std::cout << "IN CLK:" << (*CLK?"true":"false") << std::endl;
+    std::cout << "IN RST:" << (*RST?"true":"false") << std::endl;
+    std::cout << "Q :" << (*state ? "true" : "false") << std::endl;
+#endif
 }
 
 struct starpu_codelet adff_pp1_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {adff_pp1_plain},	
 #endif
-    .nbuffers = 7,
-    .modes = {STARPU_RW, STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R, STARPU_W}
+    .nbuffers = 6,
+    .modes = {STARPU_RW, STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R}
 };
 
 
@@ -390,7 +444,7 @@ void insert_adff_pp1(node gate, starpu_data_handle_t* handle_output){
         STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[2]),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
-        STARPU_W, *handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[2].first),
         0);
 }
 
@@ -401,23 +455,29 @@ void adff_pp0_plain(void *buffers[], void *cl_arg){
     bool *D = (bool*)STARPU_VARIABLE_GET_PTR(buffers[3]);
     bool *CLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[4]);
     bool *RST = (bool*)STARPU_VARIABLE_GET_PTR(buffers[5]);
-	if(*CLK == true && *fCLK == false){
+	if((*CLK == true) && (*fCLK == false)){
 		*state = *D;
 	}
 	*fCLK = *CLK;
-	if(*RST == true && *fRST == false){
+	if((*RST == true) && (*fRST == false)){
 		*state = false;
 	}
 	*fRST = *RST;
-    *(bool*)STARPU_VARIABLE_GET_PTR(buffers[6]) = *state;
-	}
+#ifdef dump_mode
+    std::cout << "ADFF_PP0" << std::endl;
+    std::cout << "IN D:" << (*D?"true":"false") << std::endl;
+    std::cout << "IN CLK:" << (*CLK?"true":"false") << std::endl;
+    std::cout << "IN RST:" << (*RST?"true":"false") << std::endl;
+    std::cout << "Q :" << (*state ? "true" : "false") << std::endl;
+#endif
+}
 
 struct starpu_codelet adff_pp0_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {adff_pp0_plain},	
 #endif
-    .nbuffers = 7,
-    .modes = {STARPU_RW, STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R, STARPU_W}
+    .nbuffers = 6,
+    .modes = {STARPU_RW, STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R}
 };
 
 void insert_adff_pp0(node gate, starpu_data_handle_t* handle_output){
@@ -427,21 +487,29 @@ void insert_adff_pp0(node gate, starpu_data_handle_t* handle_output){
         STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[2]),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
-        STARPU_W, *handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[2].first),
         0);
 }
 
 void dffe_pp_plain(void *buffers[], void *cl_arg){
 	bool *state = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
 	bool *fCLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]); //buf to detect edge
-    bool *D = (bool*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    bool *CLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[3]);
-	bool *E = (bool*)STARPU_VARIABLE_GET_PTR(buffers[4]);
-	if(*CLK == true && *fCLK == false && *E == true){
+    bool *fE = (bool*)STARPU_VARIABLE_GET_PTR(buffers[2]); //buf to detect edge
+    bool *D = (bool*)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    bool *CLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[4]);
+	bool *E = (bool*)STARPU_VARIABLE_GET_PTR(buffers[5]);
+	if((*CLK == true) && (*fCLK == false) && (*E == true) && (*fE == false)){
 		*state = *D;
 	}
 	*fCLK = *CLK;
-    *(bool*)STARPU_VARIABLE_GET_PTR(buffers[5]) = *state;
+    *fE = *E;
+#ifdef dump_mode
+    std::cout << "DFFE_PP" << std::endl;
+    std::cout << "IN D:" << (*D?"true":"false") << std::endl;
+    std::cout << "IN CLK:" << (*CLK?"true":"false") << std::endl;
+    std::cout << "IN E:" << (*E?"true":"false") << std::endl;
+    std::cout << "Q :" << (*state ? "true" : "false") << std::endl;
+#endif
 }
 
 struct starpu_codelet dffe_pp_cl = {
@@ -449,7 +517,7 @@ struct starpu_codelet dffe_pp_cl = {
 	.cpu_funcs = {dffe_pp_plain},	
 #endif
     .nbuffers = 6,
-    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R, STARPU_W}
+    .modes = {STARPU_RW, STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R}
 };
 
 
@@ -460,7 +528,7 @@ void insert_dffe_pp(node gate, starpu_data_handle_t* handle_output){
         STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[3]),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
-        STARPU_W, *handle_output,  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[2].first),
         0);
 }
 
@@ -469,6 +537,13 @@ void mux_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[3]) = *S ? *A : *B;
+#ifdef dump_mode
+    std::cout << "MUX" << std::endl;
+    std::cout << "IN S:" << (*S?"true":"false") << std::endl;
+    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
+    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
+    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[3]) ? "true" : "false") << std::endl;
+#endif
 }
 
 struct starpu_codelet mux_cl = {
@@ -493,6 +568,13 @@ inline void nmux_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[3]) = !*S ? *A : *B;
+#ifdef dump_mode
+    std::cout << "NMUX" << std::endl;
+    std::cout << "IN S:" << (*S?"true":"false") << std::endl;
+    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
+    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
+    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[3]) ? "true" : "false") << std::endl;
+#endif
 }
 
 struct starpu_codelet nmux_cl = {

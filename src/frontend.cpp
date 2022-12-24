@@ -20,7 +20,7 @@ int yosys_json_parser(
     std::map<std::string, nodetype*> nodetypes, 
     std::map<std::string, std::pair<int, wire**>>* inputs, 
     std::map<std::string, std::pair<int, wire**>>* outputs, 
-    std::map<std::string, node*>* FFs, 
+    std::map<std::string, std::pair<node*, uintptr_t>>* FFs, 
     wire* ImmTrue, 
     wire* ImmFalse
     ){
@@ -64,7 +64,7 @@ int yosys_json_parser(
         return 1;
     }
     std::cout << std::endl; 
-    //shownodes(nodetypes, *inputs, *outputs, *FFs, ImmTrue, ImmFalse);
+    //checkgraph(nodetypes, *inputs, *outputs, *FFs, ImmTrue, ImmFalse);
     return 0;
 }
 
@@ -74,7 +74,7 @@ int parsemodule(
     std::map<std::string, nodetype*> nodetypes, 
     std::map<std::string, std::pair<int, wire**>>* inputs, 
     std::map<std::string, std::pair<int, wire**>>* outputs, 
-    std::map<std::string, node*>* FFs, 
+    std::map<std::string, std::pair<node*, uintptr_t>>* FFs, 
     wire* ImmTrue, 
     wire* ImmFalse
 ){
@@ -151,7 +151,7 @@ int parsemodule(
         } else {
             node* thisnode = new node;
             thisnode->type = type->second;
-            thisnode->dff_mem = nullptr;
+            thisnode->dff_mem = NULL;
             thisnode->d_counter = type->second->inputs.size();
             thisnode->num_inputs = type->second->inputs.size();
             thisnode->inputs = (std::pair<void*,wire*>*)malloc(sizeof(std::pair<void*,wire*>) * type->second->inputs.size());
@@ -174,7 +174,7 @@ int parsemodule(
                 thisnode->outputs[i]->src = thisnode;
             }
             if(thisnode->type->isFF){
-                FFs->insert(std::make_pair(it->first, thisnode));
+                FFs->insert(std::make_pair(it->first, std::make_pair(thisnode, NULL)));
             }
         }
     }
@@ -293,11 +293,11 @@ int parsemodule(
     return 0;
 }
 
-int shownodes(
+int checkgraph(
     std::map<std::string, nodetype*> nodetypes, 
     std::map<std::string, std::pair<int, wire**>> inputs, 
     std::map<std::string, std::pair<int, wire**>> outputs, 
-    std::map<std::string, node*> FFs, 
+    std::map<std::string, std::pair<node*, uintptr_t>> FFs, 
     wire* ImmTrue, 
     wire* ImmFalse
 ){
@@ -316,18 +316,20 @@ int shownodes(
     }
     for(auto FF = FFs.begin(); FF != FFs.end(); FF++){
         //std::cout << "FF   :" << FF->first << " " << FF->second->num_outputs << "bit" << std::endl;
-        wires.push(FF->second->outputs[0]);
+        wires.push(FF->second.first->outputs[0]);
     }
     
     wire* next;
     while (!wires.empty())
     {
         next = wires.front();
+        /*
         for(auto it = FFs.begin(); it != FFs.end(); it++){
-            if(it->second->inputs[0].second == next || it->second->inputs[1].second == next){
-                //std::cout << "FF     '" << it->first << "' input obtained!" << std::endl;
+            if(it->second.first->inputs[0].second == next || it->second.first->inputs[1].second == next){
+                std::cout << "FF     '" << it->first << "' input obtained!" << std::endl;
             }
         }
+        */
         for(auto it = outputs.begin() ; it != outputs.end(); it++){
             for(int i = 0; i < it->second.first; i++){
                 if(it->second.second[i] == next){
@@ -355,4 +357,58 @@ int shownodes(
         wires.pop();
     }
     return 0;   
+}
+
+
+int getio(std::string json_path, std::map<std::string, int>* inputs, std::map<std::string, int>* outputs){
+    
+	std::ifstream ifs(json_path);
+	if (ifs.fail()){
+		std::cerr << "failed to read" << json_path <<std::endl;
+		return 1;
+	}
+	
+	
+	const std::string json((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+	ifs.close();
+	
+	picojson::value v;
+	const std::string err = picojson::parse(v,json);
+	if(!err.empty()){
+		std::cerr << err << std::endl;
+		return 2;
+	}
+	 
+	picojson::object& obj = v.get<picojson::object>();
+	
+	
+	//std::cout << json_path << std::endl;
+	picojson::object& modules = obj["modules"].get<picojson::object>();
+	std::string top;
+	for(picojson::object::const_iterator it = modules.begin(); it != modules.end(); it++){
+		picojson::object module = it->second.get<picojson::object>();
+		if (module["attributes"].get<picojson::object>()["top"].is<std::string>()){
+			if (std::stoi(module["attributes"].get<picojson::object>()["top"].get<std::string>())){
+				top = it->first;
+				break;
+			}
+		}
+	}
+	std::cout << "top moodule is '" << top << "'" << std::endl;
+    auto module = modules[top].get<picojson::object>(); 
+	picojson::object ports = module["ports"].get<picojson::object>();
+	for(picojson::object::const_iterator it = ports.begin(); it != ports.end(); it++){
+		picojson::object port = it->second.get<picojson::object>();
+		std::string direction = port["direction"].get<std::string>();
+        picojson::array bits = port["bits"].get<picojson::array>();
+		if(direction == "input"){
+			inputs->insert(std::make_pair(it->first,bits.size()));
+		} else if(direction == "output"){
+			outputs->insert(std::make_pair(it->first,bits.size()));
+		} else{
+			std::cerr << "port direction '" << direction << "' not supported" << std::endl;
+			return 1;
+		}
+	}
+    return 0;
 }

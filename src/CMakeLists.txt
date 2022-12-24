@@ -13,9 +13,23 @@ else (STARPU_FOUND)
 message(FATAL_ERROR "StarPU not found")
 endif()
 
-add_executable(a.out main.cpp nodetypes.cpp frontend.cpp)
-target_include_directories(a.out PUBLIC ${CMAKE_SOURCE_DIR}/include)
+add_executable(runtime_unode runtime_unode.cpp nodetypes.cpp frontend.cpp backend.cpp)
+#add_subdirectory(${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
+target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
+target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
+target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/include)
 
+
+add_executable(client client.cpp nodetypes.cpp frontend.cpp backend.cpp)
+target_include_directories(client PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(client PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
+target_include_directories(client PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
+
+add_executable(verify verify.cpp nodetypes.cpp frontend.cpp backend.cpp)
+target_include_directories(verify PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(verify PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
+target_include_directories(verify PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
 
 
 add_compile_definitions(plain_mode)

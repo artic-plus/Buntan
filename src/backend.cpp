@@ -3,41 +3,19 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <random>
+#include <vector>
+#include <cereal/archives/portable_binary.hpp>
+#include <cereal/types/vector.hpp>
 
 #include "frontend.hpp"
 #include "nodetypes.hpp"
+#include "backend.hpp"
 
 
-uintptr_t* init_FFs(std::map<std::string, node*>* FFs);
-int deploygates(std::map<std::string, nodetype*> nodetypes, std::map<std::string, std::pair<int, wire**>> inputs, std::map<std::string, std::pair<int, wire**>> outputs, std::map<std::string, node*> FFs, uintptr_t* FF_ptr, wire* ImmTrue, wire* ImmFalse);
 
-int main(int argc, char** argv){
-
-    if(!argv[1]){
-        std::cerr << "input required!" << std::endl;
-        return 1;
-    }
-    auto inputs = new std::map<std::string, std::pair<int, wire**>>;
-    auto outputs = new std::map<std::string, std::pair<int, wire**>>; 
-    auto FFs = new std::map<std::string, node*>;
-    wire* ImmTrue = new wire{nullptr, new std::queue<node*>, false}; 
-    wire* ImmFalse = new wire{nullptr, new std::queue<node*>, false};
-    std::map<std::string, nodetype*> nodetypes = types_init();
-    if(yosys_json_parser(std::string(argv[1]), nodetypes, inputs, outputs, FFs, ImmTrue, ImmFalse)){
-        std::cerr << "frontend failed!" << std::endl;
-        return 1;
-    }
-    starpu_init(NULL);
-    uintptr_t* FF_ptr = init_FFs(FFs);
-    shownodes(nodetypes, *inputs, *outputs, *FFs, ImmTrue, ImmFalse);
-    deploygates(nodetypes, *inputs, *outputs, *FFs, FF_ptr, ImmTrue, ImmFalse);
-}
-
-
-uintptr_t* init_FFs(std::map<std::string, node*>* FFs){
+int init_FFs(std::map<std::string, std::pair<node*, uintptr_t>>* FFs){
     int num_mems = 3; // for state, fCLK, and fRST
-    int i = 0;
-    uintptr_t* FF_ptr = (uintptr_t*)calloc(FFs->size(), sizeof(uintptr_t*));
     for(auto it = FFs->begin(); it != FFs->end(); it++){
         starpu_data_handle_t *handle = new starpu_data_handle_t[num_mems];
 #ifdef plain_mode
@@ -46,23 +24,59 @@ uintptr_t* init_FFs(std::map<std::string, node*>* FFs){
         int* mem;
 #endif
         for(int j = 0; j < num_mems; j++){
-            starpu_variable_data_register(&(handle[i]), STARPU_MAIN_RAM, (uintptr_t)mem[j], sizeof(mem[j]));
+            starpu_variable_data_register(&(handle[j]), STARPU_MAIN_RAM, (uintptr_t)&(mem[j]), sizeof(mem[j]));
         }
-        it->second->dff_mem = handle;
-        FF_ptr[i] = (uintptr_t)mem;
-        i++;
+        it->second.first->dff_mem = (uintptr_t)handle;
+        it->second.second = (uintptr_t)mem;
     }
-    return (uintptr_t*)FF_ptr;
+    return 0;
 }
 
 
+std::vector<bool> make_inputs_plain_rand(std::map<std::string,int> inputs){
+    std::vector<bool> input_bits{};
+    std::random_device rnd;
+    int r = 0;
+    for(auto it = inputs.begin(); it != inputs.end(); it++){
+        int w = it->second;
+        for(int i = 0; i < w;i++){
+            if(r == 0) {
+                r = rnd();
+            }
+            input_bits.push_back((r & 1));
+            std::cout << "input '" << it->first << "[" << i << "] : " << (r & 1) << std::endl;
+            r = r >> 1;
+        }
+    }
+    return input_bits;
+}
 
-int deploygates(
+std::vector<bool> make_inputs_plain_manual(std::map<std::string,int> inputs){
+    std::vector<bool> input_bits{};
+    for(auto it = inputs.begin(); it != inputs.end(); it++){
+        int w = it->second;
+        std::cout << "input '" << it->first << "[" << w << "]" << std::endl;
+        int bits;
+        std::cin >> bits;
+        if(std::cin.fail()){
+            std::cerr << "input error" << std::endl;
+            return std::vector<bool>{};
+        }
+        for(int i = 0; i < w;i++){
+            input_bits.push_back((bits & 1));
+            bits = bits >> 1;
+        }
+    }
+    return input_bits;
+}
+
+
+std::vector<bool> deploygates_plain(
     std::map<std::string, nodetype*> nodetypes, 
-    std::map<std::string, std::pair<int, wire**>> inputs, 
+    std::map<std::string, std::pair<int, wire**>> inputs,
+    std::vector<bool> arg_in,
     std::map<std::string, std::pair<int, wire**>> outputs, 
-    std::map<std::string, node*> FFs, 
-    uintptr_t* FF_ptr,
+    std::map<std::string, std::pair<node*, uintptr_t>> FFs, 
     wire* ImmTrue, 
     wire* ImmFalse
 ){
@@ -75,15 +89,10 @@ int deploygates(
         output_handles.insert(std::make_pair(it->first, std::make_pair(it->second.first, ptrs)));
     }
 
-#ifdef plain_mode
     bool* Immt = (bool*)malloc(sizeof(bool));
     *Immt = true;
     bool* Immf = (bool*)malloc(sizeof(bool));
     *Immf = false;
-#else
-    int* Immt;
-    int* Immf;
-#endif
 
     auto handle_T = new starpu_data_handle_t;
     auto handle_F = new starpu_data_handle_t;
@@ -94,26 +103,27 @@ int deploygates(
     
     wires.push(std::make_pair(ImmTrue, handle_T));
     wires.push(std::make_pair(ImmFalse, handle_F));
+    int arg_counter = 0;
     for(auto it = inputs.begin(); it != inputs.end(); it++){
         for(int i = 0; i < it->second.first; i++){
-#ifdef plain_mode
-            bool* in_b = (bool*)malloc(sizeof(bool));
-            *in_b = true; //
-#else
-            int* in_b;
-#endif
             auto handle = new starpu_data_handle_t;
-            starpu_variable_data_register(handle, STARPU_MAIN_RAM, (uintptr_t)in_b, sizeof(*in_b));
+            bool* arg = (bool*)calloc(1, sizeof(bool));
+            *arg = arg_in[arg_counter];
+            starpu_variable_data_register(handle, STARPU_MAIN_RAM, (uintptr_t)arg, sizeof(bool));
             wires.push(std::make_pair(it->second.second[i], handle));
-            wires_ptr.insert(std::make_pair(it->second.second[i], (uintptr_t)in_b));
+            wires_ptr.insert(std::make_pair(it->second.second[i], (uintptr_t)arg));
+            //std::cout << "input '" << it->first << "[" << i << "] : " << (*arg) << std::endl;
+            arg_counter++;
+            if(arg_counter > arg_in.size()){
+                std::cerr << "err: too few arguments" << std::endl;
+                return std::vector<bool>{};
+            }
         }
     }
-    int FF_count = 0;
     for(auto FF = FFs.begin(); FF != FFs.end(); FF++){
         //std::cout << "FF   :" << FF->first << " " << FF->second->num_outputs << "bit" << std::endl;
-        wires.push(std::make_pair(FF->second->outputs[0], (starpu_data_handle_t*)FF->second->dff_mem));
-        wires_ptr.insert(std::make_pair(FF->second->outputs[0], FF_ptr[FF_count]));
-        FF_count++;
+        wires.push(std::make_pair(FF->second.first->outputs[0], (starpu_data_handle_t*)FF->second.first->dff_mem));
+        wires_ptr.insert(std::make_pair(FF->second.first->outputs[0], FF->second.second));
     }
 
     
@@ -137,11 +147,7 @@ int deploygates(
             if((nextnode->d_counter == 0) && !(nextnode->type->isFF)){
                 auto handle_out = new starpu_data_handle_t[nextnode->num_outputs];
                 for(int i = 0; i < nextnode->num_outputs; i++){
-#ifdef plain_mode
                     bool* out_b = (bool*)calloc(1, sizeof(bool) * nextnode->num_outputs);
-#else
-                    int* out_b;
-#endif
                     starpu_variable_data_register(&handle_out[i], STARPU_MAIN_RAM, (uintptr_t)&(out_b[i]) , sizeof(out_b[i]));
                     wires.push(std::make_pair(nextnode->outputs[i], &(handle_out[i])));
                     wires_ptr.insert(std::make_pair(nextnode->outputs[i],(uintptr_t)out_b));
@@ -156,22 +162,41 @@ int deploygates(
         next->dep = newqueue;
         wires.pop();
     }
+    for(auto FF = FFs.begin(); FF != FFs.end(); FF++){
+        reinterpret_cast<void (*)(node, starpu_data_handle_t*)>(FF->second.first->type->task_insert)(*(FF->second.first), (starpu_data_handle_t*)nullptr);
+    }
     for(auto it = outputs.begin() ; it != outputs.end(); it++){
         for(int j = 0; j < it->second.first; j++){
             output_handles[it->first].second[j] = wires_ptr[it->second.second[j]];
         }
     }
-    std::cout << "hoge" << std::endl;
     starpu_task_wait_for_all();
+    std::vector<bool> retvals{};
     for(auto it = output_handles.begin(); it != output_handles.end(); it++){
-#ifdef plain_mode
         bool** ret = (bool**)it->second.second;
         for(int i = 0; i < it->second.first; i++){
-        std::cout << "output '" << it->first <<"[" << i << "] : " << (*ret[i] ? "true": "false") << std::endl;
+        //std::cout << "output '" << it->first <<"[" << i << "] : " << (*ret[i] ? "true": "false") << std::endl;
+        retvals.push_back(*ret[i]);
         }
-#else
-#endif
         
     }
-    return 0;   
+    return retvals;
+}
+
+int result_dump(
+    std::map<std::string,int> outputs,
+    std::vector<bool> retvals
+){
+    int ret_counter = 0;
+    for(auto it = outputs.begin(); it != outputs.end(); it++){
+        for(int i = 0; i < it->second; i++){
+            std::cout << "output '" << it->first <<"[" << i << "] : " << (retvals[ret_counter] ? "true": "false") << std::endl;
+            ret_counter++;
+            if(ret_counter > retvals.size()){
+                std::cerr << "err: too few retvals!" << std::endl;
+                return 1;
+            }
+        }
+    }
+    return 0;
 }

@@ -1,8 +1,8 @@
 # read design 
-read -sv adder_4b.v
+read -sv FF_ex.v
 
 # elaborate design hierarchy
-hierarchy -check -top Adder4
+hierarchy -check -top top
 
 # the high-level stuff
 proc; opt; fsm; opt; memory; opt
@@ -20,7 +20,7 @@ abc -g gates,MUX,NMUX
 clean -purge
 
 # write synthesized design
-write_json adder_4b.json
+write_json FF_ex.json
 
 # Print statistics
 stat
