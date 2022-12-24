@@ -1,0 +1,9 @@
+[submodule "thirdparties/picojson"]
+	path = thirdparties/picojson
+	url = https://github.com/kazuho/picojson.git
+[submodule "thirdparties/cereal"]
+	path = thirdparties/cereal
+	url = https://github.com/USCiLab/cereal.git
+[submodule "thirdparties/cuFHE"]
+	path = thirdparties/cuFHE
+	url = https://github.com/virtualsecureplatform/cuFHE.git
