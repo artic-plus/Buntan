@@ -21,6 +21,17 @@ int main(int argc, char** argv){
         std::cerr << "input required!" << std::endl;
         return 1;
     }
+    auto inputs_ = new std::map<std::string, int>;
+    auto outputs_ = new std::map<std::string, int>; 
+    getio(std::string(argv[1]), inputs_, outputs_);
+#ifdef plain_mode
+    auto arg_in = make_inputs_plain_manual(*inputs_);
+#else
+    std::unique_ptr<TFHEpp::SecretKey> sk(new TFHEpp::SecretKey);
+    ek.emplacebkfft<TFHEpp::lvl01param>(*sk);
+    ek.emplaceiksk<TFHEpp::lvl10param>(*sk);
+    auto arg_in = make_inputs_cipher_rand(*inputs_, *sk);
+#endif
     auto inputs = new std::map<std::string, std::pair<int, wire**>>;
     auto outputs = new std::map<std::string, std::pair<int, wire**>>; 
     auto FFs = new std::map<std::string, std::pair<node*, uintptr_t>>;
@@ -35,30 +46,23 @@ int main(int argc, char** argv){
     init_FFs(FFs);
     checkgraph(nodetypes, *inputs, *outputs, *FFs, ImmTrue, ImmFalse);
 #ifdef plain_mode
-    std::vector<bool> args_in{};
+    auto retvals = deploygates_plain(nodetypes, *inputs, arg_in, *outputs, *FFs, ImmTrue, ImmFalse);
+    result_dump_plain(*outputs_, retvals);
 #else
-    {
-        const std::string path = "./cloud.key";
-        std::ifstream ifs("./cloud.key", std::ios::binary);
-        cereal::PortableBinaryInputArchive ar(ifs);
-        (&ek)->serialize(ar);
-    }
+    auto retvals = deploygates_cipher(nodetypes, *inputs, arg_in, *outputs, *FFs, ImmTrue, ImmFalse);
+    result_dump_cipher(*outputs_, retvals, *sk);
+#endif
 
-    std::vector<TFHEpp::TLWE<TFHEpp::lvl1param>> args_in{};
-#endif
-    {
-        std::ifstream ifs("./cloud.data", std::ios::binary);
-        cereal::PortableBinaryInputArchive ar(ifs);
-        ar(args_in);
-    }
 #ifdef plain_mode
-    auto retvals = deploygates_plain(nodetypes, *inputs, args_in, *outputs, *FFs, ImmTrue, ImmFalse);
+    arg_in = make_inputs_plain_manual(*inputs_);
 #else
-    auto retvals = deploygates_cipher(nodetypes, *inputs, args_in, *outputs, *FFs, ImmTrue, ImmFalse);
+    arg_in = make_inputs_cipher_manual(*inputs_, *sk);
 #endif
-    {
-        std::ofstream ofs{"result.data", std::ios::binary};
-        cereal::PortableBinaryOutputArchive ar(ofs);
-        ar(retvals);
-    };
+#ifdef plain_mode
+    retvals = deploygates_plain(nodetypes, *inputs, arg_in, *outputs, *FFs, ImmTrue, ImmFalse);
+    result_dump_plain(*outputs_, retvals);
+#else
+    retvals = deploygates_cipher(nodetypes, *inputs, arg_in, *outputs, *FFs, ImmTrue, ImmFalse);
+    result_dump_cipher(*outputs_, retvals, *sk);
+#endif
 }

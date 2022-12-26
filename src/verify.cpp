@@ -21,11 +21,25 @@ int main(int argc, char** argv){
     auto inputs = new std::map<std::string, int>;
     auto outputs = new std::map<std::string, int>; 
     getio(std::string(argv[1]), inputs, outputs);
-    std::vector<bool> plain_out{};
+#ifdef plain_mode
+    std::vector<bool> result{};
+#else
+    std::vector<TFHEpp::TLWE<TFHEpp::lvl1param>> result{};
+#endif
     {
         std::ifstream ifs("./result.data", std::ios::binary);
         cereal::PortableBinaryInputArchive ar(ifs);
-        ar(plain_out);
+        ar(result);
     }
-    result_dump(*outputs, plain_out);
+#ifdef plain_mode
+    result_dump_plain(*outputs, result);
+#else
+    TFHEpp::SecretKey sk;
+    {
+        std::ifstream ifs{"secret.key", std::ios::binary};
+        cereal::PortableBinaryInputArchive ar(ifs);
+        sk.serialize(ar);
+    };
+    result_dump_cipher(*outputs, result, sk);
+#endif
 }
