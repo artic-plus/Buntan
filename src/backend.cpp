@@ -102,7 +102,7 @@ std::vector<t_val> deploygates(
     wire* ImmTrue, 
     wire* ImmFalse
 ){
-    std::queue<std::pair<wire*, starpu_data_handle_t*>> wires;
+    std::vector<std::pair<wire*, starpu_data_handle_t*>> wires;
     std::map<wire*, t_val*> wires_ptr;
 
     std::map<std::string, std::pair<int, t_val**>> output_handles; 
@@ -128,8 +128,8 @@ std::vector<t_val> deploygates(
     wires_ptr.insert(std::make_pair(ImmTrue, Immt));
     wires_ptr.insert(std::make_pair(ImmFalse, Immf));
     
-    wires.push(std::make_pair(ImmTrue, handle_T));
-    wires.push(std::make_pair(ImmFalse, handle_F));
+    wires.push_back(std::make_pair(ImmTrue, handle_T));
+    wires.push_back(std::make_pair(ImmFalse, handle_F));
     int arg_counter = 0;
     for(auto it = inputs.begin(); it != inputs.end(); it++){
         for(int i = 0; i < it->second.first; i++){
@@ -137,7 +137,7 @@ std::vector<t_val> deploygates(
             t_val* arg = (t_val*)calloc(1, sizeof(t_val));
             *arg = arg_in[arg_counter];
             starpu_variable_data_register(handle, STARPU_MAIN_RAM, (uintptr_t)arg, sizeof(t_val));
-            wires.push(std::make_pair(it->second.second[i], handle));
+            wires.push_back(std::make_pair(it->second.second[i], handle));
             wires_ptr.insert(std::make_pair(it->second.second[i], arg));
             //std::cout << "input '" << it->first << "[" << i << "] : " << (*arg) << std::endl;
             arg_counter++;
@@ -149,17 +149,17 @@ std::vector<t_val> deploygates(
     }
     for(auto FF = FFs.begin(); FF != FFs.end(); FF++){
         //std::cout << "FF   :" << FF->first << " " << FF->second->num_outputs << "bit" << std::endl;
-        wires.push(std::make_pair(FF->second.first->outputs[0], (starpu_data_handle_t*)FF->second.first->dff_mem));
+        wires.push_back(std::make_pair(FF->second.first->outputs[0], (starpu_data_handle_t*)FF->second.first->dff_mem));
         wires_ptr.insert(std::make_pair(FF->second.first->outputs[0], (t_val*)FF->second.second));
     }
 
     
     wire* next;
     starpu_data_handle_t* next_handle;
-    while (!wires.empty())
+    for(int i = 0; i < wires.size(); i++)
     {
-        next = wires.front().first;
-        next_handle = wires.front().second;
+        next = wires[i].first;
+        next_handle = wires[i].second;
         auto newqueue = new std::queue<node*>;
         node* nextnode;
         while (!next->dep->empty())
@@ -176,7 +176,7 @@ std::vector<t_val> deploygates(
                 t_val* out_b = (t_val*)calloc(nextnode->num_outputs, sizeof(t_val));
                 for(int i = 0; i < nextnode->num_outputs; i++){
                     starpu_variable_data_register(&handle_out[i], STARPU_MAIN_RAM, (uintptr_t)&(out_b[i]) , sizeof(out_b[i]));
-                    wires.push(std::make_pair(nextnode->outputs[i], &(handle_out[i])));
+                    wires.push_back(std::make_pair(nextnode->outputs[i], &(handle_out[i])));
                     wires_ptr.insert(std::make_pair(nextnode->outputs[i],out_b));
                 }
                 reinterpret_cast<void (*)(node, starpu_data_handle_t*)>(nextnode->type->task_insert)(*nextnode, handle_out);
@@ -187,10 +187,10 @@ std::vector<t_val> deploygates(
         }
         delete next->dep;
         next->dep = newqueue;
-        wires.pop();
     }
     for(auto it = outputs.begin() ; it != outputs.end(); it++){
         for(int j = 0; j < it->second.first; j++){
+            if(wires_ptr.find(it->second.second[j]) == wires_ptr.end()) std::cout << "aaa" << std::endl;
             output_handles[it->first].second[j] = wires_ptr[it->second.second[j]];
         }
     }
@@ -199,7 +199,6 @@ std::vector<t_val> deploygates(
     for(auto it = output_handles.begin(); it != output_handles.end(); it++){
         t_val** ret = (t_val**)it->second.second;
         for(int i = 0; i < it->second.first; i++){
-        //std::cout << "output '" << it->first <<"[" << i << "] : " << (*ret[i] ? "true": "false") << std::endl;
         retvals.push_back(*ret[i]);
         }
     }
@@ -218,6 +217,9 @@ std::vector<t_val> deploygates(
         free((t_val*)it->second);
     }
     starpu_task_wait_for_all();
+    for(auto next : wires){
+        free(next.second);
+    }
     return retvals;
 }
 

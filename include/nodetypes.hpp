@@ -35,6 +35,7 @@ typedef TFHEpp::TLWE<TFHEpp::lvl1param> t_val;
 #endif
 
 
-std::map<std::string, nodetype*> types_init();
+extern std::map<std::string, nodetype*> nodetypes;
+int types_init();
 
 #endif

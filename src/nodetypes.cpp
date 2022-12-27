@@ -32,7 +32,7 @@ extern void simple_dffe(node gate, starpu_data_handle_t* handle_out);
 
 
 
-std::map<std::string, nodetype*> types_init(){
+int types_init(){
 	nodetype* And = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_and, false};
 	nodetype* Nand = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_nand, false};
 	nodetype* AndNot = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_andnot, false};
@@ -53,7 +53,7 @@ std::map<std::string, nodetype*> types_init(){
 
 
 
-	std::map<std::string, nodetype*> nodetypes{
+	nodetypes = std::map<std::string, nodetype*>{
 		{"$_AND_", And},
 		{"$_NAND_", Nand},
 		{"$_ANDNOT_", AndNot},
@@ -71,7 +71,7 @@ std::map<std::string, nodetype*> types_init(){
 		{"$_MUX_", MUX},
 		{"$_NMUX_", NMUX}
 	};
-	return nodetypes;
+	return 0;
 }
 
 void and_plain(void *buffers[], void *cl_arg){

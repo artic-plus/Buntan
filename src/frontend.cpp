@@ -13,11 +13,10 @@
 #include "nodetypes.hpp"
 #include "frontend.hpp"
 
-
+std::map<std::string, nodetype*> nodetypes;
 
 int yosys_json_parser(
     std::string json_path, 
-    std::map<std::string, nodetype*> nodetypes, 
     std::map<std::string, std::pair<int, wire**>>* inputs, 
     std::map<std::string, std::pair<int, wire**>>* outputs, 
     std::map<std::string, std::pair<node*, t_val*>>* FFs, 
@@ -60,7 +59,7 @@ int yosys_json_parser(
 	}
 	std::cout << "top moodule is '" << top << "'" << std::endl;
 
-    if (parsemodule(modules, top, nodetypes, inputs, outputs, FFs, ImmTrue, ImmFalse)){
+    if (parsemodule(modules, top, inputs, outputs, FFs, ImmTrue, ImmFalse)){
         return 1;
     }
     std::cout << std::endl; 
@@ -71,7 +70,6 @@ int yosys_json_parser(
 int parsemodule(
     picojson::object modules, 
     std::string mname, 
-    std::map<std::string, nodetype*> nodetypes, 
     std::map<std::string, std::pair<int, wire**>>* inputs, 
     std::map<std::string, std::pair<int, wire**>>* outputs, 
     std::map<std::string, std::pair<node*, t_val*>>* FFs, 
@@ -104,7 +102,7 @@ int parsemodule(
         if(type == nodetypes.end()){
             std::map<std::string, std::pair<int, wire**>> cell_inputs{};
             std::map<std::string, std::pair<int, wire**>> cell_outputs{};
-            if(parsemodule(modules, celltype, nodetypes, &cell_inputs, &cell_outputs, FFs, ImmTrue, ImmFalse)){
+            if(parsemodule(modules, celltype, &cell_inputs, &cell_outputs, FFs, ImmTrue, ImmFalse)){
                 std::cerr << "parsemodule of '" << celltype << "' failed" << std::endl;
                 return 1;
             }
@@ -294,7 +292,6 @@ int parsemodule(
 }
 
 int checkgraph(
-    std::map<std::string, nodetype*> nodetypes, 
     std::map<std::string, std::pair<int, wire**>> inputs, 
     std::map<std::string, std::pair<int, wire**>> outputs, 
     std::map<std::string, std::pair<node*, t_val*>> FFs, 

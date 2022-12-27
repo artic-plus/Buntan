@@ -54,13 +54,6 @@ target_include_directories(dump PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/th
 target_link_libraries(dump PUBLIC tfhe++)
 
 
-add_executable(check_and check_and.cpp nodetypes.cpp frontend.cpp backend.cpp)
-target_include_directories(check_and PUBLIC ${CMAKE_SOURCE_DIR}/include)
-target_include_directories(check_and PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
-target_include_directories(check_and PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
-target_include_directories(check_and PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
 
-target_link_libraries(check_and PUBLIC tfhe++)
-
-add_compile_definitions(plain_mode)
+#add_compile_definitions(plain_mode)
 #add_compile_definitions(use_simple_FF)
