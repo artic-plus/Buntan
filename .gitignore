@@ -92,3 +92,4 @@ _deps
 ./a.out
 
 ./*.o
+./build/
