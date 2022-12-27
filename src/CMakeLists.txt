@@ -62,5 +62,5 @@ target_include_directories(check_and PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuF
 
 target_link_libraries(check_and PUBLIC tfhe++)
 
-#add_compile_definitions(plain_mode)
-add_compile_definitions(use_simple_FF)
+add_compile_definitions(plain_mode)
+#add_compile_definitions(use_simple_FF)

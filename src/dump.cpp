@@ -25,16 +25,16 @@ int main(int argc, char** argv){
     auto outputs_ = new std::map<std::string, int>; 
     getio(std::string(argv[1]), inputs_, outputs_);
 #ifdef plain_mode
-    auto arg_in = make_inputs_plain_manual(*inputs_);
+    auto arg_in = make_inputs_manual(*inputs_);
 #else
     std::unique_ptr<TFHEpp::SecretKey> sk(new TFHEpp::SecretKey);
     ek.emplacebkfft<TFHEpp::lvl01param>(*sk);
     ek.emplaceiksk<TFHEpp::lvl10param>(*sk);
-    auto arg_in = make_inputs_cipher_rand(*inputs_, *sk);
+    auto arg_in = make_inputs_rand(*inputs_, *sk);
 #endif
     auto inputs = new std::map<std::string, std::pair<int, wire**>>;
     auto outputs = new std::map<std::string, std::pair<int, wire**>>; 
-    auto FFs = new std::map<std::string, std::pair<node*, uintptr_t>>;
+    auto FFs = new std::map<std::string, std::pair<node*, t_val*>>;
     wire* ImmTrue = new wire{nullptr, new std::queue<node*>, false}; 
     wire* ImmFalse = new wire{nullptr, new std::queue<node*>, false};
     std::map<std::string, nodetype*> nodetypes = types_init();
@@ -44,25 +44,13 @@ int main(int argc, char** argv){
     }
     starpu_init(NULL);
     init_FFs(FFs);
-    checkgraph(nodetypes, *inputs, *outputs, *FFs, ImmTrue, ImmFalse);
+    //checkgraph(nodetypes, *inputs, *outputs, *FFs, ImmTrue, ImmFalse);
 #ifdef plain_mode
-    auto retvals = deploygates_plain(nodetypes, *inputs, arg_in, *outputs, *FFs, ImmTrue, ImmFalse);
-    result_dump_plain(*outputs_, retvals);
+    auto retvals = deploygates(*inputs, arg_in, *outputs, *FFs, ImmTrue, ImmFalse);
+    result_dump(*outputs_, retvals);
 #else
-    auto retvals = deploygates_cipher(nodetypes, *inputs, arg_in, *outputs, *FFs, ImmTrue, ImmFalse);
-    result_dump_cipher(*outputs_, retvals, *sk);
+    auto retvals = deploygates(*inputs, arg_in, *outputs, *FFs, ImmTrue, ImmFalse);
+    result_dump(*outputs_, retvals, *sk);
 #endif
 
-#ifdef plain_mode
-    arg_in = make_inputs_plain_manual(*inputs_);
-#else
-    arg_in = make_inputs_cipher_manual(*inputs_, *sk);
-#endif
-#ifdef plain_mode
-    retvals = deploygates_plain(nodetypes, *inputs, arg_in, *outputs, *FFs, ImmTrue, ImmFalse);
-    result_dump_plain(*outputs_, retvals);
-#else
-    retvals = deploygates_cipher(nodetypes, *inputs, arg_in, *outputs, *FFs, ImmTrue, ImmFalse);
-    result_dump_cipher(*outputs_, retvals, *sk);
-#endif
 }

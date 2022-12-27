@@ -32,7 +32,7 @@ int main(int argc, char** argv){
         ar(result);
     }
 #ifdef plain_mode
-    result_dump_plain(*outputs, result);
+    result_dump(*outputs, result);
 #else
     TFHEpp::SecretKey sk;
     {
@@ -40,6 +40,6 @@ int main(int argc, char** argv){
         cereal::PortableBinaryInputArchive ar(ifs);
         sk.serialize(ar);
     };
-    result_dump_cipher(*outputs, result, sk);
+    result_dump(*outputs, result, sk);
 #endif
 }

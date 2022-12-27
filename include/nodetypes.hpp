@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include <starpu.h>
+#include <tfhe++.hpp>
 
 #define bnode_inputs  {"A", "B"}
 #define unode_input  {"A"}
@@ -27,6 +28,11 @@ struct nodetype{
 	bool isFF;
 };
 
+#ifdef plain_mode
+typedef bool t_val;
+#else
+typedef TFHEpp::TLWE<TFHEpp::lvl1param> t_val;
+#endif
 
 
 std::map<std::string, nodetype*> types_init();

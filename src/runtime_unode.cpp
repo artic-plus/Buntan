@@ -23,7 +23,7 @@ int main(int argc, char** argv){
     }
     auto inputs = new std::map<std::string, std::pair<int, wire**>>;
     auto outputs = new std::map<std::string, std::pair<int, wire**>>; 
-    auto FFs = new std::map<std::string, std::pair<node*, uintptr_t>>;
+    auto FFs = new std::map<std::string, std::pair<node*, t_val*>>;
     wire* ImmTrue = new wire{nullptr, new std::queue<node*>, false}; 
     wire* ImmFalse = new wire{nullptr, new std::queue<node*>, false};
     std::map<std::string, nodetype*> nodetypes = types_init();
@@ -43,7 +43,6 @@ int main(int argc, char** argv){
         cereal::PortableBinaryInputArchive ar(ifs);
         (&ek)->serialize(ar);
     }
-
     std::vector<TFHEpp::TLWE<TFHEpp::lvl1param>> args_in{};
 #endif
     {
@@ -51,11 +50,7 @@ int main(int argc, char** argv){
         cereal::PortableBinaryInputArchive ar(ifs);
         ar(args_in);
     }
-#ifdef plain_mode
-    auto retvals = deploygates_plain(nodetypes, *inputs, args_in, *outputs, *FFs, ImmTrue, ImmFalse);
-#else
-    auto retvals = deploygates_cipher(nodetypes, *inputs, args_in, *outputs, *FFs, ImmTrue, ImmFalse);
-#endif
+    auto retvals = deploygates(*inputs, args_in, *outputs, *FFs, ImmTrue, ImmFalse);
     {
         std::ofstream ofs{"result.data", std::ios::binary};
         cereal::PortableBinaryOutputArchive ar(ofs);
