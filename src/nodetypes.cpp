@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <starpu.h>
+#include <starpu_mpi.h>
 
 #include "nodetypes.hpp"
 #include "frontend.hpp"
@@ -33,22 +34,22 @@ extern void simple_dffe(node gate, starpu_data_handle_t* handle_out);
 
 
 int types_init(){
-	nodetype* And = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_and, false};
-	nodetype* Nand = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_nand, false};
-	nodetype* AndNot = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_andnot, false};
-	nodetype* Or = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_or, false};
-	nodetype* Nor = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_nor, false};
-	nodetype* OrNot = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_ornot, false};
-	nodetype* Xor = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_xor, false};
-	nodetype* Xnor = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_xnor, false};
-	nodetype* Not = new nodetype{std::vector<std::string>(unode_input), std::vector<std::string>(bnode_output), (void*)&insert_not, false};
-	nodetype* DFF_P = new nodetype{std::vector<std::string>(dff_inputs), std::vector<std::string>(dff_output), (void*)&insert_dff_p, true};
-	nodetype* DFF_N = new nodetype{std::vector<std::string>(dff_inputs), std::vector<std::string>(dff_output), (void*)&insert_dff_n, true};
-	nodetype* ADFF_PP1 = new nodetype{std::vector<std::string>(adff_inputs), std::vector<std::string>(dff_output), (void*)&insert_adff_pp1, true};
-	nodetype* ADFF_PP0 = new nodetype{std::vector<std::string>(adff_inputs), std::vector<std::string>(dff_output), (void*)&insert_adff_pp0, true};
-	nodetype* DFFE_PP = new nodetype{std::vector<std::string>(dffe_inputs), std::vector<std::string>(dff_output), (void*)&insert_dffe_pp, true};
-	nodetype* MUX = new nodetype{std::vector<std::string>(mux_inputs), std::vector<std::string>(bnode_output), (void*)&insert_mux, false};
-	nodetype* NMUX = new nodetype{std::vector<std::string>(mux_inputs), std::vector<std::string>(bnode_output), (void*)&insert_nmux, false};
+	nodetype* And = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_AND_", (void*)&insert_and, (void*)&insert_and_mpi, false};
+	nodetype* Nand = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_NAND_", (void*)&insert_nand, (void*)&insert_nand_mpi, false};
+	nodetype* AndNot = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output),"$_ANDNOT_" , (void*)&insert_andnot, (void*)&insert_andnot_mpi, false};
+	nodetype* Or = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_OR_",  (void*)&insert_or, (void*)&insert_or_mpi, false};
+	nodetype* Nor = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_NOR_", (void*)&insert_nor, (void*)&insert_nor_mpi, false};
+	nodetype* OrNot = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_ORNOT_", (void*)&insert_ornot, (void*)&insert_ornot_mpi, false};
+	nodetype* Xor = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_XOR_", (void*)&insert_xor, (void*)&insert_xor_mpi, false};
+	nodetype* Xnor = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_XNOR_", (void*)&insert_xnor, (void*)&insert_xnor_mpi, false};
+	nodetype* Not = new nodetype{std::vector<std::string>(unode_input), std::vector<std::string>(bnode_output), "$_NOT_", (void*)&insert_not, (void*)&insert_not_mpi, false};
+	nodetype* DFF_P = new nodetype{std::vector<std::string>(dff_inputs), std::vector<std::string>(dff_output), "$_DFF_P_", (void*)&insert_dff_p, (void*)&insert_dff_p_mpi, true};
+	nodetype* DFF_N = new nodetype{std::vector<std::string>(dff_inputs), std::vector<std::string>(dff_output), "$_DFF_N_", (void*)&insert_dff_n, (void*)&insert_dff_n_mpi, true};
+	nodetype* ADFF_PP1 = new nodetype{std::vector<std::string>(adff_inputs), std::vector<std::string>(dff_output), "$_DFF_PP1_", (void*)&insert_adff_pp1, (void*)&insert_adff_pp1_mpi, true};
+	nodetype* ADFF_PP0 = new nodetype{std::vector<std::string>(adff_inputs), std::vector<std::string>(dff_output), "$_DFF_PP0_", (void*)&insert_adff_pp0, (void*)&insert_adff_pp0_mpi, true};
+	nodetype* DFFE_PP = new nodetype{std::vector<std::string>(dffe_inputs), std::vector<std::string>(dff_output), "$_DFFE_PP_", (void*)&insert_dffe_pp, (void*)&insert_dffe_pp_mpi, true};
+	nodetype* MUX = new nodetype{std::vector<std::string>(mux_inputs), std::vector<std::string>(bnode_output), "$_MUX_", (void*)&insert_mux, (void*)&insert_mux_mpi, false};
+	nodetype* NMUX = new nodetype{std::vector<std::string>(mux_inputs), std::vector<std::string>(bnode_output), "$_NMUX_", (void*)&insert_nmux, (void*)&insert_nmux_mpi, false};
 
 
 
@@ -111,6 +112,14 @@ void insert_and(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_and_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &and_cl,
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_RW, *handle_output,  
+        0);
+}
+
 void nand_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
@@ -144,6 +153,14 @@ struct starpu_codelet nand_cl = {
 
 void insert_nand(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&nand_cl,
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_RW, *handle_output,  
+        0);
+}
+
+void insert_nand_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &nand_cl,
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
         STARPU_RW, *handle_output,  
@@ -189,6 +206,14 @@ void insert_andnot(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_andnot_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &andnot_cl,
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_RW, *handle_output,  
+        0);
+}
+
 void or_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
@@ -228,6 +253,13 @@ void insert_or(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_or_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &or_cl,
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_RW, *handle_output,  
+        0);
+}
 
 void nor_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
@@ -267,6 +299,15 @@ void insert_nor(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_nor_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &nor_cl,
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_RW, *handle_output,  
+        0);
+}
+
+
 void ornot_cipher(void *buffers[], void *cl_arg){
     TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     TFHEpp::TLWE<TFHEpp::lvl1param> *B = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
@@ -299,6 +340,14 @@ struct starpu_codelet ornot_cl = {
 
 void insert_ornot(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&ornot_cl,
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_RW, *handle_output,  
+        0);
+}
+
+void insert_ornot_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &ornot_cl,
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
         STARPU_RW, *handle_output,  
@@ -344,6 +393,14 @@ void insert_xor(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_xor_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &xor_cl,
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_RW, *handle_output,  
+        0);
+}
+
 void xnor_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
@@ -382,6 +439,14 @@ void insert_xnor(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_xnor_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &xnor_cl,
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_RW, *handle_output,  
+        0);
+}
+
 void not_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[1]) = !*A;
@@ -411,6 +476,13 @@ struct starpu_codelet not_cl = {
 
 void insert_not(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&not_cl,
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_RW, *handle_output,  
+        0);
+}
+
+void insert_not_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &not_cl,
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
         STARPU_RW, *handle_output,  
         0);
@@ -467,6 +539,15 @@ void insert_dff_p(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_dff_p_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &dff_p_cl,
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[0]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        0);
+}
+
 void dff_n_plain(void *buffers[], void *cl_arg){
 	bool *state = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
 	bool *fCLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]); //buf to detect edge
@@ -512,6 +593,16 @@ struct starpu_codelet dff_n_cl = {
 
 void insert_dff_n(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&dff_n_cl,
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[0]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        0);
+}
+
+
+void insert_dff_n_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &dff_n_cl,
         STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[0]),
         STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
@@ -585,6 +676,17 @@ void insert_adff_pp1(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_adff_pp1_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &adff_pp1_cl,
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[0]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[2]),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[2].first),
+        0);
+}
+
 void adff_pp0_plain(void *buffers[], void *cl_arg){
 	bool *state = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
 	bool *fCLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]); //buf to detect edge
@@ -640,6 +742,18 @@ struct starpu_codelet adff_pp0_cl = {
 
 void insert_adff_pp0(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&adff_pp0_cl,
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[0]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[2]),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[2].first),
+        0);
+}
+
+
+void insert_adff_pp0_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &adff_pp0_cl,
         STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[0]),
         STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
         STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[2]),
@@ -711,6 +825,18 @@ void insert_dffe_pp(node gate, starpu_data_handle_t* handle_output){
 }
 
 
+void insert_dffe_pp_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &dffe_pp_cl,
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[0]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
+        STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[3]),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[2].first),
+        0);
+}
+
+
 void mux_plain(void *buffers[], void *cl_arg){
     bool *S = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
@@ -746,6 +872,15 @@ struct starpu_codelet mux_cl = {
 
 void insert_mux(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&mux_cl,
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[2].first),
+        STARPU_RW, *handle_output,  
+        0);
+}
+
+void insert_mux_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &mux_cl,
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),  
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[2].first),
@@ -793,3 +928,18 @@ void insert_nmux(node gate, starpu_data_handle_t* handle_output){
         STARPU_RW, *handle_output,  
         0);
 }
+
+void insert_nmux_mpi(node gate, starpu_data_handle_t* handle_output){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &nmux_cl,
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),  
+        STARPU_R, *((starpu_data_handle_t*)gate.inputs[2].first),
+        STARPU_RW, *handle_output,  
+        0);
+}
+
+
+
+
+
+

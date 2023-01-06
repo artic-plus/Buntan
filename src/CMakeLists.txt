@@ -17,6 +17,14 @@ link_libraries (${STARPU_STATIC_LIBRARIES})
 else (STARPU_FOUND)
 message(FATAL_ERROR "StarPU not found")
 endif()
+pkg_check_modules(STARPU_MPI REQUIRED starpumpi-1.3)
+if (STARPU_MPI_FOUND)
+include_directories (${STARPU_MPI_INCLUDE_DIRS})
+link_directories (${STARPU_MPI_STATIC_LIBRARY_DIRS})
+link_libraries (${STARPU_MPI_STATIC_LIBRARIES})
+else (STARPU_MPI_FOUND)
+message(FATAL_ERROR "StarPU_MPI not found")
+endif()
 
 add_executable(runtime_unode runtime_unode.cpp nodetypes.cpp frontend.cpp backend.cpp)
 target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/include)
@@ -26,6 +34,22 @@ target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties
 target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
 
 target_link_libraries(runtime_unode PUBLIC tfhe++)
+
+add_executable(runtime_mpi runtime_mpi.cpp nodetypes.cpp frontend.cpp backend.cpp)
+target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
+target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
+target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/include)
+target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
+
+target_link_libraries(runtime_mpi PUBLIC tfhe++)
+
+
+find_package(MPI)
+target_link_libraries(runtime_mpi PUBLIC MPI::MPI_CXX)
+target_compile_options(runtime_mpi PRIVATE -lstarpu-1.3 -lstarpumpi-1.3 -lmpi -Wall)
+target_link_options(runtime_mpi PRIVATE -lstarpu-1.3 -lstarpumpi-1.3 -lmpi -Wall)
+
 
 add_executable(client client.cpp frontend.cpp backend.cpp)
 target_include_directories(client PUBLIC ${CMAKE_SOURCE_DIR}/include)
@@ -53,7 +77,11 @@ target_include_directories(dump PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/th
 
 target_link_libraries(dump PUBLIC tfhe++)
 
-
+find_package(MPI)
+add_executable(starpu_mpi_test starpu_mpi_test.cpp)
+target_link_libraries(starpu_mpi_test PUBLIC MPI::MPI_CXX)
+target_compile_options(starpu_mpi_test PRIVATE -lstarpu-1.3 -lstarpumpi-1.3 -lmpi -Wall)
+target_link_options(starpu_mpi_test PRIVATE -lstarpu-1.3 -lstarpumpi-1.3 -lmpi -Wall)
 
 #add_compile_definitions(plain_mode)
 #add_compile_definitions(use_simple_FF)

@@ -24,8 +24,8 @@ int main(int argc, char** argv){
     auto inputs = new std::map<std::string, std::pair<int, wire**>>;
     auto outputs = new std::map<std::string, std::pair<int, wire**>>; 
     auto FFs = new std::map<std::string, std::pair<node*, t_val*>>;
-    wire* ImmTrue = new wire{nullptr, new std::queue<node*>, false}; 
-    wire* ImmFalse = new wire{nullptr, new std::queue<node*>, false};
+    wire* ImmTrue = new wire{nullptr, new std::queue<node*>, false, true, false}; 
+    wire* ImmFalse = new wire{nullptr, new std::queue<node*>, false, true, false};
     types_init();
     if(yosys_json_parser(std::string(argv[1]), inputs, outputs, FFs, ImmTrue, ImmFalse)){
         std::cerr << "frontend failed!" << std::endl;

@@ -18,6 +18,8 @@ struct wire{
 	node* src; 
 	std::queue<node*>* dep; 
 	bool merged;
+	bool is_bpoint; //input of circuit or "Q" wire of FF
+	bool is_output;
 };
 
 struct node{

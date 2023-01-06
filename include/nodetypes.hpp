@@ -24,7 +24,9 @@
 struct nodetype{
 	std::vector<std::string> inputs;
 	std::vector<std::string> outputs;
+	std::string key;
 	void* task_insert;
+	void* task_insert_mpi;
 	bool isFF;
 };
 
