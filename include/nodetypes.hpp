@@ -12,9 +12,9 @@
 
 #define bnode_inputs  {"A", "B"}
 #define unode_input  {"A"}
-#define dff_inputs  {"C", "D"}
-#define adff_inputs  {"C", "D", "R"}
-#define dffe_inputs  {"C", "D", "E"}
+#define dff_inputs  {"D", "C"}
+#define adff_inputs  {"D", "C", "R"}
+#define dffe_inputs  {"D", "C", "E"}
 #define mux_inputs  {"A", "B", "S"}
 #define fa_inputs  {"A", "B", "C"}
 #define bnode_output  {"Y"}
@@ -28,6 +28,7 @@ struct nodetype{
 	void* task_insert;
 	void* task_insert_mpi;
 	bool isFF;
+	int id;
 };
 
 #ifdef plain_mode
@@ -38,6 +39,7 @@ typedef TFHEpp::TLWE<TFHEpp::lvl1param> t_val;
 
 
 extern std::map<std::string, nodetype*> nodetypes;
+extern std::map<int, nodetype*> type_id;
 int types_init();
 
 #endif

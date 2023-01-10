@@ -14,11 +14,13 @@
 #include "frontend.hpp"
 
 std::map<std::string, nodetype*> nodetypes;
+std::map<int, nodetype*> type_id;
 
 int yosys_json_parser(
     std::string json_path, 
+    int* numwires,
     std::map<std::string, std::pair<int, wire**>>* inputs, 
-    std::map<std::string, std::pair<int, wire**>>* outputs, 
+    std::map<std::string, std::pair<int, wire**>>* outputs,
     std::map<std::string, std::pair<node*, t_val*>>* FFs, 
     wire* ImmTrue, 
     wire* ImmFalse
@@ -26,7 +28,7 @@ int yosys_json_parser(
 
 	std::ifstream ifs(json_path);
 	if (ifs.fail()){
-		std::cerr << "failed to read" << json_path <<std::endl;
+		std::cerr << "failed to read file '" << json_path << "'" <<std::endl;
 		return -1;
 	}
 	
@@ -58,13 +60,29 @@ int yosys_json_parser(
 		}
 	}
 	std::cout << "top moodule is '" << top << "'" << std::endl;
-    int numwires = parsemodule(modules, top, inputs, outputs, FFs, ImmTrue, ImmFalse);
-    if (numwires < 0){
+    numwires[0] = parsemodule(modules, top, inputs, outputs, FFs, ImmTrue, ImmFalse) + 2;
+    if (numwires[0] < 0){
         return -1;
     }
+    int index = 0;
+    for(auto it = inputs->begin(); it != inputs->end(); it++){
+        for(int i = 0; i < it->second.first; i++){
+            index++;
+        }
+    }
+    numwires[1] = index;
+    index = 0;
+    for(auto it = outputs->begin(); it != outputs->end(); it++){
+        for(int i = 0; i < it->second.first; i++){
+            it->second.second[i]->output_id = index;
+            index++;
+        }
+    }
+    numwires[2] = index;
+    numwires[3] = FFs->size();
     std::cout << std::endl; 
     //checkgraph(nodetypes, *inputs, *outputs, *FFs, ImmTrue, ImmFalse);
-    return numwires;
+    return 0; //take ImmTrue and ImmFalse in account
 }
 
 int parsemodule(
@@ -79,7 +97,7 @@ int parsemodule(
     picojson::object module = modules[mname].get<picojson::object>();
 	std::map<int, wire*> wires{}; //wire list for dependency resolution
     std::queue<std::pair<int, wire*>> eq_wires;
-    int numwires;
+    int numwires = 0;
 
 
     //define all wires
@@ -89,7 +107,7 @@ int parsemodule(
 		picojson::array bits = netname["bits"].get<picojson::array>();
 		for(int i = 0; i < bits.size(); i++){
             if(bits[i].is<int64_t>()){
-			    wires.insert(std::make_pair(bits[i].get<int64_t>(), new wire{0, new std::queue<node*>, false, false, false}));
+			    wires.insert(std::make_pair(bits[i].get<int64_t>(), new wire{0, new std::queue<node*>, false, -1}));
             }
 		}
 	}
@@ -113,14 +131,12 @@ int parsemodule(
             for(auto out_loc = cell_outputs.begin(); out_loc != cell_outputs.end(); out_loc++){
                 picojson::array port = connections[out_loc->first].get<picojson::array>();
                 for(int i = 0; i < out_loc->second.first; i++){
-                    out_loc->second.second[i]->is_output = false;
                     eq_wires.push(std::make_pair(port[i].get<int64_t>(), out_loc->second.second[i]));
                 }
             }
             for(auto in_loc = cell_inputs.begin(); in_loc != cell_inputs.end(); in_loc++){
                 picojson::array port = connections[in_loc->first].get<picojson::array>();
                 for(int i = 0; i < in_loc->second.first; i++){
-                    in_loc->second.second[i]->is_bpoint = false;
                     if(port[i].is<int64_t>()){
                         eq_wires.push(std::make_pair(port[i].get<int64_t>(), in_loc->second.second[i]));
                     } else {
@@ -150,7 +166,9 @@ int parsemodule(
                     }
                 }
             }
+#ifdef dump_mode
             std::cout << "parse of '" << it->first << "' complete!" << std::endl;
+#endif
         } else {
             node* thisnode = new node;
             thisnode->type = type->second;
@@ -178,7 +196,6 @@ int parsemodule(
             }
             if(thisnode->type->isFF){
                 FFs->insert(std::make_pair(it->first, std::make_pair(thisnode, nullptr)));
-                thisnode->outputs[0]->is_bpoint = true;
             }
         }
     }
@@ -284,15 +301,14 @@ int parsemodule(
 		}
 		if(direction == "input"){
 			inputs->insert(std::make_pair(it->first,std::make_pair(bits.size(),io)));
-            for(int i = 0; i < bits.size(); i++) io[i]->is_bpoint = true;
 		} else if(direction == "output"){
 			outputs->insert(std::make_pair(it->first,std::make_pair(bits.size(),io)));
-            for(int i = 0; i < bits.size(); i++) io[i]->is_output = true;
 		} else{
 			std::cerr << "port direction '" << direction << "' not supported" << std::endl;
 			return -1;
 		}
 	}
+
     while (!merged.empty())
     {
         delete merged.front();

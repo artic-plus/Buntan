@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <string.h>
 #include <random>
 #include <vector>
 #include <cereal/archives/portable_binary.hpp>
@@ -14,27 +15,58 @@
 #include "backend.hpp"
 
 
+int world_size;
 TFHEpp::EvalKey ek;
+std::vector<t_val> args_in;
+std::vector<t_val> retvals;
+
+void load_data(void *buffers[], void *cl_arg){
+    int numargs, n;
+    starpu_codelet_unpack_args(cl_arg, &numargs, &n);
+    for(int i = 0; i < numargs; i++){
+        *(t_val*)STARPU_VARIABLE_GET_PTR(buffers[i]) = args_in[n * numargs + i];
+#ifdef plain_mode
+        //std::cout << (args_in[n * numargs + i]?"true":"false") << std::endl;
+#endif
+    }
+}
+
+void save_result(void *buffers[], void *cl_arg){
+    int numretvals;
+    starpu_codelet_unpack_args(cl_arg, &numretvals);
+    for(int i = 0; i < numretvals; i++){
+        retvals.push_back(*(t_val*)STARPU_VARIABLE_GET_PTR(buffers[i]));
+    }
+}
+
+
 
 int main(int argc, char** argv){
+    int n = 1;
+    std::string filepath = "./circuit.json";
+    for(int i = 0; i < argc - 1; i++){
+        if(!strcmp(argv[i], "--circuit"))
+            filepath = std::string(argv[i+1]);
+        if(!strcmp(argv[i], "--repetition"))
+            n = atoi(argv[i+1]);
+    }
+    // initialize MPI
+    int thread_support;
+    MPI_Init_thread(
+        &argc, (char ***)&argv, MPI_THREAD_MULTIPLE, &thread_support);
+
+    // initialize StarPU
+    if (starpu_init(NULL) != 0)
+        printf("Failed to initialize Starpu.\n");
+
+    // initialize StarPU-MPI
+    if (starpu_mpi_init(&argc, &argv, 0) != 0)
+        printf("Failed to initialize Starpu-MPI.\n");
+
+    // query world communicator's size
+    world_size = starpu_mpi_world_size();
+    int my_rank = starpu_mpi_world_rank();
     
-    int my_rank, size;
-    int ret = starpu_mpi_init_conf(&argc, &argv, 1, MPI_COMM_WORLD, NULL);
-	STARPU_CHECK_RETURN_VALUE(ret, "starpu_mpi_init_conf");
-	starpu_mpi_comm_rank(MPI_COMM_WORLD, &my_rank);
-	starpu_mpi_comm_size(MPI_COMM_WORLD, &size);
-    num_workers = starpu_cpu_worker_get_count();
-	if (num_workers == 0)
-	{
-		std::cerr << "We need at least 1 CPU worker." << std::endl;
-		starpu_mpi_shutdown();
-		if (my_rank == 0) return 77; else return 0;
-	}
-    MPI_Datatype typeKey, typet_val;
-    MPI_Type_contiguous(sizeof(TFHEpp::EvalKey), MPI_CHAR, &typeKey);
-    MPI_Type_commit(&typeKey);
-    MPI_Type_contiguous(sizeof(t_val), MPI_CHAR, &typet_val);
-    MPI_Type_commit(&typet_val);
 #ifndef plainmode
     MPI_Request ReqKey;
 #endif
@@ -46,107 +78,155 @@ int main(int argc, char** argv){
     std::map<std::string, std::pair<node*, t_val*>> *FFs;
     wire* ImmTrue; 
     wire* ImmFalse;
-    int numwires, numnodes, numretvals;
-    std::vector<starpu_data_handle_t>* retval_handles;
+    int numwires[4];
+    int numnodes;
     starpu_data_handle_t retvals_v_handle;
+    t_val** retval_ptrs;
+    int* arg_handle_id; 
+    int* retval_handle_id;
+    /*
+    MPI_Datatype TypeKey;
+    MPI_Type_contiguous(sizeof(ek), MPI_CHAR, &TypeKey);
+    MPI_Type_commit(&TypeKey);
+    */
+    
 #ifndef plain_mode
-    if(my_rank == 0){
+    //if(my_rank == 0)
+    {
         const std::string path = "./cloud.key";
         std::ifstream ifs("./cloud.key", std::ios::binary);
         cereal::PortableBinaryInputArchive ar(ifs);
         (&ek)->serialize(ar);
     }
-    MPI_Ibcast(&ek, 1, typeKey, 0, MPI_COMM_WORLD, &ReqKey);
+    //MPI_Bcast(&ek, 1, TypeKey, 0, MPI_COMM_WORLD);
 #endif
     if(my_rank == 0){
         inputs = new std::map<std::string, std::pair<int, wire**>>;
         outputs = new std::map<std::string, std::pair<int, wire**>>; 
         FFs = new std::map<std::string, std::pair<node*, t_val*>>;
-        ImmTrue = new wire{nullptr, new std::queue<node*>, false, true, false}; 
-        ImmFalse = new wire{nullptr, new std::queue<node*>, false, true, false};
-        numwires = yosys_json_parser(std::string(argv[1]), inputs, outputs, FFs, ImmTrue, ImmFalse);
-        if(numwires < 0){
+        ImmTrue = new wire{nullptr, new std::queue<node*>, false, -1}; 
+        ImmFalse = new wire{nullptr, new std::queue<node*>, false, -1};
+        yosys_json_parser(filepath, numwires, inputs, outputs, FFs, ImmTrue, ImmFalse);
+        if(numwires[0] < 0){
             std::cerr << "frontend failed!" << std::endl;
             return 1;
         }
-        init_FFs(FFs);
-#ifndef plain_mode
-        MPI_Status status;
-        MPI_Wait(&ReqKey, &status);
-#endif
-        MPI_Bcast(&numwires, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    
-    } else {
-#ifndef plain_mode
-        MPI_Status status;
-        MPI_Wait(&ReqKey, &status);
-#endif
-        MPI_Bcast(&numwires, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    }
-    std::vector<std::pair<node, starpu_data_handle_t*>>* tasks;
-    starpu_data_handle_t wires_handle[numwires] = {0};
-    if(my_rank == 0){
-#ifdef plain_mode
-        std::vector<bool> args_in{};
-#else
-        std::vector<TFHEpp::TLWE<TFHEpp::lvl1param>> args_in{};
-#endif
+        if(FFs->size() > 0)init_FFs(FFs);
+        args_in = std::vector<t_val>{};
         {
             std::ifstream ifs("./cloud.data", std::ios::binary);
             cereal::PortableBinaryInputArchive ar(ifs);
             ar(args_in);
         }
-        *retval_handles = {};
-        *tasks = reg_handles_mpi(*inputs, args_in, *outputs, retval_handles, *FFs, ImmTrue, ImmFalse);
-        numretvals = retval_handles->size();
-    } else {
-        int i[2];
-        while(1){
-            MPI_Status status;
-            MPI_Recv(i, 2, MPI_INT, 0, 1, MPI_COMM_WORLD, &status);
-            if(i[0] < 0) break;
-            if(i[1] == 0) {
-                auto val = (t_val*)malloc(sizeof(t_val));
-#ifdef plain_mode
-                *val = false;
-#else
-                TFHEpp::HomCONSTANTZERO(*val);
-#endif
-            starpu_variable_data_register(&(wires_handle[i[0]]), STARPU_MAIN_RAM, (uintptr_t)val, sizeof(t_val));
-            } else if(i[1] == 1) {
-                auto val = (t_val*)malloc(sizeof(t_val));
-#ifdef plain_mode
-                *val = true;
-#else
-                TFHEpp::HomCONSTANTZERO(*val);
-#endif
-            starpu_variable_data_register(&(wires_handle[i[0]]), STARPU_MAIN_RAM, (uintptr_t)val, sizeof(t_val));
-            } else {
-                starpu_variable_data_register(&(wires_handle[i[0]]), -1, NULL, sizeof(t_val));
-            }
-        }
+        retvals = std::vector<t_val>{};
     }
-    MPI_Bcast(&numretvals, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    for(auto task : *tasks){
-        reinterpret_cast<void (*)(node, starpu_data_handle_t*)>(task.first.type->task_insert_mpi)(task.first, task.second);
-    }
+    MPI_Bcast(numwires, 4, MPI_INT, 0, MPI_COMM_WORLD);
+    std::vector<int>* tasks;
+    int FF_io[numwires[3] * 2];
+#ifdef use_simple_FF
+    starpu_data_handle_t wire_handles[numwires[0]] = {0};
+#else
+    numwires[0] += numwires[3] * (num_mems - 1);
+    starpu_data_handle_t wire_handles[numwires[0]] = {0};
+#endif
+    int tasksize;
+    enum starpu_data_access_mode modes_load[numwires[1]] = {STARPU_W};
+    struct starpu_codelet load_cl = {
+        .cpu_funcs = {load_data},
+        .nbuffers = numwires[1],
+        .dyn_modes = modes_load,
+    };    
+    arg_handle_id = (int*)calloc(numwires[1], sizeof(int));
+    retval_handle_id = (int*)calloc(numwires[2], sizeof(int));
     if(my_rank == 0){
-        std::vector<t_val> retvals(numretvals);
-        starpu_vector_data_register(&retvals_v_handle, STARPU_MAIN_RAM, (uintptr_t)&(retvals[0]), retvals.size(), sizeof(t_val));
-        for(int i = 0; i < numretvals; i++){
-            //TODO : implement cl to copy retvals to vector and register here
+        retval_ptrs = (t_val**)calloc(numwires[2], sizeof(t_val*));
+        tasks = reg_handles_mpi(*inputs, arg_handle_id, *outputs, retval_handle_id,  retval_ptrs, *FFs, wire_handles, numwires[0], ImmTrue, ImmFalse);
+        tasksize = tasks->size();
+#ifdef use_simple_FF
+        int FF_index = 0;
+        for(auto FF = FFs->begin(); FF != FFs->end(); FF++){
+            FF_io[FF_index] = (int)(intptr_t)FF->second.first->inputs[0].first;
+            FF_index++;
+            FF_io[FF_index] = (int)(intptr_t)FF->second.first->dff_mem;
+            FF_index++;
         }
-        starpu_mpi_wait_for_all(MPI_COMM_WORLD);
-        {
-            std::ofstream ofs{"result.data", std::ios::binary};
-            cereal::PortableBinaryOutputArchive ar(ofs);
-            ar(retvals);
-        };
+#endif
     } else {
-        for(int i = 0; i < numretvals; i++){
-            //TODO : implement cl to copy retvals to vector and register here
+        for(int i = 0; i < numwires[0]; i++){
+            starpu_variable_data_register(&(wire_handles[i]), -1, (uintptr_t)NULL, sizeof(t_val));
+            starpu_mpi_data_register(wire_handles[i], i, 0);
         }
-        starpu_mpi_wait_for_all(MPI_COMM_WORLD);
     }
+    
+    MPI_Bcast(&tasksize, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    if(my_rank != 0){
+        tasks = new std::vector<int>(tasksize);
+    }
+    
+    MPI_Bcast(&((*tasks)[0]), tasksize, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(arg_handle_id, numwires[1], MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(retval_handle_id, numwires[2], MPI_INT, 0, MPI_COMM_WORLD);
+#ifdef use_simple_FF
+    MPI_Bcast(FF_io, numwires[3] * 2, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+
+    auto arg_descrs = (struct starpu_data_descr*)calloc(numwires[1], sizeof(struct starpu_data_descr));
+    for(int i = 0; i < numwires[1]; i++){
+        arg_descrs[i].handle = wire_handles[arg_handle_id[i]];
+        arg_descrs[i].mode = STARPU_W;
+    }
+    auto retval_descrs = (struct starpu_data_descr*)calloc(numwires[2], sizeof(struct starpu_data_descr));
+    for(int i = 0; i < numwires[2]; i++){
+        retval_descrs[i].handle = wire_handles[retval_handle_id[i]];
+        retval_descrs[i].mode = STARPU_R;
+    }
+    enum starpu_data_access_mode modes_save[numwires[2]] = {STARPU_R};
+    struct starpu_codelet save_cl = {
+        .cpu_funcs = {save_result},
+        .nbuffers = numwires[2],
+        .dyn_modes = modes_save,
+    };
+    for(int t = 0; t < n; t++){
+        starpu_mpi_task_insert(MPI_COMM_WORLD, &load_cl,
+            STARPU_EXECUTE_ON_NODE, 0,
+            STARPU_VALUE, &(numwires[1]), sizeof(int),
+            STARPU_VALUE, &t, sizeof(int),
+            STARPU_DATA_MODE_ARRAY, arg_descrs, numwires[1],
+            0);
+        int task_index = 0;
+        int task_id = 0;
+        while(task_index < tasksize){
+            reinterpret_cast<void (*)(starpu_data_handle_t*, int*, int)>(type_id[(*tasks)[task_index]]->task_insert_mpi)(wire_handles, &(*tasks)[task_index + 1], gate_distrib(task_id));
+            if(type_id[(*tasks)[task_index]]->isFF)
+                task_index = task_index + type_id[(*tasks)[task_index]]->inputs.size() + num_mems + 1;
+            else
+                task_index = task_index + type_id[(*tasks)[task_index]]->inputs.size() + type_id[(*tasks)[task_index]]->outputs.size() + 1;
+            task_id++;
+        }
+#ifdef use_simple_FF
+        for(int i = 0; i < numwires[3]; i++){
+            starpu_mpi_task_insert(MPI_COMM_WORLD, &copy_cl,
+                STARPU_R, wire_handles[FF_io[2*i]],
+                STARPU_W, wire_handles[FF_io[2*i+1]],
+                0);
+        }
+#endif
+            starpu_mpi_task_insert(MPI_COMM_WORLD, &save_cl,
+                STARPU_EXECUTE_ON_NODE, 0,
+                STARPU_VALUE, &(numwires[2]), sizeof(int),
+                STARPU_DATA_MODE_ARRAY, retval_descrs, numwires[2],
+                0);
+    }
+    
+        for(int i = 0; i < numwires[0]; i++){
+            starpu_data_unregister(wire_handles[i]);
+        }
+    if(my_rank == 0){
+        std::ofstream ofs{"result.data", std::ios::binary};
+        cereal::PortableBinaryOutputArchive ar(ofs);
+        ar(retvals);
+    };
+    starpu_shutdown();
+    MPI_Finalize();
     return 0;
 }

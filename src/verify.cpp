@@ -13,14 +13,17 @@
 #include "nodetypes.hpp"
 
 int main(int argc, char** argv){
-
-    if(!argv[1]){
-        std::cerr << "input required!" << std::endl;
-        return 1;
+    std::string filepath = "./circuit.json";
+    int n = 1;
+    for(int i = 0; i < argc - 1; i++){
+        if(!strcmp(argv[i], "--circuit"))
+            filepath = std::string(argv[i+1]);
+        if(!strcmp(argv[i], "--repetition"))
+            n = atoi(argv[i+1]);
     }
     auto inputs = new std::map<std::string, int>;
     auto outputs = new std::map<std::string, int>; 
-    getio(std::string(argv[1]), inputs, outputs);
+    getio(filepath, inputs, outputs);
 #ifdef plain_mode
     std::vector<bool> result{};
 #else
@@ -32,7 +35,7 @@ int main(int argc, char** argv){
         ar(result);
     }
 #ifdef plain_mode
-    result_dump(*outputs, result);
+    result_dump(*outputs, result, n);
 #else
     TFHEpp::SecretKey sk;
     {
@@ -40,6 +43,6 @@ int main(int argc, char** argv){
         cereal::PortableBinaryInputArchive ar(ifs);
         sk.serialize(ar);
     };
-    result_dump(*outputs, result, sk);
+    result_dump(*outputs, result, sk, n);
 #endif
 }

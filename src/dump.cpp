@@ -16,10 +16,13 @@
 TFHEpp::EvalKey ek;
 
 int main(int argc, char** argv){
-
-    if(!argv[1]){
-        std::cerr << "input required!" << std::endl;
-        return 1;
+    std::string filepath = "./circuit.json";
+    int n = 1;
+    for(int i = 0; i < argc - 1; i++){
+        if(!strcmp(argv[i], "--circuit"))
+            filepath = std::string(argv[i+1]);
+        if(!strcmp(argv[i], "--repetition"))
+            n = atoi(argv[i+1]);
     }
     auto inputs_ = new std::map<std::string, int>;
     auto outputs_ = new std::map<std::string, int>; 
@@ -35,22 +38,28 @@ int main(int argc, char** argv){
     auto inputs = new std::map<std::string, std::pair<int, wire**>>;
     auto outputs = new std::map<std::string, std::pair<int, wire**>>; 
     auto FFs = new std::map<std::string, std::pair<node*, t_val*>>;
-    wire* ImmTrue = new wire{nullptr, new std::queue<node*>, false, true, false}; 
-    wire* ImmFalse = new wire{nullptr, new std::queue<node*>, false, true, false};
+    wire* ImmTrue = new wire{nullptr, new std::queue<node*>, false, -1}; 
+    wire* ImmFalse = new wire{nullptr, new std::queue<node*>, false, -1};
     types_init();
-    if(yosys_json_parser(std::string(argv[1]), inputs, outputs, FFs, ImmTrue, ImmFalse)){
+    int numwires[4];
+    yosys_json_parser(filepath, numwires, inputs, outputs, FFs, ImmTrue, ImmFalse);
+    if(numwires[0] > 0){
         std::cerr << "frontend failed!" << std::endl;
         return 1;
     }
     starpu_init(NULL);
-    init_FFs(FFs);
+    if(FFs->size() > 0)init_FFs(FFs);
     //checkgraph(nodetypes, *inputs, *outputs, *FFs, ImmTrue, ImmFalse);
+    auto retvals = new std::vector<t_val>{};
+    t_val args_in_arr[numwires[1]];
+    for(int t = 0; t < n; t++){
+        std::copy(arg_in.begin() + t * numwires[1], arg_in.begin() + (t + 1) * numwires[1], args_in_arr);
+        deploygates(*inputs, args_in_arr, *outputs, retvals, *FFs, ImmTrue, ImmFalse);
+    }
 #ifdef plain_mode
-    auto retvals = deploygates(*inputs, arg_in, *outputs, *FFs, ImmTrue, ImmFalse);
-    result_dump(*outputs_, retvals);
+    result_dump(*outputs_, *retvals,n);
 #else
-    auto retvals = deploygates(*inputs, arg_in, *outputs, *FFs, ImmTrue, ImmFalse);
-    result_dump(*outputs_, retvals, *sk);
+    result_dump(*outputs_, *retvals, *sk, n);
 #endif
 
 }
