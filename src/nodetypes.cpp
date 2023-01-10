@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <starpu.h>
+#include <starpu_mpi.h>
 
 #include "nodetypes.hpp"
 #include "frontend.hpp"
@@ -27,28 +28,42 @@ extern void insert_adff_pp0(node gate, starpu_data_handle_t* handle_out);
 extern void insert_dffe_pp(node gate, starpu_data_handle_t* handle_out);
 extern void insert_mux(node gate, starpu_data_handle_t* handle_out);
 extern void insert_nmux(node gate, starpu_data_handle_t* handle_out);
-extern void simple_dff(node gate, starpu_data_handle_t* handle_out);
-extern void simple_dffe(node gate, starpu_data_handle_t* handle_out);
 
+extern void insert_and_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_nand_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_andnot_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_or_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_nor_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_ornot_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_xor_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_xnor_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_not_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_dff_p_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_dff_n_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_adff_pp1_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_adff_pp0_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_dffe_pp_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_mux_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
+extern void insert_nmux_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank);
 
 
 int types_init(){
-	nodetype* And = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_and, false};
-	nodetype* Nand = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_nand, false};
-	nodetype* AndNot = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_andnot, false};
-	nodetype* Or = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_or, false};
-	nodetype* Nor = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_nor, false};
-	nodetype* OrNot = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_ornot, false};
-	nodetype* Xor = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_xor, false};
-	nodetype* Xnor = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), (void*)&insert_xnor, false};
-	nodetype* Not = new nodetype{std::vector<std::string>(unode_input), std::vector<std::string>(bnode_output), (void*)&insert_not, false};
-	nodetype* DFF_P = new nodetype{std::vector<std::string>(dff_inputs), std::vector<std::string>(dff_output), (void*)&insert_dff_p, true};
-	nodetype* DFF_N = new nodetype{std::vector<std::string>(dff_inputs), std::vector<std::string>(dff_output), (void*)&insert_dff_n, true};
-	nodetype* ADFF_PP1 = new nodetype{std::vector<std::string>(adff_inputs), std::vector<std::string>(dff_output), (void*)&insert_adff_pp1, true};
-	nodetype* ADFF_PP0 = new nodetype{std::vector<std::string>(adff_inputs), std::vector<std::string>(dff_output), (void*)&insert_adff_pp0, true};
-	nodetype* DFFE_PP = new nodetype{std::vector<std::string>(dffe_inputs), std::vector<std::string>(dff_output), (void*)&insert_dffe_pp, true};
-	nodetype* MUX = new nodetype{std::vector<std::string>(mux_inputs), std::vector<std::string>(bnode_output), (void*)&insert_mux, false};
-	nodetype* NMUX = new nodetype{std::vector<std::string>(mux_inputs), std::vector<std::string>(bnode_output), (void*)&insert_nmux, false};
+	nodetype* And = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_AND_", (void*)&insert_and, (void*)&insert_and_mpi, false, 0};
+	nodetype* Nand = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_NAND_", (void*)&insert_nand, (void*)&insert_nand_mpi, false, 1};
+	nodetype* AndNot = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output),"$_ANDNOT_" , (void*)&insert_andnot, (void*)&insert_andnot_mpi, false, 2};
+	nodetype* Or = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_OR_",  (void*)&insert_or, (void*)&insert_or_mpi, false, 3};
+	nodetype* Nor = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_NOR_", (void*)&insert_nor, (void*)&insert_nor_mpi, false, 4};
+	nodetype* OrNot = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_ORNOT_", (void*)&insert_ornot, (void*)&insert_ornot_mpi, false, 5};
+	nodetype* Xor = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_XOR_", (void*)&insert_xor, (void*)&insert_xor_mpi, false, 6};
+	nodetype* Xnor = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_XNOR_", (void*)&insert_xnor, (void*)&insert_xnor_mpi, false, 7};
+	nodetype* Not = new nodetype{std::vector<std::string>(unode_input), std::vector<std::string>(bnode_output), "$_NOT_", (void*)&insert_not, (void*)&insert_not_mpi, false, 8};
+	nodetype* DFF_P = new nodetype{std::vector<std::string>(dff_inputs), std::vector<std::string>(dff_output), "$_DFF_P_", (void*)&insert_dff_p, (void*)&insert_dff_p_mpi, true, 9};
+	nodetype* DFF_N = new nodetype{std::vector<std::string>(dff_inputs), std::vector<std::string>(dff_output), "$_DFF_N_", (void*)&insert_dff_n, (void*)&insert_dff_n_mpi, true, 10};
+	nodetype* ADFF_PP1 = new nodetype{std::vector<std::string>(adff_inputs), std::vector<std::string>(dff_output), "$_DFF_PP1_", (void*)&insert_adff_pp1, (void*)&insert_adff_pp1_mpi, true, 11};
+	nodetype* ADFF_PP0 = new nodetype{std::vector<std::string>(adff_inputs), std::vector<std::string>(dff_output), "$_DFF_PP0_", (void*)&insert_adff_pp0, (void*)&insert_adff_pp0_mpi, true, 12};
+	nodetype* DFFE_PP = new nodetype{std::vector<std::string>(dffe_inputs), std::vector<std::string>(dff_output), "$_DFFE_PP_", (void*)&insert_dffe_pp, (void*)&insert_dffe_pp_mpi, true, 13};
+	nodetype* MUX = new nodetype{std::vector<std::string>(mux_inputs), std::vector<std::string>(bnode_output), "$_MUX_", (void*)&insert_mux, (void*)&insert_mux_mpi, false, 14};
+	nodetype* NMUX = new nodetype{std::vector<std::string>(mux_inputs), std::vector<std::string>(bnode_output), "$_NMUX_", (void*)&insert_nmux, (void*)&insert_nmux_mpi, false, 15};
 
 
 
@@ -71,6 +86,25 @@ int types_init(){
 		{"$_MUX_", MUX},
 		{"$_NMUX_", NMUX}
 	};
+
+    type_id = std::map<int, nodetype*>{
+        {0, And},
+		{1, Nand},
+		{2, AndNot},
+		{3, Or},
+		{4, Nor},
+		{5, OrNot},
+		{6, Xor},
+		{7, Xnor},
+		{8, Not},
+		{9, DFF_P},
+		{10, DFF_N},
+		{11, ADFF_PP0},
+		{12, ADFF_PP1},
+		{13, DFFE_PP},
+		{14, MUX},
+		{15, NMUX}
+    };
 	return 0;
 }
 
@@ -79,10 +113,7 @@ void and_plain(void *buffers[], void *cl_arg){
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A & *B;
 #ifdef dump_mode
-    std::cout << "AND GATE" << std::endl;
-    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
-    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
-    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+    std::cout << "AND GATE: "  << (*A?"true ":"false ")  << (*B?"true ":"false ") << "->" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
 #endif
 }
 
@@ -111,15 +142,21 @@ void insert_and(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_and_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &and_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_R, wire_handles[wire_id[0]],
+        STARPU_R, wire_handles[wire_id[1]],
+        STARPU_RW, wire_handles[wire_id[2]],
+        0);
+}
+
 void nand_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = !( *A & *B);
 #ifdef dump_mode
-    std::cout << "NAND GATE" << std::endl;
-    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
-    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
-    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+    std::cout << "NAND GATE: "  << (*A?"true ":"false ")  << (*B?"true ":"false ") << "->" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
 #endif
 }
 
@@ -150,15 +187,23 @@ void insert_nand(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_nand_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &nand_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_R, wire_handles[wire_id[0]],
+        STARPU_R, wire_handles[wire_id[1]],
+        STARPU_RW, wire_handles[wire_id[2]],
+        0);
+int i = starpu_mpi_world_rank();
+}
+
+
 void andnot_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A & !*B;
 #ifdef dump_mode
-    std::cout << "ANDNOT GATE" << std::endl;
-    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
-    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
-    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+    std::cout << "ANDNOT GATE: "  << (*A?"true ":"false ")  << (*B?"true ":"false ") << "->" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
 #endif
 }
 
@@ -189,16 +234,22 @@ void insert_andnot(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_andnot_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &andnot_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_R, wire_handles[wire_id[0]],
+        STARPU_R, wire_handles[wire_id[1]],
+        STARPU_RW, wire_handles[wire_id[2]],
+        0);
+}
+
 void or_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A | *B;
 
 #ifdef dump_mode
-    std::cout << "OR GATE" << std::endl;
-    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
-    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
-    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+    std::cout << "OR GATE: "  << (*A?"true ":"false ")  << (*B?"true ":"false ") << "->" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
 #endif
 }
 
@@ -228,16 +279,21 @@ void insert_or(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_or_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &or_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_R, wire_handles[wire_id[0]],
+        STARPU_R, wire_handles[wire_id[1]],
+        STARPU_RW, wire_handles[wire_id[2]],
+        0);
+}
 
 void nor_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = !(*A | *B);
 #ifdef dump_mode
-    std::cout << "NOR GATE" << std::endl;
-    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
-    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
-    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+    std::cout << "NOR GATE: "  << (*A?"true ":"false ")  << (*B?"true ":"false ") << "->" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
 #endif
 }
 
@@ -267,6 +323,16 @@ void insert_nor(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_nor_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &nor_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_R, wire_handles[wire_id[0]],
+        STARPU_R, wire_handles[wire_id[1]],
+        STARPU_RW, wire_handles[wire_id[2]],
+        0);
+}
+
+
 void ornot_cipher(void *buffers[], void *cl_arg){
     TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     TFHEpp::TLWE<TFHEpp::lvl1param> *B = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
@@ -279,10 +345,7 @@ void ornot_plain(void *buffers[], void *cl_arg){
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A | ! *B;
 #ifdef dump_mode
-    std::cout << "ORNOT GATE" << std::endl;
-    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
-    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
-    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+    std::cout << "ORNOT GATE: "  << (*A?"true ":"false ")  << (*B?"true ":"false ") << "->" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
 #endif
 }
 
@@ -293,7 +356,7 @@ struct starpu_codelet ornot_cl = {
     .cpu_funcs = {ornot_cipher},
 #endif
     .nbuffers = 3,
-    .modes = {STARPU_R, STARPU_R, STARPU_W}
+    .modes = {STARPU_R, STARPU_R, STARPU_RW}
 };
 
 
@@ -305,16 +368,22 @@ void insert_ornot(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_ornot_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &ornot_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_R, wire_handles[wire_id[0]],
+        STARPU_R, wire_handles[wire_id[1]],
+        STARPU_RW, wire_handles[wire_id[2]],
+        0);
+}
+
 void xor_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = *A ^ *B;
 
 #ifdef dump_mode
-    std::cout << "XOR GATE" << std::endl;
-    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
-    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
-    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+    std::cout << "XOR GATE: "  << (*A?"true ":"false ")  << (*B?"true ":"false ") << "->" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
 #endif
 }
 
@@ -344,15 +413,21 @@ void insert_xor(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_xor_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &xor_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_R, wire_handles[wire_id[0]],
+        STARPU_R, wire_handles[wire_id[1]],
+        STARPU_RW, wire_handles[wire_id[2]],
+        0);
+}
+
 void xnor_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *B = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) = !(*A ^ *B);
 #ifdef dump_mode
-    std::cout << "XNOR GATE" << std::endl;
-    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
-    std::cout << "IN B:" << (*B?"true":"false") << std::endl;
-    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
+    std::cout << "XNOR GATE: "  << (*A?"true ":"false ")  << (*B?"true ":"false ") << "->" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[2]) ? "true" : "false") << std::endl;
 #endif
 }
 
@@ -382,13 +457,20 @@ void insert_xnor(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_xnor_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &xnor_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_R, wire_handles[wire_id[0]],
+        STARPU_R, wire_handles[wire_id[1]],
+        STARPU_RW, wire_handles[wire_id[2]],
+        0);
+}
+
 void not_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     *(bool*)STARPU_VARIABLE_GET_PTR(buffers[1]) = !*A;
 #ifdef dump_mode
-    std::cout << "NOT GATE" << std::endl;
-    std::cout << "IN A:" << (*A?"true":"false") << std::endl;
-    std::cout << "OUT :" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[1]) ? "true" : "false") << std::endl;
+    std::cout << "NOT GATE: " << (*A?"true ":"false ")  << "->" << (*(bool*)STARPU_VARIABLE_GET_PTR(buffers[1]) ? "true" : "false") << std::endl;
 #endif
 }
 
@@ -413,6 +495,14 @@ void insert_not(node gate, starpu_data_handle_t* handle_output){
 	starpu_task_insert(&not_cl,
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),  
         STARPU_RW, *handle_output,  
+        0);
+}
+
+void insert_not_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &not_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_R, wire_handles[wire_id[0]],
+        STARPU_RW, wire_handles[wire_id[1]],
         0);
 }
 
@@ -467,6 +557,16 @@ void insert_dff_p(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_dff_p_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &dff_p_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_RW, wire_handles[wire_id[0]],
+        STARPU_RW, wire_handles[wire_id[1]],
+        STARPU_R, wire_handles[wire_id[3]],
+        STARPU_R, wire_handles[wire_id[4]],
+        0);
+}
+
 void dff_n_plain(void *buffers[], void *cl_arg){
 	bool *state = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
 	bool *fCLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]); //buf to detect edge
@@ -516,6 +616,17 @@ void insert_dff_n(node gate, starpu_data_handle_t* handle_output){
         STARPU_RW, (((starpu_data_handle_t*)gate.dff_mem)[1]),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
+        0);
+}
+
+
+void insert_dff_n_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &dff_n_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_RW, wire_handles[wire_id[0]],
+        STARPU_RW, wire_handles[wire_id[1]],
+        STARPU_R, wire_handles[wire_id[3]],
+        STARPU_R, wire_handles[wire_id[4]],
         0);
 }
 
@@ -585,6 +696,18 @@ void insert_adff_pp1(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_adff_pp1_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &adff_pp1_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_RW, wire_handles[wire_id[0]],
+        STARPU_RW, wire_handles[wire_id[1]],
+        STARPU_RW, wire_handles[wire_id[2]],
+        STARPU_R, wire_handles[wire_id[3]],
+        STARPU_R, wire_handles[wire_id[4]],
+        STARPU_R, wire_handles[wire_id[5]],
+        0);
+}
+
 void adff_pp0_plain(void *buffers[], void *cl_arg){
 	bool *state = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
 	bool *fCLK = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]); //buf to detect edge
@@ -646,6 +769,19 @@ void insert_adff_pp0(node gate, starpu_data_handle_t* handle_output){
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[0].first),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[1].first),
         STARPU_R, *((starpu_data_handle_t*)gate.inputs[2].first),
+        0);
+}
+
+
+void insert_adff_pp0_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &adff_pp0_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_RW, wire_handles[wire_id[0]],
+        STARPU_RW, wire_handles[wire_id[1]],
+        STARPU_RW, wire_handles[wire_id[2]],
+        STARPU_R, wire_handles[wire_id[3]],
+        STARPU_R, wire_handles[wire_id[4]],
+        STARPU_R, wire_handles[wire_id[5]],
         0);
 }
 
@@ -711,6 +847,19 @@ void insert_dffe_pp(node gate, starpu_data_handle_t* handle_output){
 }
 
 
+void insert_dffe_pp_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &dffe_pp_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_RW, wire_handles[wire_id[0]],
+        STARPU_RW, wire_handles[wire_id[1]],
+        STARPU_RW, wire_handles[wire_id[2]],
+        STARPU_R, wire_handles[wire_id[3]],
+        STARPU_R, wire_handles[wire_id[4]],
+        STARPU_R, wire_handles[wire_id[5]],
+        0);
+}
+
+
 void mux_plain(void *buffers[], void *cl_arg){
     bool *S = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
@@ -753,6 +902,17 @@ void insert_mux(node gate, starpu_data_handle_t* handle_output){
         0);
 }
 
+void insert_mux_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &mux_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_R, wire_handles[wire_id[0]],
+        STARPU_R, wire_handles[wire_id[1]],
+        STARPU_R, wire_handles[wire_id[2]],
+        STARPU_RW, wire_handles[wire_id[3]],
+        0);
+}
+
+
 inline void nmux_plain(void *buffers[], void *cl_arg){
     bool *S = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[1]);
@@ -793,3 +953,19 @@ void insert_nmux(node gate, starpu_data_handle_t* handle_output){
         STARPU_RW, *handle_output,  
         0);
 }
+
+void insert_nmux_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
+	starpu_mpi_task_insert(MPI_COMM_WORLD, &nmux_cl,
+        STARPU_EXECUTE_ON_NODE, rank,
+        STARPU_R, wire_handles[wire_id[0]],
+        STARPU_R, wire_handles[wire_id[1]],
+        STARPU_R, wire_handles[wire_id[2]],
+        STARPU_RW, wire_handles[wire_id[3]],
+        0);
+}
+
+
+
+
+
+

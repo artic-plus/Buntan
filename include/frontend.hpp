@@ -18,6 +18,7 @@ struct wire{
 	node* src; 
 	std::queue<node*>* dep; 
 	bool merged;
+	int output_id;
 };
 
 struct node{
@@ -30,7 +31,7 @@ struct node{
 	wire** outputs;
 };
 
-int yosys_json_parser(std::string json_path, std::map<std::string, std::pair<int, wire**>>* inputs, std::map<std::string, std::pair<int, wire**>>* outputs, std::map<std::string, std::pair<node*, t_val*>>* FFs, wire* ImmTrue, wire* ImmFalse);
+int yosys_json_parser(std::string json_path, int* numwires, std::map<std::string, std::pair<int, wire**>>* inputs, std::map<std::string, std::pair<int, wire**>>* outputs, std::map<std::string, std::pair<node*, t_val*>>* FFs, wire* ImmTrue, wire* ImmFalse);
 int parsemodule(picojson::object modules, std::string mname, std::map<std::string, std::pair<int, wire**>>* inputs, std::map<std::string, std::pair<int, wire**>>* outputs, std::map<std::string, std::pair<node*, t_val*>>* FFs, wire* ImmTrue, wire* ImmFalse);
 int checkgraph(std::map<std::string, std::pair<int, wire**>> inputs, std::map<std::string, std::pair<int, wire**>> outputs, std::map<std::string, std::pair<node*, t_val*>> FFs, wire* ImmTrue, wire* ImmFalse);
 

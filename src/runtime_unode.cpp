@@ -16,44 +16,52 @@
 TFHEpp::EvalKey ek;
 
 int main(int argc, char** argv){
-
-    if(!argv[1]){
-        std::cerr << "input required!" << std::endl;
-        return 1;
+    std::string filepath = "./circuit.json";
+    int n = 1;
+    for(int i = 0; i < argc - 1; i++){
+        if(!strcmp(argv[i], "--circuit"))
+            filepath = std::string(argv[i+1]);
+        if(!strcmp(argv[i], "--repetition"))
+            n = atoi(argv[i+1]);
     }
     auto inputs = new std::map<std::string, std::pair<int, wire**>>;
     auto outputs = new std::map<std::string, std::pair<int, wire**>>; 
     auto FFs = new std::map<std::string, std::pair<node*, t_val*>>;
-    wire* ImmTrue = new wire{nullptr, new std::queue<node*>, false}; 
-    wire* ImmFalse = new wire{nullptr, new std::queue<node*>, false};
+    wire* ImmTrue = new wire{nullptr, new std::queue<node*>, false, -1}; 
+    wire* ImmFalse = new wire{nullptr, new std::queue<node*>, false, -1};
     types_init();
-    if(yosys_json_parser(std::string(argv[1]), inputs, outputs, FFs, ImmTrue, ImmFalse)){
+    int numwires[4];
+    yosys_json_parser(filepath, numwires, inputs, outputs, FFs, ImmTrue, ImmFalse);
+    if(numwires[0] < 0){
         std::cerr << "frontend failed!" << std::endl;
         return 1;
     }
     starpu_init(NULL);
-    init_FFs(FFs);
+    if(FFs->size() > 0)init_FFs(FFs);
     checkgraph(*inputs, *outputs, *FFs, ImmTrue, ImmFalse);
-#ifdef plain_mode
-    std::vector<bool> args_in{};
-#else
+#ifndef plain_mode
     {
         const std::string path = "./cloud.key";
         std::ifstream ifs("./cloud.key", std::ios::binary);
         cereal::PortableBinaryInputArchive ar(ifs);
         (&ek)->serialize(ar);
     }
-    std::vector<TFHEpp::TLWE<TFHEpp::lvl1param>> args_in{};
 #endif
+    std::vector<t_val> args_in{};
     {
         std::ifstream ifs("./cloud.data", std::ios::binary);
         cereal::PortableBinaryInputArchive ar(ifs);
         ar(args_in);
     }
-    auto retvals = deploygates(*inputs, args_in, *outputs, *FFs, ImmTrue, ImmFalse);
+    auto retvals = new std::vector<t_val>{};
+    t_val args_in_arr[numwires[1]];
+    for(int t = 0; t < n; t++){
+        std::copy(args_in.begin() + t * numwires[1], args_in.begin() + (t + 1) * numwires[1], args_in_arr);
+        deploygates(*inputs, args_in_arr, *outputs, retvals, *FFs, ImmTrue, ImmFalse);
+    }
     {
         std::ofstream ofs{"result.data", std::ios::binary};
         cereal::PortableBinaryOutputArchive ar(ofs);
-        ar(retvals);
+        ar(*retvals);
     };
 }

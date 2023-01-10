@@ -13,29 +13,34 @@
 #include "backend.hpp"
 
 
-int init_FFs(std::map<std::string, std::pair<node*, t_val*>>* FFs){
+
 #ifdef use_simple_FF
     int num_mems = 1;
 #else
     int num_mems = 3; // for state, fCLK, and fRST
 #endif
-    for(auto it = FFs->begin(); it != FFs->end(); it++){
-        starpu_data_handle_t *handle = new starpu_data_handle_t[num_mems];
-        t_val* mem = (t_val*)calloc(num_mems, sizeof(t_val));
-        for(int j = 0; j < num_mems; j++){
-            starpu_variable_data_register(&(handle[j]), STARPU_MAIN_RAM, (uintptr_t)&(mem[j]), sizeof(mem[j]));
-        }
-        it->second.first->dff_mem = (uintptr_t)handle;
-        it->second.second = mem;
+
+
+int init_FFs(std::map<std::string, std::pair<node*, t_val*>>* FFs){
+    for(auto FF = FFs->begin(); FF != FFs->end(); FF++){
+        FF->second.second = (t_val*)calloc(num_mems, sizeof(t_val));
+#ifndef plain_mode
+        for(int i = 0; i < num_mems; i++)
+            TFHEpp::HomCONSTANTZERO(FF->second.second[i]);
+#endif
     }
     return 0;
 }
+
+
+
 
 std::vector<t_val> make_inputs_rand(
     std::map<std::string,int> inputs
 #ifndef plain_mode
     , TFHEpp::SecretKey sk
 #endif
+    ,int n
 ){
 #ifdef plain_mode
     std::vector<bool> plain{};
@@ -44,15 +49,17 @@ std::vector<t_val> make_inputs_rand(
 #endif
     std::random_device rnd;
     int r = 0;
-    for(auto it = inputs.begin(); it != inputs.end(); it++){
-        int w = it->second;
-        for(int i = 0; i < w;i++){
-            if(r == 0) {
-                r = rnd();
+    for(int t = 0; t < n; t++){
+        for(auto it = inputs.begin(); it != inputs.end(); it++){
+            int w = it->second;
+            for(int i = 0; i < w;i++){
+                if(r == 0) {
+                    r = rnd();
+                }
+                plain.push_back((r & 1));
+                std::cout << "input '" << it->first << "[" << i << "] : " << (r & 1) << std::endl;
+                r = r >> 1;
             }
-            plain.push_back((r & 1));
-            std::cout << "input '" << it->first << "[" << i << "] : " << (r & 1) << std::endl;
-            r = r >> 1;
         }
     }
 #ifdef plain_mode
@@ -67,24 +74,27 @@ std::vector<t_val> make_inputs_manual(
 #ifndef plain_mode
     , TFHEpp::SecretKey sk
 #endif
+    ,int n
 ){
 #ifdef plain_mode
     std::vector<bool> plain{};
 #else
     std::vector<uint8_t> plain{};
 #endif
-    for(auto it = inputs.begin(); it != inputs.end(); it++){
-        int w = it->second;
-        std::cout << "input '" << it->first << "[" << w << "]" << std::endl;
-        int bits;
-        std::cin >> bits;
-        if(std::cin.fail()){
-            std::cerr << "input error" << std::endl;
-            return std::vector<t_val>{};
-        }
-        for(int i = 0; i < w;i++){
-            plain.push_back((bits & 1));
-            bits = bits >> 1;
+    for(int t = 0; t < n; t++){
+        for(auto it = inputs.begin(); it != inputs.end(); it++){
+            int w = it->second;
+            std::cout << "input '" << it->first << "[" << w << "]" << std::endl;
+            int bits;
+            std::cin >> bits;
+            if(std::cin.fail()){
+                std::cerr << "input error" << std::endl;
+                return std::vector<t_val>{};
+            }
+            for(int i = 0; i < w;i++){
+                plain.push_back((bits & 1));
+                bits = bits >> 1;
+            }
         }
     }
 #ifdef plain_mode
@@ -94,10 +104,11 @@ std::vector<t_val> make_inputs_manual(
 #endif
 }
 
-std::vector<t_val> deploygates(
+int deploygates(
     std::map<std::string, std::pair<int, wire**>> inputs,
-    std::vector<t_val> arg_in,
+    t_val* arg_in,
     std::map<std::string, std::pair<int, wire**>> outputs, 
+    std::vector<t_val>* retvals, 
     std::map<std::string, std::pair<node*, t_val*>> FFs, 
     wire* ImmTrue, 
     wire* ImmFalse
@@ -141,14 +152,15 @@ std::vector<t_val> deploygates(
             wires_ptr.insert(std::make_pair(it->second.second[i], arg));
             //std::cout << "input '" << it->first << "[" << i << "] : " << (*arg) << std::endl;
             arg_counter++;
-            if(arg_counter > arg_in.size()){
-                std::cerr << "err: too few arguments" << std::endl;
-                return std::vector<t_val>{};
-            }
         }
     }
     for(auto FF = FFs.begin(); FF != FFs.end(); FF++){
         //std::cout << "FF   :" << FF->first << " " << FF->second->num_outputs << "bit" << std::endl;
+        starpu_data_handle_t *handle = new starpu_data_handle_t[num_mems];
+        FF->second.first->dff_mem = (uintptr_t)handle;
+        for(int j = 0; j < num_mems; j++){
+            starpu_variable_data_register(&(handle[j]), STARPU_MAIN_RAM, (uintptr_t)&(FF->second.second[j]), sizeof(t_val));
+        }
         wires.push_back(std::make_pair(FF->second.first->outputs[0], (starpu_data_handle_t*)FF->second.first->dff_mem));
         wires_ptr.insert(std::make_pair(FF->second.first->outputs[0], (t_val*)FF->second.second));
     }
@@ -194,20 +206,23 @@ std::vector<t_val> deploygates(
             output_handles[it->first].second[j] = wires_ptr[it->second.second[j]];
         }
     }
+#ifndef use_simple_FF
+    for(auto FF = FFs.begin(); FF != FFs.end(); FF++){
+        reinterpret_cast<void (*)(node, starpu_data_handle_t*)>(FF->second.first->type->task_insert)(*(FF->second.first), (starpu_data_handle_t*)nullptr);
+    }
+#endif
+
     starpu_task_wait_for_all();
-    std::vector<t_val> retvals{};
+#ifdef use_simple_FF
+    for(auto FF = FFs.begin(); FF != FFs.end(); FF++){
+        *(t_val*)FF->second.second = *(t_val*)wires_ptr[FF->second.first->inputs[0].second];
+    }
+#endif
     for(auto it = output_handles.begin(); it != output_handles.end(); it++){
         t_val** ret = (t_val**)it->second.second;
         for(int i = 0; i < it->second.first; i++){
-        retvals.push_back(*ret[i]);
+        retvals->push_back(*ret[i]);
         }
-    }
-    for(auto FF = FFs.begin(); FF != FFs.end(); FF++){
-#ifdef use_simple_FF
-        *(t_val*)FF->second.second = *(t_val*)wires_ptr[FF->second.first->inputs[1].second];
-#else
-        reinterpret_cast<void (*)(node, starpu_data_handle_t*)>(FF->second.first->type->task_insert)(*(FF->second.first), (starpu_data_handle_t*)nullptr);
-#endif
     }
     for(auto FF = FFs.begin(); FF != FFs.end(); FF++){ //avoid deletion of internal datam of FF
         auto it = wires_ptr.find(FF->second.first->outputs[0]);
@@ -220,9 +235,8 @@ std::vector<t_val> deploygates(
     for(auto next : wires){
         free(next.second);
     }
-    return retvals;
+    return 0;
 }
-
 
 
 int result_dump(
@@ -231,6 +245,7 @@ int result_dump(
 #ifndef plain_mode
     , TFHEpp::SecretKey sk
 #endif
+    ,int n
 ){
 #ifdef plain_mode
     std::vector<bool> result = retvals;
@@ -238,13 +253,16 @@ int result_dump(
     std::vector<uint8_t> result = bootsSymDecrypt(retvals, sk);
 #endif
     int ret_counter = 0;
-    for(auto it = outputs.begin(); it != outputs.end(); it++){
-        for(int i = 0; i < it->second; i++){
-            std::cout << "output '" << it->first <<"[" << i << "] : " << (result[ret_counter] ? "true": "false") << std::endl;
-            ret_counter++;
-            if(ret_counter > retvals.size()){
-                std::cerr << "err: too few retvals!" << std::endl;
-                return 1;
+    for(int t = 0; t < n; t++){
+        if(n > 1) std::cout << "CLK : " << t+1 << std::endl;
+        for(auto it = outputs.begin(); it != outputs.end(); it++){
+            for(int i = 0; i < it->second; i++){
+                std::cout << "output '" << it->first <<"[" << i << "] : " << (result[ret_counter] ? "true": "false") << std::endl;
+                ret_counter++;
+                if(ret_counter > retvals.size()){
+                    std::cerr << "err: too few retvals!" << std::endl;
+                    return 1;
+                }
             }
         }
     }

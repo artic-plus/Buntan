@@ -25,7 +25,7 @@ int main(int argc, char** argv){
     auto outputs = new std::map<std::string, int>; 
     getio(filepath, inputs, outputs);
 #ifdef plain_mode
-    auto arg_in = make_inputs_rand(*inputs, n);
+    auto arg_in = make_inputs_manual(*inputs, n);
 #else
     std::unique_ptr<TFHEpp::SecretKey> sk(new TFHEpp::SecretKey);
     TFHEpp::EvalKey ek;
@@ -44,7 +44,7 @@ int main(int argc, char** argv){
         cereal::PortableBinaryOutputArchive ar(ofs);
         ek.serialize(ar);
     };
-    auto arg_in = make_inputs_rand(*inputs, *sk, n);
+    auto arg_in = make_inputs_manual(*inputs, *sk, n);
 #endif
     {
         std::ofstream ofs{"cloud.data", std::ios::binary};
