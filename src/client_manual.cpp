@@ -23,7 +23,7 @@ int main(int argc, char** argv){
     }
     auto inputs = new std::map<std::string, int>;
     auto outputs = new std::map<std::string, int>; 
-    getio(filepath, inputs, outputs);
+    if(getio(filepath, inputs, outputs)) return 1;
 #ifdef plain_mode
     auto arg_in = make_inputs_manual(*inputs, n);
 #else

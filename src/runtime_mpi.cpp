@@ -67,9 +67,14 @@ int main(int argc, char** argv){
     world_size = starpu_mpi_world_size();
     int my_rank = starpu_mpi_world_rank();
     
-#ifndef plainmode
-    MPI_Request ReqKey;
-#endif
+
+#ifdef perf_measure
+        double  start, init, shutdown;
+        double end[n];
+    if(my_rank == 0){
+        start = MPI_Wtime();
+    }
+#endif    
 
     types_init();
 
@@ -186,6 +191,10 @@ int main(int argc, char** argv){
         .nbuffers = numwires[2],
         .dyn_modes = modes_save,
     };
+#ifdef perf_measure
+    if(my_rank == 0)
+        init = MPI_Wtime();
+#endif
     for(int t = 0; t < n; t++){
         starpu_mpi_task_insert(MPI_COMM_WORLD, &load_cl,
             STARPU_EXECUTE_ON_NODE, 0,
@@ -216,6 +225,11 @@ int main(int argc, char** argv){
                 STARPU_VALUE, &(numwires[2]), sizeof(int),
                 STARPU_DATA_MODE_ARRAY, retval_descrs, numwires[2],
                 0);
+#ifdef perf_measure
+            if(my_rank == 0)
+                end[t] = MPI_Wtime();
+#endif
+
     }
     
         for(int i = 0; i < numwires[0]; i++){
@@ -227,6 +241,19 @@ int main(int argc, char** argv){
         ar(retvals);
     };
     starpu_shutdown();
+    #ifdef perf_measure
+if(my_rank == 0){
+        shutdown = MPI_Wtime();
+        std::cout << "init time : " << init - start << "[s]" << std::endl;
+        std::cout << "1st run time : " << end[0] - init << "[s]" << std::endl;
+        for(int t = 0; t < n - 1; t++){
+            std::cout << t + 2 << "th run time : " << end[t + 1] - end[t] << "[s]" << std::endl;
+        }
+
+        std::cout << "total time : " << shutdown - start << "[s]" << std::endl;
+    }
+#endif
+
     MPI_Finalize();
     return 0;
 }
