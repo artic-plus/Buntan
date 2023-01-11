@@ -26,7 +26,7 @@ int init_FFs(std::map<std::string, std::pair<node*, t_val*>>* FFs){
         FF->second.second = (t_val*)calloc(num_mems, sizeof(t_val));
 #ifndef plain_mode
         for(int i = 0; i < num_mems; i++)
-            TFHEpp::HomCONSTANTZERO(FF->second.second[i]);
+            TFHEpp::HomCONSTANTZERO<lvl_param>(FF->second.second[i]);
 #endif
     }
     return 0;
@@ -65,7 +65,7 @@ std::vector<t_val> make_inputs_rand(
 #ifdef plain_mode
     return plain;
 #else
-    return TFHEpp::bootsSymEncrypt(plain, sk);
+    return TFHEpp::bootsSymEncrypt<lvl_param>(plain, sk);
 #endif
 }
 
@@ -100,7 +100,7 @@ std::vector<t_val> make_inputs_manual(
 #ifdef plain_mode
     return plain;
 #else
-    return TFHEpp::bootsSymEncrypt(plain, sk);
+    return TFHEpp::bootsSymEncrypt<lvl_param>(plain, sk);
 #endif
 }
 
@@ -128,8 +128,8 @@ int deploygates(
     *Immt = true;
     *Immf = false;
 #else
-    TFHEpp::HomCONSTANTONE(*Immt);
-    TFHEpp::HomCONSTANTZERO(*Immf);
+    TFHEpp::HomCONSTANTONE<lvl_param>(*Immt);
+    TFHEpp::HomCONSTANTZERO<lvl_param>(*Immf);
 #endif
 
     auto handle_T = new starpu_data_handle_t;
@@ -250,7 +250,7 @@ int result_dump(
 #ifdef plain_mode
     std::vector<bool> result = retvals;
 #else
-    std::vector<uint8_t> result = bootsSymDecrypt(retvals, sk);
+    std::vector<uint8_t> result = bootsSymDecrypt<lvl_param>(retvals, sk);
 #endif
     int ret_counter = 0;
     for(int t = 0; t < n; t++){

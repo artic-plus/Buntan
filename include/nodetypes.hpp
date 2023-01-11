@@ -31,10 +31,16 @@ struct nodetype{
 	int id;
 };
 
+#ifdef use_lvl0
+typedef TFHEpp::lvl0param lvl_param;
+#else
+typedef TFHEpp::lvl1param lvl_param;
+#endif
+
 #ifdef plain_mode
 typedef bool t_val;
 #else
-typedef TFHEpp::TLWE<TFHEpp::lvl1param> t_val;
+typedef TFHEpp::TLWE<lvl_param> t_val;
 #endif
 
 

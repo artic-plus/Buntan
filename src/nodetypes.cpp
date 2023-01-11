@@ -118,10 +118,10 @@ void and_plain(void *buffers[], void *cl_arg){
 }
 
 void and_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *B = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *Y = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::HomAND<TFHEpp::lvl1param>(*Y, *A, *B, ek);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::HomAND<lvl_param>(*Y, *A, *B, ek);
 }
 
 struct starpu_codelet and_cl = {
@@ -162,10 +162,10 @@ void nand_plain(void *buffers[], void *cl_arg){
 
 
 void nand_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *B = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *Y = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::HomNAND<TFHEpp::lvl1param>(*Y, *A, *B, ek);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::HomNAND<lvl_param>(*Y, *A, *B, ek);
 }
 
 struct starpu_codelet nand_cl = {
@@ -209,10 +209,10 @@ void andnot_plain(void *buffers[], void *cl_arg){
 
 
 void andnot_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *B = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *Y = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::HomANDYN<TFHEpp::lvl1param>(*Y, *A, *B, ek);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::HomANDYN<lvl_param>(*Y, *A, *B, ek);
 }
 
 struct starpu_codelet andnot_cl = {
@@ -254,10 +254,10 @@ void or_plain(void *buffers[], void *cl_arg){
 }
 
 void or_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *B = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *Y = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::HomOR<TFHEpp::lvl1param>(*Y, *A, *B, ek);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::HomOR<lvl_param>(*Y, *A, *B, ek);
 }
 
 struct starpu_codelet or_cl = {
@@ -298,10 +298,10 @@ void nor_plain(void *buffers[], void *cl_arg){
 }
 
 void nor_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *B = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *Y = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::HomNOR<TFHEpp::lvl1param>(*Y, *A, *B, ek);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::HomNOR<lvl_param>(*Y, *A, *B, ek);
 }
 
 struct starpu_codelet nor_cl = {
@@ -334,10 +334,10 @@ void insert_nor_mpi(starpu_data_handle_t* wire_handles, int* wire_id, int rank){
 
 
 void ornot_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *B = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *Y = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::HomORYN<TFHEpp::lvl1param>(*Y, *A, *B, ek);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::HomORYN<lvl_param>(*Y, *A, *B, ek);
 }
 
 void ornot_plain(void *buffers[], void *cl_arg){
@@ -388,10 +388,10 @@ void xor_plain(void *buffers[], void *cl_arg){
 }
 
 void xor_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *B = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *Y = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::HomXOR<TFHEpp::lvl1param>(*Y, *A, *B, ek);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::HomXOR<lvl_param>(*Y, *A, *B, ek);
 }
 
 struct starpu_codelet xor_cl = {
@@ -432,10 +432,10 @@ void xnor_plain(void *buffers[], void *cl_arg){
 }
 
 void xnor_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *B = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *Y = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::HomXNOR<TFHEpp::lvl1param>(*Y, *A, *B, ek);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::HomXNOR<lvl_param>(*Y, *A, *B, ek);
 }
 
 struct starpu_codelet xnor_cl = {
@@ -475,9 +475,9 @@ void not_plain(void *buffers[], void *cl_arg){
 }
 
 void not_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *Y = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::HomNOT<TFHEpp::lvl1param>(*Y, *A);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::HomNOT<lvl_param>(*Y, *A);
 }
 
 struct starpu_codelet not_cl = {
@@ -526,15 +526,15 @@ void dff_p_plain(void *buffers[], void *cl_arg){
 }
 
 void dff_p_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *state = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *fCLK = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *D = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *CLK = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> edge, next;
-    TFHEpp::HomANDNY(edge, *fCLK, *CLK, ek);
-    TFHEpp::HomMUX<TFHEpp::lvl1param>(next, edge, *D, *state, ek);
-    TFHEpp::HomCOPY(*state, next);
-    TFHEpp::HomCOPY(*fCLK, *CLK);
+    TFHEpp::TLWE<lvl_param> *state = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *fCLK = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *D = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::TLWE<lvl_param> *CLK = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    TFHEpp::TLWE<lvl_param> edge, next;
+    TFHEpp::HomANDNY<lvl_param>(edge, *fCLK, *CLK, ek);
+    TFHEpp::HomMUX<lvl_param>(next, edge, *D, *state, ek);
+    TFHEpp::HomCOPY<lvl_param>(*state, next);
+    TFHEpp::HomCOPY<lvl_param>(*fCLK, *CLK);
 }
 
 struct starpu_codelet dff_p_cl = {
@@ -586,15 +586,15 @@ void dff_n_plain(void *buffers[], void *cl_arg){
 
 
 void dff_n_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *state = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *fCLK = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *D = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *CLK = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> edge, next;
-    TFHEpp::HomANDYN(edge, *fCLK, *CLK, ek);
-    TFHEpp::HomMUX<TFHEpp::lvl1param>(next, edge, *D, *state, ek);
-    TFHEpp::HomCOPY(*state, next);
-    TFHEpp::HomCOPY(*fCLK, *CLK);
+    TFHEpp::TLWE<lvl_param> *state = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *fCLK = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *D = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::TLWE<lvl_param> *CLK = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    TFHEpp::TLWE<lvl_param> edge, next;
+    TFHEpp::HomANDYN<lvl_param>(edge, *fCLK, *CLK, ek);
+    TFHEpp::HomMUX<lvl_param>(next, edge, *D, *state, ek);
+    TFHEpp::HomCOPY<lvl_param>(*state, next);
+    TFHEpp::HomCOPY<lvl_param>(*fCLK, *CLK);
 }
 
 
@@ -655,21 +655,21 @@ void adff_pp1_plain(void *buffers[], void *cl_arg){
 }
 
 void adff_pp1_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *state = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *fCLK = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *fRST = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *D = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *CLK = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[4]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *RST = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[5]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> cedge, redge, cnext, rnext, homtrue;
-    TFHEpp::HomANDNY(cedge, *fCLK, *CLK, ek);
-    TFHEpp::HomMUX<TFHEpp::lvl1param>(cnext, cedge, *D, *state, ek);
-    TFHEpp::HomANDNY(redge, *fRST, *RST, ek);
-    TFHEpp::HomCONSTANTONE(homtrue);
-    TFHEpp::HomMUX<TFHEpp::lvl1param>(rnext, redge, homtrue, cnext, ek);
-    TFHEpp::HomCOPY(*state, rnext);
-    TFHEpp::HomCOPY(*fCLK, *CLK);
-    TFHEpp::HomCOPY(*fRST, *RST);
+    TFHEpp::TLWE<lvl_param> *state = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *fCLK = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *fRST = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::TLWE<lvl_param> *D = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    TFHEpp::TLWE<lvl_param> *CLK = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[4]);
+    TFHEpp::TLWE<lvl_param> *RST = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[5]);
+    TFHEpp::TLWE<lvl_param> cedge, redge, cnext, rnext, homtrue;
+    TFHEpp::HomANDNY<lvl_param>(cedge, *fCLK, *CLK, ek);
+    TFHEpp::HomMUX<lvl_param>(cnext, cedge, *D, *state, ek);
+    TFHEpp::HomANDNY<lvl_param>(redge, *fRST, *RST, ek);
+    TFHEpp::HomCONSTANTONE<lvl_param>(homtrue);
+    TFHEpp::HomMUX<lvl_param>(rnext, redge, homtrue, cnext, ek);
+    TFHEpp::HomCOPY<lvl_param>(*state, rnext);
+    TFHEpp::HomCOPY<lvl_param>(*fCLK, *CLK);
+    TFHEpp::HomCOPY<lvl_param>(*fRST, *RST);
 }
 
 
@@ -734,21 +734,21 @@ void adff_pp0_plain(void *buffers[], void *cl_arg){
 
 
 void adff_pp0_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *state = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *fCLK = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *fRST = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *D = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *CLK = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[4]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *RST = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[5]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> cedge, redge, cnext, rnext, homfalse;
-    TFHEpp::HomANDNY(cedge, *fCLK, *CLK, ek);
-    TFHEpp::HomMUX<TFHEpp::lvl1param>(cnext, cedge, *D, *state, ek);
-    TFHEpp::HomANDNY(redge, *fRST, *RST, ek);
-    TFHEpp::HomCONSTANTZERO(homfalse);
-    TFHEpp::HomMUX<TFHEpp::lvl1param>(rnext, redge, homfalse, cnext, ek);
-    TFHEpp::HomCOPY(*state, rnext);
-    TFHEpp::HomCOPY(*fCLK, *CLK);
-    TFHEpp::HomCOPY(*fRST, *RST);
+    TFHEpp::TLWE<lvl_param> *state = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *fCLK = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *fRST = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::TLWE<lvl_param> *D = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    TFHEpp::TLWE<lvl_param> *CLK = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[4]);
+    TFHEpp::TLWE<lvl_param> *RST = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[5]);
+    TFHEpp::TLWE<lvl_param> cedge, redge, cnext, rnext, homfalse;
+    TFHEpp::HomANDNY<lvl_param>(cedge, *fCLK, *CLK, ek);
+    TFHEpp::HomMUX<lvl_param>(cnext, cedge, *D, *state, ek);
+    TFHEpp::HomANDNY<lvl_param>(redge, *fRST, *RST, ek);
+    TFHEpp::HomCONSTANTZERO<lvl_param>(homfalse);
+    TFHEpp::HomMUX<lvl_param>(rnext, redge, homfalse, cnext, ek);
+    TFHEpp::HomCOPY<lvl_param>(*state, rnext);
+    TFHEpp::HomCOPY<lvl_param>(*fCLK, *CLK);
+    TFHEpp::HomCOPY<lvl_param>(*fRST, *RST);
 }
 
 struct starpu_codelet adff_pp0_cl = {
@@ -808,20 +808,20 @@ void dffe_pp_plain(void *buffers[], void *cl_arg){
 
 
 void dffe_pp_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *state = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *fCLK = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *fE = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *D = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *CLK = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[4]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *E = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[5]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> cedge, eedge, edge, next;
-    TFHEpp::HomANDNY(cedge, *fCLK, *CLK, ek);
-    TFHEpp::HomANDNY(eedge, *fE, *E, ek);
-    TFHEpp::HomAND(edge, cedge, eedge, ek);
-    TFHEpp::HomMUX<TFHEpp::lvl1param>(next, edge, *D, *state, ek);
-    TFHEpp::HomCOPY(*state, next);
-    TFHEpp::HomCOPY(*fCLK, *CLK);
-    TFHEpp::HomCOPY(*fE, *E);
+    TFHEpp::TLWE<lvl_param> *state = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *fCLK = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *fE = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::TLWE<lvl_param> *D = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    TFHEpp::TLWE<lvl_param> *CLK = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[4]);
+    TFHEpp::TLWE<lvl_param> *E = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[5]);
+    TFHEpp::TLWE<lvl_param> cedge, eedge, edge, next;
+    TFHEpp::HomANDNY<lvl_param>(cedge, *fCLK, *CLK, ek);
+    TFHEpp::HomANDNY<lvl_param>(eedge, *fE, *E, ek);
+    TFHEpp::HomAND<lvl_param>(edge, cedge, eedge, ek);
+    TFHEpp::HomMUX<lvl_param>(next, edge, *D, *state, ek);
+    TFHEpp::HomCOPY<lvl_param>(*state, next);
+    TFHEpp::HomCOPY<lvl_param>(*fCLK, *CLK);
+    TFHEpp::HomCOPY<lvl_param>(*fE, *E);
 }
 
 struct starpu_codelet dffe_pp_cl = {
@@ -876,11 +876,11 @@ void mux_plain(void *buffers[], void *cl_arg){
 
 
 void mux_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *S = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *B = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *Y = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
-    TFHEpp::HomMUX<TFHEpp::lvl1param>(*Y, *S, *A, *B, ek);
+    TFHEpp::TLWE<lvl_param> *S = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    TFHEpp::HomMUX<lvl_param>(*Y, *S, *A, *B, ek);
 }
 
 struct starpu_codelet mux_cl = {
@@ -928,11 +928,11 @@ inline void nmux_plain(void *buffers[], void *cl_arg){
 }
 
 void nmux_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *S = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *B = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *Y = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
-    TFHEpp::HomNMUX<TFHEpp::lvl1param>(*Y, *S, *A, *B, ek);
+    TFHEpp::TLWE<lvl_param> *S = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    TFHEpp::HomNMUX<lvl_param>(*Y, *S, *A, *B, ek);
 }
 
 struct starpu_codelet nmux_cl = {

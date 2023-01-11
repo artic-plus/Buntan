@@ -26,9 +26,9 @@ void copy_plain(void *buffers[], void *cl_arg){
 }
 
 void copy_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<TFHEpp::lvl1param> *A = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<TFHEpp::lvl1param> *Y = (TFHEpp::TLWE<TFHEpp::lvl1param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::HomCOPY(*Y, *A);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::HomCOPY<lvl_param>(*Y, *A);
 }
 
 struct starpu_codelet copy_cl = {
@@ -84,8 +84,8 @@ std::vector<int>* reg_handles_mpi(
     *Immt = true;
     *Immf = false;
 #else
-    TFHEpp::HomCONSTANTONE(*Immt);
-    TFHEpp::HomCONSTANTZERO(*Immf);
+    TFHEpp::HomCONSTANTONE<lvl_param>(*Immt);
+    TFHEpp::HomCONSTANTZERO<lvl_param>(*Immf);
 #endif
 
     starpu_variable_data_register(&wire_handles[wire_index], STARPU_MAIN_RAM, (uintptr_t)Immt, sizeof(*Immt));

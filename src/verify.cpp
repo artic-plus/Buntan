@@ -27,7 +27,7 @@ int main(int argc, char** argv){
 #ifdef plain_mode
     std::vector<bool> result{};
 #else
-    std::vector<TFHEpp::TLWE<TFHEpp::lvl1param>> result{};
+    std::vector<TFHEpp::TLWE<lvl_param>> result{};
 #endif
     {
         std::ifstream ifs("./result.data", std::ios::binary);
