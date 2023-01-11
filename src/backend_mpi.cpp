@@ -54,7 +54,7 @@ std::vector<int>* reg_handles_mpi(
     int numwires,
     wire* ImmTrue, wire* ImmFalse
 ){
-    auto tasks = new std::vector<int>;
+    auto tasks = new std::vector<int>{};
     std::map<wire*, int> wires;
     std::queue<std::pair<wire*, int>> wires_queue;
     std::map<wire*, t_val*> wires_ptr;
@@ -72,11 +72,9 @@ std::vector<int>* reg_handles_mpi(
             retval_handle_id[FF->second.first->outputs[0]->output_id] = wire_index;
             retval_ptrs[FF->second.first->outputs[0]->output_id] = (FF->second.second);
         }
-        for(int j = 0; j < num_mems; j++){
-            starpu_variable_data_register(&wire_handles[wire_index], STARPU_MAIN_RAM, (uintptr_t)&(FF->second.second[j]), sizeof(t_val));
-            starpu_mpi_data_register(wire_handles[wire_index], wire_index, 0);
-            wire_index++;
-        }
+        starpu_variable_data_register(&wire_handles[wire_index], STARPU_MAIN_RAM, (uintptr_t)FF->second.second, sizeof(t_val) * num_mems);
+        starpu_mpi_data_register(wire_handles[wire_index], wire_index, 0);
+        wire_index++;
     }
     t_val* Immt = (t_val*)malloc(sizeof(t_val));
     t_val* Immf = (t_val*)malloc(sizeof(t_val));
@@ -111,7 +109,7 @@ std::vector<int>* reg_handles_mpi(
     for(auto it = inputs.begin(); it != inputs.end(); it++){
         for(int i = 0; i < it->second.first; i++){
             t_val* arg = (t_val*)calloc(1, sizeof(t_val));
-            starpu_variable_data_register(&wire_handles[wire_index], STARPU_MAIN_RAM, (uintptr_t)arg, sizeof(*Immf));
+            starpu_variable_data_register(&wire_handles[wire_index], STARPU_MAIN_RAM, (uintptr_t)arg, sizeof(t_val));
             starpu_mpi_data_register(wire_handles[wire_index], wire_index, 0);
             wires_ptr.insert(std::make_pair(it->second.second[i], Immf));
             wires_queue.push(std::make_pair(it->second.second[i], wire_index));
@@ -152,7 +150,7 @@ std::vector<int>* reg_handles_mpi(
                     starpu_mpi_data_register(wire_handles[wire_index], wire_index, 0);
                     if(nextnode->outputs[i]->output_id >= 0){
                         retval_handle_id[nextnode->outputs[i]->output_id] = wire_index;
-                        retval_ptrs[nextnode->outputs[i]->output_id] = &(out_b[i]);
+                        retval_ptrs[nextnode->outputs[i]->output_id] = out_b;
                     }
                     tasks->push_back(wire_index);
                     wires_queue.push(std::make_pair(nextnode->outputs[i], wire_index));
@@ -177,8 +175,8 @@ std::vector<int>* reg_handles_mpi(
     for(auto FF = FFs.begin(); FF != FFs.end(); FF++){
         node* ff_node = FF->second.first;
         tasks->push_back(ff_node->type->id);
-        for(int i = 0; i < num_mems; i++) tasks->push_back((int)(intptr_t)ff_node->dff_mem + i);
         for(int i = 0; i < ff_node->num_inputs; i++) tasks->push_back((int)(intptr_t)ff_node->inputs[i].first);
+        tasks->push_back((int)(intptr_t)ff_node->dff_mem);
     }
 #endif
     return tasks;

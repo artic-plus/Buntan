@@ -156,11 +156,9 @@ int deploygates(
     }
     for(auto FF = FFs.begin(); FF != FFs.end(); FF++){
         //std::cout << "FF   :" << FF->first << " " << FF->second->num_outputs << "bit" << std::endl;
-        starpu_data_handle_t *handle = new starpu_data_handle_t[num_mems];
+        starpu_data_handle_t *handle = new starpu_data_handle_t;
         FF->second.first->dff_mem = (uintptr_t)handle;
-        for(int j = 0; j < num_mems; j++){
-            starpu_variable_data_register(&(handle[j]), STARPU_MAIN_RAM, (uintptr_t)&(FF->second.second[j]), sizeof(t_val));
-        }
+        starpu_variable_data_register(handle, STARPU_MAIN_RAM, (uintptr_t)FF->second.second, sizeof(t_val) * num_mems);
         wires.push_back(std::make_pair(FF->second.first->outputs[0], (starpu_data_handle_t*)FF->second.first->dff_mem));
         wires_ptr.insert(std::make_pair(FF->second.first->outputs[0], (t_val*)FF->second.second));
     }
@@ -185,13 +183,22 @@ int deploygates(
             }
             if((nextnode->d_counter == 0) && !(nextnode->type->isFF)){
                 auto handle_out = new starpu_data_handle_t[nextnode->num_outputs];
-                t_val* out_b = (t_val*)calloc(nextnode->num_outputs, sizeof(t_val));
+                auto wire_descrs = (struct starpu_data_descr*)calloc(nextnode->num_inputs + nextnode->num_outputs, sizeof(struct starpu_data_descr));
+                for(int i = 0; i < nextnode->num_inputs; i++){
+                    wire_descrs[i].handle = *(starpu_data_handle_t*)(nextnode->inputs[i].first);
+                    wire_descrs[i].mode = STARPU_R;
+                }
                 for(int i = 0; i < nextnode->num_outputs; i++){
-                    starpu_variable_data_register(&handle_out[i], STARPU_MAIN_RAM, (uintptr_t)&(out_b[i]) , sizeof(out_b[i]));
+                    t_val* out_b = (t_val*)calloc(1, sizeof(t_val));
+                    starpu_variable_data_register(&handle_out[i], STARPU_MAIN_RAM, (uintptr_t)out_b , sizeof(*out_b));
                     wires.push_back(std::make_pair(nextnode->outputs[i], &(handle_out[i])));
                     wires_ptr.insert(std::make_pair(nextnode->outputs[i],out_b));
+                    wire_descrs[i + nextnode->num_inputs].handle = handle_out[i];
+                    wire_descrs[i + nextnode->num_inputs].mode = STARPU_RW;
                 }
-                reinterpret_cast<void (*)(node, starpu_data_handle_t*)>(nextnode->type->task_insert)(*nextnode, handle_out);
+                starpu_task_insert((starpu_codelet*)nextnode->type->cl,
+                    STARPU_DATA_MODE_ARRAY, wire_descrs, nextnode->num_inputs + nextnode->num_outputs,
+                    0);
                 nextnode->d_counter = nextnode->num_inputs;
             } 
             newqueue->push(next->dep->front());
@@ -208,7 +215,18 @@ int deploygates(
     }
 #ifndef use_simple_FF
     for(auto FF = FFs.begin(); FF != FFs.end(); FF++){
-        reinterpret_cast<void (*)(node, starpu_data_handle_t*)>(FF->second.first->type->task_insert)(*(FF->second.first), (starpu_data_handle_t*)nullptr);
+        node* FF_node = FF->second.first;
+        auto wire_descrs = (struct starpu_data_descr*)calloc(FF_node->num_inputs + 1, sizeof(struct starpu_data_descr));
+        for(int i = 0; i < FF_node->num_inputs; i++){
+            wire_descrs[i].handle = *(starpu_data_handle_t*)(FF_node->inputs[i].first);
+            wire_descrs[i].mode = STARPU_R;
+        }
+        wire_descrs[FF->second.first->num_inputs].handle = *(starpu_data_handle_t*)(FF->second.first->dff_mem);
+        wire_descrs[FF->second.first->num_inputs].mode = STARPU_RW;
+        
+        starpu_task_insert((starpu_codelet*)FF_node->type->cl,
+            STARPU_DATA_MODE_ARRAY, wire_descrs, FF_node->num_inputs + FF_node->num_outputs,
+            0);
     }
 #endif
 
@@ -250,7 +268,7 @@ int result_dump(
 #ifdef plain_mode
     std::vector<bool> result = retvals;
 #else
-    std::vector<uint8_t> result = bootsSymDecrypt<lvl_param>(retvals, sk);
+    std::vector<uint8_t> result = TFHEpp::bootsSymDecrypt<lvl_param>(retvals, sk);
 #endif
     int ret_counter = 0;
     for(int t = 0; t < n; t++){

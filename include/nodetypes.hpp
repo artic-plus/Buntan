@@ -25,11 +25,15 @@ struct nodetype{
 	std::vector<std::string> inputs;
 	std::vector<std::string> outputs;
 	std::string key;
-	void* task_insert;
-	void* task_insert_mpi;
+	void* cl;
 	bool isFF;
 	int id;
 };
+
+
+#ifdef BUNTAN_CUDA_ENABLED
+#define use_lvl0
+#endif
 
 #ifdef use_lvl0
 typedef TFHEpp::lvl0param lvl_param;
