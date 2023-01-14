@@ -65,7 +65,7 @@ int main(int argc, char** argv){
 
     // query world communicator's size
     world_size = starpu_mpi_world_size();
-    int my_rank = starpu_mpi_world_rank();
+    my_rank = starpu_mpi_world_rank();
     
 
 #ifdef perf_measure
@@ -231,7 +231,7 @@ int main(int argc, char** argv){
                 task_index++;
             }
             starpu_mpi_task_insert(MPI_COMM_WORLD, (starpu_codelet*)type->cl,
-                STARPU_EXECUTE_ON_NODE, gate_distrib(task_id),
+//                STARPU_EXECUTE_ON_NODE, gate_distrib(task_id),
                 STARPU_DATA_MODE_ARRAY, wire_descrs, type->inputs.size() + type->outputs.size(),
                 0);
             task_id++;

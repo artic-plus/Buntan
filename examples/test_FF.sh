@@ -1,3 +1,4 @@
+ulimit -s unlimited
 ../build/src/client --repetition 3 --circuit ../examples/FF_ex.json 
 echo Unode_test
 ../build/src/runtime_unode --repetition 3 --circuit ../examples/FF_ex.json 

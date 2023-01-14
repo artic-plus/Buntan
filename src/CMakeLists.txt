@@ -54,7 +54,7 @@ target_link_libraries(runtime_mpi PUBLIC tfhe++)
 
 
 target_link_libraries(runtime_mpi PUBLIC MPI::MPI_CXX)
-target_compile_options(runtime_mpi PRIVATE -lstarpu-1.3 -lstarpumpi-1.3 -lmpi -Wall)
+target_compile_options(runtime_mpi PRIVATE -lstarpu-1.3 -lstarpumpi-1.3 -lmpi -Wall -rdynamic)
 target_link_options(runtime_mpi PRIVATE -lstarpu-1.3 -lstarpumpi-1.3 -lmpi -Wall)
 
 
@@ -99,7 +99,7 @@ target_link_libraries(dump PUBLIC MPI::MPI_CXX)
 
 
 #add_compile_definitions(plain_mode)
-#add_compile_definitions(dump_mode)
+add_compile_definitions(dump_mode)
 #add_compile_definitions(use_simple_FF)
 add_compile_definitions(perf_measure)
 add_compile_definitions(use_lvl0)

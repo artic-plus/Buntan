@@ -27,6 +27,7 @@ extern struct starpu_codelet dffe_pp_cl;
 extern struct starpu_codelet mux_cl;
 extern struct starpu_codelet nmux_cl;
 
+int my_rank = 0;
 
 int types_init(){
 	nodetype* And = new nodetype{std::vector<std::string>(bnode_inputs), std::vector<std::string>(bnode_output), "$_AND_", (void*)&and_cl, false, 0};
@@ -181,17 +182,22 @@ void and_cipher(void *buffers[], void *cl_arg){
     TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     TFHEpp::HomAND<lvl_param>(*Y, *A, *B, ek);
+#ifdef dump_mode
+    std::cout << "AND GATE rank:"  << my_rank << std::endl;
+#endif
 }
 
 
 struct starpu_codelet and_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {and_plain},
+    .cpu_funcs_name = {"and_plain"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_p_perf_model,
 #else
     .cpu_funcs = {and_cipher},
+    .cpu_funcs_name = {"and_cipher"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_c_perf_model,
@@ -214,17 +220,22 @@ void nand_cipher(void *buffers[], void *cl_arg){
     TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     TFHEpp::HomNAND<lvl_param>(*Y, *A, *B, ek);
+#ifdef dump_mode
+    std::cout << "NAND GATE rank:"  << my_rank << std::endl;
+#endif
 }
 
 
 struct starpu_codelet nand_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {nand_plain},
+    .cpu_funcs_name = {"nand_plain"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_p_perf_model,
 #else
     .cpu_funcs = {nand_cipher},
+    .cpu_funcs_name = {"nand_cipher"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_c_perf_model,
@@ -248,17 +259,22 @@ void andnot_cipher(void *buffers[], void *cl_arg){
     TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     TFHEpp::HomANDYN<lvl_param>(*Y, *A, *B, ek);
+#ifdef dump_mode
+    std::cout << "ANDNOT GATE rank:"  << my_rank << std::endl;
+#endif
 }
 
 
 struct starpu_codelet andnot_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {andnot_plain},
+    .cpu_funcs_name = {"andnot_plain"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_p_perf_model,
 #else
     .cpu_funcs = {andnot_cipher},
+    .cpu_funcs_name = {"andnot_cipher"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_c_perf_model,
@@ -281,17 +297,22 @@ void or_cipher(void *buffers[], void *cl_arg){
     TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     TFHEpp::HomOR<lvl_param>(*Y, *A, *B, ek);
+#ifdef dump_mode
+    std::cout << "OR GATE rank:"  << my_rank << std::endl;
+#endif
 }
 
 
 struct starpu_codelet or_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {or_plain},
+    .cpu_funcs_name = {"or_plain"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_p_perf_model,
 #else
     .cpu_funcs = {or_cipher},
+    .cpu_funcs_name = {"or_cipher"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_c_perf_model,
@@ -314,17 +335,22 @@ void nor_cipher(void *buffers[], void *cl_arg){
     TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     TFHEpp::HomNOR<lvl_param>(*Y, *A, *B, ek);
+#ifdef dump_mode
+    std::cout << "NOR GATE rank:"  << my_rank << std::endl;
+#endif
 }
 
 
 struct starpu_codelet nor_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {nor_plain},
+    .cpu_funcs_name = {"nor_plain"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_p_perf_model,
 #else
     .cpu_funcs = {nor_cipher},
+    .cpu_funcs_name = {"nor_cipher"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_c_perf_model,
@@ -334,12 +360,6 @@ struct starpu_codelet nor_cl = {
 
 
 
-void ornot_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    TFHEpp::HomORYN<lvl_param>(*Y, *A, *B, ek);
-}
 
 void ornot_plain(void *buffers[], void *cl_arg){
     bool *A = (bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
@@ -350,15 +370,26 @@ void ornot_plain(void *buffers[], void *cl_arg){
 #endif
 }
 
+void ornot_cipher(void *buffers[], void *cl_arg){
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    TFHEpp::HomORYN<lvl_param>(*Y, *A, *B, ek);
+#ifdef dump_mode
+    std::cout << "ORNOT GATE rank:"  << my_rank << std::endl;
+#endif
+}
 
 struct starpu_codelet ornot_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {ornot_plain},
+    .cpu_funcs_name = {"ornot_plain"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_p_perf_model,
 #else
     .cpu_funcs = {ornot_cipher},
+    .cpu_funcs_name = {"ornot_cipher"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_c_perf_model,
@@ -381,17 +412,22 @@ void xor_cipher(void *buffers[], void *cl_arg){
     TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     TFHEpp::HomXOR<lvl_param>(*Y, *A, *B, ek);
+#ifdef dump_mode
+    std::cout << "XOR GATE rank:"  << my_rank << std::endl;
+#endif
 }
 
 
 struct starpu_codelet xor_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {xor_plain},
+    .cpu_funcs_name = {"xor_plain"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_p_perf_model,
 #else
     .cpu_funcs = {xor_cipher},
+    .cpu_funcs_name = {"xor_cipher"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_c_perf_model,
@@ -414,6 +450,9 @@ void xnor_cipher(void *buffers[], void *cl_arg){
     TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     TFHEpp::HomXNOR<lvl_param>(*Y, *A, *B, ek);
+#ifdef dump_mode
+    std::cout << "XNOR GATE rank:"  << my_rank << std::endl;
+#endif
 }
 
 
@@ -421,11 +460,13 @@ void xnor_cipher(void *buffers[], void *cl_arg){
 struct starpu_codelet xnor_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {xor_plain},
+    .cpu_funcs_name = {"xnor_plain"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_p_perf_model,
 #else
     .cpu_funcs = {xor_cipher},
+    .cpu_funcs_name = {"xnor_cipher"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &bnode_c_perf_model,
@@ -446,6 +487,9 @@ void not_cipher(void *buffers[], void *cl_arg){
     TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
     TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
     TFHEpp::HomNOT<lvl_param>(*Y, *A);
+#ifdef dump_mode
+    std::cout << "NOT GATE rank:"  << my_rank << std::endl;
+#endif
 }
 
 
@@ -453,11 +497,13 @@ void not_cipher(void *buffers[], void *cl_arg){
 struct starpu_codelet not_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {not_plain},
+    .cpu_funcs_name = {"not_plain"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &unode_p_perf_model,
 #else
     .cpu_funcs = {not_cipher},
+    .cpu_funcs_name = {"not_cipher"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &unode_c_perf_model,
@@ -491,6 +537,9 @@ void dff_p_cipher(void *buffers[], void *cl_arg){
     TFHEpp::HomMUX<lvl_param>(next, edge, *D, state[0], ek);
     TFHEpp::HomCOPY<lvl_param>(*state, next);
     TFHEpp::HomCOPY<lvl_param>(state[1], *CLK);
+#ifdef dump_mode
+    std::cout << "DFF_P rank:"  << my_rank << std::endl;
+#endif
 }
 
 
@@ -498,11 +547,13 @@ void dff_p_cipher(void *buffers[], void *cl_arg){
 struct starpu_codelet dff_p_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {dff_p_plain},
+    .cpu_funcs_name = {"dff_p_plain"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &dff_p_perf_model,
 #else
     .cpu_funcs = {dff_p_cipher},
+    .cpu_funcs_name = {"dff_p_cipher"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &dff_c_perf_model,
@@ -537,6 +588,9 @@ void dff_n_cipher(void *buffers[], void *cl_arg){
     TFHEpp::HomMUX<lvl_param>(next, edge, *D, state[0], ek);
     TFHEpp::HomCOPY<lvl_param>(state[0], next);
     TFHEpp::HomCOPY<lvl_param>(state[1], *CLK);
+#ifdef dump_mode
+    std::cout << "DFF_N rank:"  << my_rank << std::endl;
+#endif
 }
 
 
@@ -544,11 +598,13 @@ void dff_n_cipher(void *buffers[], void *cl_arg){
 struct starpu_codelet dff_n_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {dff_n_plain},
+    .cpu_funcs_name = {"dff_n_plain"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &dff_p_perf_model,
 #else
     .cpu_funcs = {dff_n_cipher},
+    .cpu_funcs_name = {"dff_n_cipher"},
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &dff_c_perf_model,
@@ -592,6 +648,9 @@ void adff_pp1_cipher(void *buffers[], void *cl_arg){
     TFHEpp::HomCOPY<lvl_param>(state[0], rnext);
     TFHEpp::HomCOPY<lvl_param>(state[1], *CLK);
     TFHEpp::HomCOPY<lvl_param>(state[2], *RST);
+#ifdef dump_mode
+    std::cout << "ADFF_PP1 rank:"  << my_rank << std::endl;
+#endif
 }
 
 
@@ -600,16 +659,19 @@ void adff_pp1_cipher(void *buffers[], void *cl_arg){
 struct starpu_codelet adff_pp1_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {adff_pp1_plain},
+    .cpu_funcs_name = {"adff_pp1_plain"},
     .nbuffers = 4,
     .modes = {STARPU_R, STARPU_R, STARPU_R, STARPU_RW},
     .model = &adff_p_perf_model,
 #else
 	.cpu_funcs = {adff_pp1_cipher},
+    .cpu_funcs_name = {"adff_pp1_cipher"},
     .nbuffers = 4,
     .modes = {STARPU_R, STARPU_R, STARPU_R, STARPU_RW},
     .model = &adff_c_perf_model,
 #endif
 };
+
 
 
 
@@ -651,17 +713,22 @@ void adff_pp0_cipher(void *buffers[], void *cl_arg){
     TFHEpp::HomCOPY<lvl_param>(state[0], rnext);
     TFHEpp::HomCOPY<lvl_param>(state[1], *CLK);
     TFHEpp::HomCOPY<lvl_param>(state[2], *RST);
+#ifdef dump_mode
+    std::cout << "ADFF_PP0 rank:"  << my_rank << std::endl;
+#endif
 }
 
 
 struct starpu_codelet adff_pp0_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {adff_pp0_plain},
+    .cpu_funcs_name = {"adff_pp0_plain"},
     .nbuffers = 4,
     .modes = {STARPU_R, STARPU_R, STARPU_R, STARPU_RW},
     .model = &adff_p_perf_model,
 #else
 	.cpu_funcs = {adff_pp0_cipher},
+    .cpu_funcs_name = {"adff_pp0_plain"},
     .nbuffers = 4,
     .modes = {STARPU_R, STARPU_R, STARPU_R, STARPU_RW},
     .model = &adff_c_perf_model,
@@ -702,17 +769,22 @@ void dffe_pp_cipher(void *buffers[], void *cl_arg){
     TFHEpp::HomCOPY<lvl_param>(state[0], next);
     TFHEpp::HomCOPY<lvl_param>(state[1], *CLK);
     TFHEpp::HomCOPY<lvl_param>(state[2], *E);
+#ifdef dump_mode
+    std::cout << "DFFE_PP rank:"  << my_rank << std::endl;
+#endif
 }
 
 
 struct starpu_codelet dffe_pp_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {dffe_pp_plain},
+    .cpu_funcs_name = {"dffe_pp_plain"},
     .nbuffers = 4,
     .modes = {STARPU_RW, STARPU_R, STARPU_R, STARPU_R},
     .model = &adff_p_perf_model,
 #else
 	.cpu_funcs = {dffe_pp_cipher},
+    .cpu_funcs_name = {"dffe_pp_cipher"},
     .nbuffers = 4,
     .modes = {STARPU_R, STARPU_R, STARPU_R, STARPU_RW},
     .model = &adff_c_perf_model,
@@ -742,16 +814,21 @@ void mux_cipher(void *buffers[], void *cl_arg){
     TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
     TFHEpp::HomMUX<lvl_param>(*Y, *S, *A, *B, ek);
+#ifdef dump_mode
+    std::cout << "MUX rank:"  << my_rank << std::endl;
+#endif
 }
 
 struct starpu_codelet mux_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {mux_plain},
+    .cpu_funcs_name = {"mux_plain"},
     .nbuffers = 4,
     .modes = {STARPU_R, STARPU_R, STARPU_R, STARPU_RW},
     .model = &mux_p_perf_model,
 #else
 	.cpu_funcs = {mux_cipher},
+    .cpu_funcs_name = {"mux_cipher"},
     .nbuffers = 4,
     .modes = {STARPU_R, STARPU_R, STARPU_R, STARPU_RW},
     .model = &mux_c_perf_model,
@@ -780,6 +857,9 @@ void nmux_cipher(void *buffers[], void *cl_arg){
     TFHEpp::TLWE<lvl_param> *B = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[2]);
     TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[3]);
     TFHEpp::HomNMUX<lvl_param>(*Y, *S, *A, *B, ek);
+#ifdef dump_mode
+    std::cout << "NMUX rank:"  << my_rank << std::endl;
+#endif
 }
 
 
@@ -787,11 +867,13 @@ void nmux_cipher(void *buffers[], void *cl_arg){
 struct starpu_codelet nmux_cl = {
 #ifdef plain_mode
 	.cpu_funcs = {nmux_plain},
+    .cpu_funcs_name = {"nmux_plain"},
     .nbuffers = 4,
     .modes = {STARPU_R, STARPU_R, STARPU_R, STARPU_RW},
     .model = &mux_p_perf_model,
 #else
 	.cpu_funcs = {nmux_cipher},
+    .cpu_funcs_name = {"nmux_cipher"},
     .nbuffers = 4,
     .modes = {STARPU_R, STARPU_R, STARPU_R, STARPU_RW},
     .model = &mux_c_perf_model,

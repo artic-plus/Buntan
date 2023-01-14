@@ -30,6 +30,8 @@ struct nodetype{
 	int id;
 };
 
+extern int my_rank;
+
 
 #ifdef BUNTAN_CUDA_ENABLED
 #define use_lvl0
@@ -51,5 +53,37 @@ typedef TFHEpp::TLWE<lvl_param> t_val;
 extern std::map<std::string, nodetype*> nodetypes;
 extern std::map<int, nodetype*> type_id;
 int types_init();
+
+
+void and_plain(void *buffers[], void *cl_arg);
+void and_cipher(void *buffers[], void *cl_arg);
+void nand_plain(void *buffers[], void *cl_arg);
+void nand_cipher(void *buffers[], void *cl_arg);
+void andnot_plain(void *buffers[], void *cl_arg);
+void andnot_cipher(void *buffers[], void *cl_arg);
+void or_plain(void *buffers[], void *cl_arg);
+void or_cipher(void *buffers[], void *cl_arg);
+void nor_plain(void *buffers[], void *cl_arg);
+void nor_cipher(void *buffers[], void *cl_arg);
+void ornot_plain(void *buffers[], void *cl_arg);
+void ornot_cipher(void *buffers[], void *cl_arg);
+void xor_plain(void *buffers[], void *cl_arg);
+void xor_cipher(void *buffers[], void *cl_arg);
+void xnor_plain(void *buffers[], void *cl_arg);
+void xnor_cipher(void *buffers[], void *cl_arg);
+void dff_p_plain(void *buffers[], void *cl_arg);
+void dff_p_cipher(void *buffers[], void *cl_arg);
+void dff_n_plain(void *buffers[], void *cl_arg);
+void dff_n_cipher(void *buffers[], void *cl_arg);
+void adff_po1_plain(void *buffers[], void *cl_arg);
+void adff_po1_cipher(void *buffers[], void *cl_arg);
+void adff_pp0_plain(void *buffers[], void *cl_arg);
+void adff_pp0_cipher(void *buffers[], void *cl_arg);
+void dffe_pp_plain(void *buffers[], void *cl_arg);
+void dffe_pp_cipher(void *buffers[], void *cl_arg);
+void mux_plain(void *buffers[], void *cl_arg);
+void mux_cipher(void *buffers[], void *cl_arg);
+void nmux_plain(void *buffers[], void *cl_arg);
+void nmux_cipher(void *buffers[], void *cl_arg);
 
 #endif
