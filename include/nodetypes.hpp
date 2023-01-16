@@ -30,6 +30,7 @@ struct nodetype{
 	int id;
 };
 
+extern TFHEpp::EvalKey ek;
 extern int my_rank;
 
 

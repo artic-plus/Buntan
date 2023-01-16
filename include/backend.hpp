@@ -14,7 +14,6 @@
 #include "frontend.hpp"
 #include "nodetypes.hpp"
 
-extern TFHEpp::EvalKey ek;
 
 extern int world_size;
 extern int num_mems;

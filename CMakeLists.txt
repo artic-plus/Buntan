@@ -7,5 +7,6 @@ project(starpu_tfhe CXX)
 
 
 add_subdirectory(src)
+add_subdirectory(lib)
 add_subdirectory(thirdparties/cuFHE/thirdparties/TFHEpp)
 #add_subdirectory(thirdparties/cuFHE/)

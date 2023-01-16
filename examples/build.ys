@@ -1,8 +1,8 @@
 # read design 
-read -sv FF_ex.v
+read -sv c499.v
 
 # elaborate design hierarchy
-hierarchy -check -top top
+hierarchy -check -top c499
 
 # the high-level stuff
 proc; opt; fsm; opt; memory; opt
@@ -20,7 +20,7 @@ abc -g gates,MUX,NMUX
 clean -purge
 
 # write synthesized design
-write_json FF_ex.json
+write_json c499.json
 
 # Print statistics
 stat

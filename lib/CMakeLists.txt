@@ -1,0 +1,33 @@
+cmake_minimum_required (VERSION 3.2)
+set(CMAKE_CXX_FLAGS "-march=native -O3 -g")
+set(CMAKE_CXX_STANDARD 20)
+project(starpu_tfhe CXX)
+
+
+find_package(OpenMP)
+if(OpenMP_FOUND)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+
+find_package(PkgConfig)
+pkg_check_modules(STARPU REQUIRED starpu-1.3)
+if (STARPU_FOUND)
+include_directories (${STARPU_INCLUDE_DIRS})
+link_directories (${STARPU_STATIC_LIBRARY_DIRS})
+link_libraries (${STARPU_STATIC_LIBRARIES})
+else (STARPU_FOUND)
+message(FATAL_ERROR "StarPU not found")
+endif()
+
+add_library(node_cls MODULE nodetypes.cpp)
+target_link_libraries(node_cls PUBLIC tfhe++)
+target_compile_options(node_cls PRIVATE -lstarpu-1.3 -lstarpumpi-1.3 -lmpi -Wall -rdynamic -fPIC)
+target_link_options(node_cls PUBLIC -lstarpu-1.3 -lstarpumpi-1.3 -lmpi -Wall -fPIC)
+target_include_directories(node_cls PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(node_cls PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
+
+#add_compile_definitions(plain_mode)
+add_compile_definitions(dump_mode)
+#add_compile_definitions(use_simple_FF)
+add_compile_definitions(perf_measure)
+add_compile_definitions(use_lvl0)

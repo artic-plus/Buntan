@@ -6,6 +6,7 @@
 #include <string>
 #include <string.h>
 #include <random>
+#include <chrono>
 #include <vector>
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/vector.hpp>
@@ -13,7 +14,6 @@
 #include "frontend.hpp"
 #include "nodetypes.hpp"
 #include "backend.hpp"
-
 
 int world_size;
 TFHEpp::EvalKey ek;
@@ -69,10 +69,10 @@ int main(int argc, char** argv){
     
 
 #ifdef perf_measure
-        double  start, init, shutdown;
-        double end[n];
+        std::chrono::system_clock::time_point start, init, shutdown;
     if(my_rank == 0){
-        start = MPI_Wtime();
+        //start = MPI_Wtime();
+        start = std::chrono::system_clock::now();
     }
 #endif    
 
@@ -195,7 +195,7 @@ int main(int argc, char** argv){
     };
 #ifdef perf_measure
     if(my_rank == 0)
-        init = MPI_Wtime();
+        init = std::chrono::system_clock::now();
 #endif
     for(int t = 0; t < n; t++){
         starpu_mpi_task_insert(MPI_COMM_WORLD, &load_cl,
@@ -249,10 +249,6 @@ int main(int argc, char** argv){
                 STARPU_VALUE, &(numwires[2]), sizeof(int),
                 STARPU_DATA_MODE_ARRAY, retval_descrs, numwires[2],
                 0);
-#ifdef perf_measure
-            if(my_rank == 0)
-                end[t] = MPI_Wtime();
-#endif
 
     }
     
@@ -267,14 +263,17 @@ int main(int argc, char** argv){
     starpu_shutdown();
     #ifdef perf_measure
 if(my_rank == 0){
-        shutdown = MPI_Wtime();
-        std::cout << "init time : " << init - start << "[s]" << std::endl;
-        std::cout << "1st run time : " << end[0] - init << "[s]" << std::endl;
-        for(int t = 0; t < n - 1; t++){
-            std::cout << t + 2 << "th run time : " << end[t + 1] - end[t] << "[s]" << std::endl;
-        }
-
-        std::cout << "total time : " << shutdown - start << "[s]" << std::endl;
+        shutdown = std::chrono::system_clock::now();
+        double time = static_cast<double>(
+            std::chrono::duration_cast<std::chrono::microseconds>(init - start)
+                .count() /
+            1000.0);
+        std::cout << "init time : " << time << "[ms]" << std::endl;
+        time = static_cast<double>(
+            std::chrono::duration_cast<std::chrono::microseconds>(shutdown - start)
+                .count() /
+            1000.0);
+        std::cout << "total time : " << time << "[ms]" << std::endl;
     }
 #endif
 

@@ -3,11 +3,9 @@
 #include <vector>
 #include <map>
 #include <starpu.h>
-#include <starpu_mpi.h>
+//#include <starpu_mpi.h>
 
 #include "nodetypes.hpp"
-#include "frontend.hpp"
-#include "backend.hpp"
 #include <tfhe++.hpp>
 
 extern struct starpu_codelet and_cl;
