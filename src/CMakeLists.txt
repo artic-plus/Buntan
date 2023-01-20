@@ -42,8 +42,8 @@ target_link_libraries(runtime_unode PUBLIC node_cls)
 target_link_libraries(runtime_unode PUBLIC tfhe++)
 
 target_link_libraries(runtime_unode PUBLIC MPI::MPI_CXX)
-target_compile_options(runtime_unode PRIVATE -lstarpu-1.3 -lstarpumpi-1.3 -lmpi -Wall -rdynamic)
-target_link_options(runtime_unode PRIVATE -lstarpu-1.3 -lstarpumpi-1.3 -lmpi -Wall)
+target_compile_options(runtime_unode PRIVATE -lstarpu-1.3 -Wall)
+target_link_options(runtime_unode PRIVATE -lstarpu-1.3 -lmpi -Wall)
 
 
 if(MPI)
