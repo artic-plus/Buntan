@@ -4,6 +4,6 @@
 [submodule "thirdparties/cereal"]
 	path = thirdparties/cereal
 	url = https://github.com/USCiLab/cereal.git
-[submodule "thirdparties/cuFHE"]
-	path = thirdparties/cuFHE
-	url = https://github.com/virtualsecureplatform/cuFHE.git
+[submodule "thirdparties/TFHEpp"]
+	path = thirdparties/TFHEpp
+	url = https://github.com/virtualsecureplatform/TFHEpp.git

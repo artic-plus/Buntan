@@ -102,9 +102,3 @@ target_link_libraries(dump PUBLIC tfhe++)
 
 target_link_libraries(dump PUBLIC MPI::MPI_CXX)
 
-
-#add_compile_definitions(plain_mode)
-add_compile_definitions(dump_mode)
-#add_compile_definitions(use_simple_FF)
-add_compile_definitions(perf_measure)
-add_compile_definitions(use_lvl0)

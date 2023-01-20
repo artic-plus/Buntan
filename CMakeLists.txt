@@ -8,5 +8,12 @@ project(starpu_tfhe CXX)
 
 add_subdirectory(src)
 add_subdirectory(lib)
-add_subdirectory(thirdparties/cuFHE/thirdparties/TFHEpp)
+add_subdirectory(thirdparties/TFHEpp)
 #add_subdirectory(thirdparties/cuFHE/)
+
+
+#add_compile_definitions(plain_mode)
+add_compile_definitions(dump_mode)
+#add_compile_definitions(use_simple_FF)
+add_compile_definitions(perf_measure)
+add_compile_definitions(use_lvl0)
