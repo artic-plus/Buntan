@@ -21,25 +21,6 @@ int gate_distrib(int gate_index)
 	return gate_index % world_size;
 }
 
-void copy_plain(void *buffers[], void *cl_arg){
-    *(bool*)STARPU_VARIABLE_GET_PTR(buffers[1]) = *(bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-}
-
-void copy_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::HomCOPY<lvl_param>(*Y, *A);
-}
-
-struct starpu_codelet copy_cl = {
-#ifdef plain_mode
-	.cpu_funcs = {copy_plain},
-#else
-    .cpu_funcs = {copy_cipher},
-#endif
-    .nbuffers = 2,
-    .modes = {STARPU_R, STARPU_W}
-};
 
 
 //return a vector of inputs for "insert_***_mpi" functions
@@ -126,6 +107,7 @@ std::vector<int>* reg_handles_mpi(
     
     wire* next;
     int next_handle_id;
+    int task_id = 0;
     while(!wires_queue.empty())
     {
         next = wires_queue.front().first;
@@ -143,6 +125,7 @@ std::vector<int>* reg_handles_mpi(
             }
             if((nextnode->d_counter == 0) && !(nextnode->type->isFF)){
                 tasks->push_back(nextnode->type->id);
+                tasks->push_back(gate_distrib(task_id));
                 for(int i = 0; i < nextnode->num_inputs; i++) tasks->push_back((int)(intptr_t)nextnode->inputs[i].first);
                 for(int i = 0; i < nextnode->num_outputs; i++){
                     t_val* out_b = (t_val*)calloc(1, sizeof(t_val));
@@ -157,6 +140,7 @@ std::vector<int>* reg_handles_mpi(
                     wire_index++;
                 }
                 nextnode->d_counter = nextnode->num_inputs;
+                task_id++;
             } 
             newqueue->push(next->dep->front());
             next->dep->pop();
