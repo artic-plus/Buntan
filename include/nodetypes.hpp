@@ -45,16 +45,12 @@ typedef TFHEpp::lvl0param lvl_param;
 typedef TFHEpp::lvl1param lvl_param;
 #endif
 
-#ifdef plain_mode
-typedef bool t_val;
-#else
-typedef TFHEpp::TLWE<lvl_param> t_val;
-#endif
+
 
 
 extern std::map<std::string, nodetype*> nodetypes;
 extern std::map<int, nodetype*> type_id;
-int types_init();
+int types_init(bool plain);
 
 
 extern "C"  void and_plain(void *buffers[], void *cl_arg);

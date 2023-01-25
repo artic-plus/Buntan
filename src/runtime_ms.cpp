@@ -64,7 +64,6 @@ int main(int argc, char** argv){
     start = std::chrono::system_clock::now();
 #endif    
 
-    types_init();
 
     std::map<std::string, std::pair<int, wire**>> *inputs;
     std::map<std::string, std::pair<int, wire**>> *outputs;
@@ -78,7 +77,10 @@ int main(int argc, char** argv){
     int* arg_handle_id; 
     int* retval_handle_id;
     
-#ifndef plain_mode
+#ifdef plain_mode
+    types_init(1);
+#else
+    types_init(0);
     {
         const std::string path = "./cloud.key";
         std::ifstream ifs("./cloud.key", std::ios::binary);
