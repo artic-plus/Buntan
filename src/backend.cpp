@@ -12,6 +12,18 @@
 #include "nodetypes.hpp"
 #include "backend.hpp"
 
+#ifdef plain_mode
+extern struct starpu_codelet init_cl = init_p_cl;
+#else
+extern struct starpu_codelet init_cl = init_c_cl;
+#endif
+
+
+#ifdef plain_mode
+extern struct starpu_codelet copy_cl = copy_p_cl;
+#else
+extern struct starpu_codelet copy_cl = copy_c_cl;
+#endif
 
 
 #ifdef use_simple_FF
@@ -32,26 +44,6 @@ int init_FFs(std::map<std::string, std::pair<node*, t_val*>>* FFs){
     return 0;
 }
 
-void copy_plain(void *buffers[], void *cl_arg){
-    *(bool*)STARPU_VARIABLE_GET_PTR(buffers[1]) = *(bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-}
-
-
-void copy_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::HomCOPY<lvl_param>(*Y, *A);
-}
-
-struct starpu_codelet copy_cl = {
-#ifdef plain_mode
-	.cpu_funcs = {copy_plain},
-#else
-    .cpu_funcs = {copy_cipher},
-#endif
-    .nbuffers = 2,
-    .modes = {STARPU_R, STARPU_W}
-};
 
 
 

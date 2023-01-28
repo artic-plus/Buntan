@@ -16,29 +16,6 @@
 
 int world_size;
 TFHEpp::EvalKey ek;
-std::vector<t_val> args_in;
-
-void load_data(void *buffers[], void *cl_arg){
-    int numargs, n;
-    starpu_codelet_unpack_args(cl_arg, &numargs, &n);
-    for(int i = 0; i < numargs; i++){
-        *(t_val*)STARPU_VARIABLE_GET_PTR(buffers[i]) = args_in[n * numargs + i];
-    }
-}
-
-void save_result(void *buffers[], void *cl_arg){
-    std::vector<t_val> retvals;
-    int numretvals, n;
-    starpu_codelet_unpack_args(cl_arg, &numretvals, &n);
-    for(int i = 0; i < numretvals * n; i++){
-        retvals.push_back(*(t_val*)STARPU_VARIABLE_GET_PTR(buffers[i]));
-    }
-    {
-        std::ofstream ofs{"result.data", std::ios::binary};
-        cereal::PortableBinaryOutputArchive ar(ofs);
-        ar(retvals);
-    }
-}
 
 
 
@@ -64,6 +41,7 @@ int main(int argc, char** argv){
     start = std::chrono::system_clock::now();
 #endif    
 
+    types_init();
 
     std::map<std::string, std::pair<int, wire**>> *inputs;
     std::map<std::string, std::pair<int, wire**>> *outputs;
@@ -77,10 +55,7 @@ int main(int argc, char** argv){
     int* arg_handle_id; 
     int* retval_handle_id;
     
-#ifdef plain_mode
-    types_init(1);
-#else
-    types_init(0);
+#ifndef plain_mode
     {
         const std::string path = "./cloud.key";
         std::ifstream ifs("./cloud.key", std::ios::binary);
@@ -99,7 +74,7 @@ int main(int argc, char** argv){
         return 1;
     }
     if(FFs->size() > 0)init_FFs(FFs);
-    args_in = std::vector<t_val>{};
+    std::vector<t_val> args_in{};
     {
         std::ifstream ifs("./cloud.data", std::ios::binary);
         cereal::PortableBinaryInputArchive ar(ifs);
@@ -113,12 +88,6 @@ int main(int argc, char** argv){
     starpu_data_handle_t wire_handles[numwires[0]] = {0};
     
     int tasksize;
-    enum starpu_data_access_mode modes_load[numwires[1]] = {STARPU_W};
-    struct starpu_codelet load_cl = {
-        .cpu_funcs = {load_data},
-        .nbuffers = numwires[1],
-        .dyn_modes = modes_load,
-    };    
     arg_handle_id = (int*)calloc(numwires[1], sizeof(int));
     retval_handle_id = (int*)calloc(numwires[2], sizeof(int));
     retval_ptrs = (t_val**)calloc(numwires[2], sizeof(t_val*));
@@ -139,31 +108,23 @@ int main(int argc, char** argv){
         arg_descrs[i].handle = wire_handles[arg_handle_id[i]];
         arg_descrs[i].mode = STARPU_W;
     }
-    starpu_data_handle_t retvals[n * numwires[2]];
+    starpu_data_handle_t retval_handles[n * numwires[2]];
+    t_val* retvals = (t_val*)calloc(n * numwires[2], sizeof(t_val));
     for(int i = 0; i < n * numwires[2]; i++){
-        t_val* ret = (t_val*)calloc(1, sizeof(t_val));
-        starpu_variable_data_register(&retvals[i], STARPU_MAIN_RAM, (uintptr_t)ret, sizeof(t_val));
+        starpu_variable_data_register(&retval_handles[i], STARPU_MAIN_RAM, (uintptr_t)&retvals[i], sizeof(t_val));
     }
-    auto retval_descrs = (struct starpu_data_descr*)calloc(n * numwires[2], sizeof(struct starpu_data_descr));
-    for(int i = 0; i < n * numwires[2]; i++){
-        retval_descrs[i].handle = retvals[i];
-        retval_descrs[i].mode = STARPU_R;
-    }
-    enum starpu_data_access_mode modes_save[n * numwires[2]] = {STARPU_R};
-    struct starpu_codelet save_cl = {
-        .cpu_funcs = {save_result},
-        .nbuffers = n * numwires[2],
-        .dyn_modes = modes_save,
-    };
 #ifdef perf_measure
     init = std::chrono::system_clock::now();
 #endif
     for(int t = 0; t < n; t++){
-        starpu_task_insert(&load_cl,
-            STARPU_VALUE, &(numwires[1]), sizeof(int),
-            STARPU_VALUE, &t, sizeof(int),
-            STARPU_DATA_MODE_ARRAY, arg_descrs, numwires[1],
-            0);
+        for(int i = 0; i < numwires[1]; i++){
+	    t_val* arg = (t_val*)calloc(1, sizeof(t_val));
+	    *arg = args_in[t * numwires[1] + i];
+            starpu_task_insert(&init_cl,
+                STARPU_VALUE, arg, sizeof(t_val),
+                STARPU_W, wire_handles[arg_handle_id[i]],
+                0);
+        }
         int task_index = 0;
         int task_id = 0;
         while(task_index < tasksize){
@@ -196,23 +157,25 @@ int main(int argc, char** argv){
         for(int i = 0; i < numwires[2]; i++){
             starpu_task_insert(&copy_cl,
                 STARPU_R, wire_handles[retval_handle_id[i]],
-                STARPU_W, retvals[i + t * numwires[2]],
+                STARPU_W, retval_handles[i + t * numwires[2]],
                 0);
         }
     }
-        starpu_task_insert(&save_cl,
-            STARPU_VALUE, &(numwires[2]), sizeof(int),
-            STARPU_VALUE, &n, sizeof(int),
-            STARPU_DATA_MODE_ARRAY, retval_descrs, n * numwires[2],
-            0);
     
     for(int i = 0; i < numwires[0]; i++){
         starpu_data_unregister(wire_handles[i]);
     }
     for(int i = 0; i < n * numwires[2]; i++){
-        starpu_data_unregister(retvals[i]);
+        starpu_data_unregister(retval_handles[i]);
     }
     starpu_shutdown();
+    std::vector<t_val> retval_v(retvals, &(retvals[n * numwires[2]]));
+    {
+        std::ofstream ofs{"result.data", std::ios::binary};
+        cereal::PortableBinaryOutputArchive ar(ofs);
+        ar(retval_v);
+    }
+
     #ifdef perf_measure
     shutdown = std::chrono::system_clock::now();
     double time = static_cast<double>(

@@ -879,87 +879,40 @@ struct starpu_codelet nmux_cl = {
 };
 
 
-static struct starpu_perfmodel init_p_perf_model =
-{
-.type = STARPU_HISTORY_BASED,
-.symbol = "init_p_perf_model"
-};
-
-static struct starpu_perfmodel init_c_perf_model =
-{
-.type = STARPU_HISTORY_BASED,
-.symbol = "init_c_perf_model"
-};
-
-
-
 void init_plain(void *buffers[], void *cl_arg){
-    bool val;
-    starpu_codelet_unpack_args(cl_arg, &val);
-    *(bool*)STARPU_VARIABLE_GET_PTR(buffers[0]) = val;
 }
 
-
-void init_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<lvl_param> A;
-    starpu_codelet_unpack_args(cl_arg, &A);
-    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::HomCOPY<lvl_param>(*Y, A);
-}
-
-struct starpu_codelet init_p_cl = {
+struct starpu_codelet init_cl = {
     .cpu_funcs = {init_plain},
-    .cpu_funcs_name = {"init_plain"},
-    .nbuffers = 1,
-    .modes = {STARPU_W},
-    .model = &init_p_perf_model,
-};
-
-struct starpu_codelet init_c_cl = {
     .cpu_funcs = {init_cipher},
-    .cpu_funcs_name = {"init_cipher"},
-    .nbuffers = 1,
-    .modes = {STARPU_W},
-    .model = &init_c_perf_model,
+    .nbuffers = 2,
+    .modes = {STARPU_R, STARPU_W}
 };
 
-static struct starpu_perfmodel copy_p_perf_model =
-{
-.type = STARPU_HISTORY_BASED,
-.symbol = "copy_p_perf_model"
-};
-
-static struct starpu_perfmodel copy_c_perf_model =
-{
-.type = STARPU_HISTORY_BASED,
-.symbol = "copy_c_perf_model"
-};
 
 
 
 void copy_plain(void *buffers[], void *cl_arg){
-    *(bool*)STARPU_VARIABLE_GET_PTR(buffers[1]) = *(bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    *(bool*)STARPU_VARIABLE_GET_PTR(buffers[1]) = *(bool*)STARPU_VARIABLE_GET_P>
 }
 
 
 void copy_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_>
+    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_>
     TFHEpp::HomCOPY<lvl_param>(*Y, *A);
 }
 
+
 struct starpu_codelet copy_p_cl = {
     .cpu_funcs = {copy_plain},
-    .cpu_funcs_name = {"copy_plain"},
     .nbuffers = 2,
-    .modes = {STARPU_R, STARPU_W},
-    .model = &copy_p_perf_model,
+    .modes = {STARPU_R, STARPU_W}
 };
 
 struct starpu_codelet copy_c_cl = {
     .cpu_funcs = {copy_cipher},
-    .cpu_funcs_name = {"copy_cipher"},
     .nbuffers = 2,
-    .modes = {STARPU_R, STARPU_W},
-    .model = &copy_c_perf_model,
+    .modes = {STARPU_R, STARPU_W}
 };
+

@@ -29,11 +29,7 @@ int main(int argc, char** argv){
     auto FFs = new std::map<std::string, std::pair<node*, t_val*>>;
     wire* ImmTrue = new wire{nullptr, new std::queue<node*>, false, -1}; 
     wire* ImmFalse = new wire{nullptr, new std::queue<node*>, false, -1};
-#ifdef plain_mode
-    types_init(1);
-#else
-    types_init(0);
-#endif
+    types_init();
     int numwires[4];
     yosys_json_parser(filepath, numwires, inputs, outputs, FFs, ImmTrue, ImmFalse);
     if(numwires[0] < 0){

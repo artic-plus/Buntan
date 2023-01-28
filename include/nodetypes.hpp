@@ -45,12 +45,16 @@ typedef TFHEpp::lvl0param lvl_param;
 typedef TFHEpp::lvl1param lvl_param;
 #endif
 
-
+#ifdef plain_mode
+typedef bool t_val;
+#else
+typedef TFHEpp::TLWE<lvl_param> t_val;
+#endif
 
 
 extern std::map<std::string, nodetype*> nodetypes;
 extern std::map<int, nodetype*> type_id;
-int types_init(bool plain);
+int types_init();
 
 
 extern "C"  void and_plain(void *buffers[], void *cl_arg);
@@ -83,5 +87,16 @@ extern "C"  void mux_plain(void *buffers[], void *cl_arg);
 extern "C"  void mux_cipher(void *buffers[], void *cl_arg);
 extern "C"  void nmux_plain(void *buffers[], void *cl_arg);
 extern "C"  void nmux_cipher(void *buffers[], void *cl_arg);
+
+extern struct starpu_codelet init_p_cl;
+extern struct starpu_codelet init_c_cl;
+extern struct starpu_codelet copy_p_cl;
+extern struct starpu_codelet copy_c_cl;
+
+
+extern "C"  void init_plain(void *buffers[], void *cl_arg);
+extern "C"  void init_cipher(void *buffers[], void *cl_arg);
+extern "C"  void copy_plain(void *buffers[], void *cl_arg);
+extern "C"  void copy_cipher(void *buffers[], void *cl_arg);
 
 #endif

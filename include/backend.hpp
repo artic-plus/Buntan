@@ -18,6 +18,10 @@
 extern int world_size;
 extern int num_mems;
 
+extern struct starpu_codelet init_cl;
+
+extern struct starpu_codelet copy_cl;
+
 int init_FFs(std::map<std::string, std::pair<node*, t_val*>>* FFs);
 std::vector<t_val> make_inputs_rand(std::map<std::string, int> inputs
 #ifndef plain_mode
