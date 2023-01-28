@@ -1,8 +1,8 @@
 # read design 
-read -sv c7552.v
+read -sv inv_test.v
 
 # elaborate design hierarchy
-hierarchy -check -top c7552
+hierarchy -check -top inv_test
 
 # the high-level stuff
 proc; opt; fsm; opt; memory; opt
@@ -20,7 +20,7 @@ abc -g gates,MUX,NMUX
 clean -purge
 
 # write synthesized design
-write_json c7552.json
+write_json inv_test.json
 
 # Print statistics
 stat

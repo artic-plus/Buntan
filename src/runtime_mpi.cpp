@@ -76,7 +76,6 @@ int main(int argc, char** argv){
     }
 #endif    
 
-    types_init();
 
     std::map<std::string, std::pair<int, wire**>> *inputs;
     std::map<std::string, std::pair<int, wire**>> *outputs;
@@ -95,7 +94,10 @@ int main(int argc, char** argv){
     MPI_Type_commit(&TypeKey);
     */
     
-#ifndef plain_mode
+#ifdef plain_mode
+    types_init(1);
+#else
+    types_init(0);
     //if(my_rank == 0)
     {
         const std::string path = "./cloud.key";

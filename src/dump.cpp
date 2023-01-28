@@ -29,18 +29,19 @@ int main(int argc, char** argv){
     getio(std::string(argv[1]), inputs_, outputs_);
 #ifdef plain_mode
     auto arg_in = make_inputs_manual(*inputs_);
+    types_init(1);
 #else
     std::unique_ptr<TFHEpp::SecretKey> sk(new TFHEpp::SecretKey);
     ek.emplacebkfft<TFHEpp::lvl01param>(*sk);
     ek.emplaceiksk<TFHEpp::lvl10param>(*sk);
     auto arg_in = make_inputs_rand(*inputs_, *sk);
+    types_init(0);
 #endif
     auto inputs = new std::map<std::string, std::pair<int, wire**>>;
     auto outputs = new std::map<std::string, std::pair<int, wire**>>; 
     auto FFs = new std::map<std::string, std::pair<node*, t_val*>>;
     wire* ImmTrue = new wire{nullptr, new std::queue<node*>, false, -1}; 
     wire* ImmFalse = new wire{nullptr, new std::queue<node*>, false, -1};
-    types_init();
     int numwires[4];
     yosys_json_parser(filepath, numwires, inputs, outputs, FFs, ImmTrue, ImmFalse);
     if(numwires[0] > 0){
