@@ -59,14 +59,14 @@ target_link_libraries(runtime_ms PUBLIC MPI::MPI_CXX)
 target_compile_options(runtime_ms PRIVATE -lstarpu-1.3 -Wall)
 target_link_options(runtime_ms PRIVATE -lstarpu-1.3 -lmpi -Wall)
 
-if(MPI)
+if(STARPU_MPI_FOUND)
   add_executable(runtime_mpi runtime_mpi.cpp frontend.cpp backend.cpp backend_mpi.cpp)
   target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/include)
   target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
   target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
   target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/include)
   target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
-  target_link_libraries(runtime_unode PUBLIC node_cls)
+  target_link_libraries(runtime_mpi PUBLIC node_cls)
 
   target_link_libraries(runtime_mpi PUBLIC tfhe++)
 
