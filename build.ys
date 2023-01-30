@@ -1,0 +1,8 @@
+read_verilog ./examples/counter_4b.v
+hierarchy -check -top counter_4b
+proc; opt; fsm; opt; memory; opt
+techmap; opt
+flatten;
+abc -g gates,MUX
+clean -purge
+write_json ./build/examples/counter_4b.json

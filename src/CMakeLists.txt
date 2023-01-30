@@ -58,6 +58,7 @@ target_link_libraries(runtime_ms PUBLIC tfhe++)
 target_link_libraries(runtime_ms PUBLIC MPI::MPI_CXX)
 target_compile_options(runtime_ms PRIVATE -lstarpu-1.3 -Wall)
 target_link_options(runtime_ms PRIVATE -lstarpu-1.3 -lmpi -Wall)
+target_link_libraries(runtime_ms PUBLIC MPI::MPI_CXX)
 
 if(STARPU_MPI_FOUND)
   add_executable(runtime_mpi runtime_mpi.cpp frontend.cpp backend.cpp backend_mpi.cpp)

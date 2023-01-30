@@ -1,29 +1,8 @@
-# read design 
-read -sv inv_test.v
-
-# elaborate design hierarchy
-hierarchy -check -top inv_test
-
-# the high-level stuff
+read_verilog ../Buntan/examples/FA.v
+hierarchy -check -top FA
 proc; opt; fsm; opt; memory; opt
-
-# mapping to internal cell library
 techmap; opt
-
-# mapping logic to gates.
-abc -g gates,MUX,NMUX
-
-# Extract Full/Half Adder. Order is important.
-# extract_fa
-
-# cleanup
+flatten;
+abc -g gates,MUX
 clean -purge
-
-# write synthesized design
-write_json inv_test.json
-
-# Print statistics
-stat
-
-#check output circuit
-show
+write_json FA.json

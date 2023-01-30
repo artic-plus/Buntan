@@ -16,7 +16,7 @@ module FA(A,B,Ci,S,Co);
 endmodule
 	
 
-module Adder4(A,B,S,overflow);
+module adder_4b(A,B,S,overflow);
 	input [3:0] A,B;
 	output [3:0] S;
 	output overflow;

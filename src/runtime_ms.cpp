@@ -9,10 +9,13 @@
 #include <vector>
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/vector.hpp>
+#include <mpi.h>
 
 #include "frontend.hpp"
 #include "nodetypes.hpp"
 #include "backend.hpp"
+
+#define STARPU_USE_MPI_MASTER_SLAVE
 
 int world_size;
 TFHEpp::EvalKey ek;
@@ -170,14 +173,13 @@ int main(int argc, char** argv){
     for(int i = 0; i < n * numwires[2]; i++){
         starpu_data_unregister(retval_handles[i]);
     }
-    starpu_shutdown();
+//    starpu_shutdown();
     std::vector<t_val> retval_v(retvals, &(retvals[n * numwires[2]]));
     {
         std::ofstream ofs{"result.data", std::ios::binary};
         cereal::PortableBinaryOutputArchive ar(ofs);
         ar(retval_v);
     }
-
     #ifdef perf_measure
     shutdown = std::chrono::system_clock::now();
     double time = static_cast<double>(
@@ -191,5 +193,7 @@ int main(int argc, char** argv){
         1000.0);
     std::cout << "total time : " << time << "[ms]" << std::endl;
 #endif
+
+    MPI_Finalize();
     return 0;
 }

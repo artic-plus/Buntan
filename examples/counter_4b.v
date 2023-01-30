@@ -16,7 +16,7 @@ module FA(A,B,Ci,S,Co);
 endmodule
 	
 
-module Adder4(A,B,S,overflow);
+module adder_4b(A,B,S,overflow);
 	input [3:0] A,B;
 	output [3:0] S;
 	output overflow;
@@ -29,12 +29,12 @@ module Adder4(A,B,S,overflow);
 	assign C[0] = 0;
 endmodule
 
-module Counter4(clk,out,overflow);
+module counter_4b(clk,out,overflow);
 	input clk;
 	output reg[3:0] out;
 	output overflow;
 	wire[3:0] count;
-	Adder4 adder(4'b0001,out,count,overflow);
+	adder_4b adder(4'b0001,out,count,overflow);
 	always @(posedge clk)
 	begin
 		out <= count;
