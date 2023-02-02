@@ -167,3 +167,32 @@ std::vector<int>* reg_handles_mpi(
 
 }
 
+int insert_tasks_mpi(
+    std::vector<int>* tasks,
+    starpu_data_handle_t* wire_handles
+){
+    int task_index = 0;
+    int task_id = 0;
+    while(task_index < tasksize){
+        nodetype* type = type_id[(*tasks)[task_index]];
+        task_index++;
+        int distrib = (*tasks)[task_index];
+        task_index++;
+        auto wire_descrs = (struct starpu_data_descr*)calloc(type->inputs.size() + type->outputs.size(), sizeof(struct starpu_data_descr));
+        for(int i = 0; i < type->inputs.size(); i++){
+            wire_descrs[i].handle = wire_handles[(*tasks)[task_index]];
+            wire_descrs[i].mode = STARPU_R;
+            task_index++;
+        }
+        for(int i = 0; i < type->outputs.size(); i++){
+            wire_descrs[type->inputs.size() + i].handle = wire_handles[(*tasks)[task_index]];
+            wire_descrs[type->inputs.size() + i].mode = STARPU_RW;
+            task_index++;
+        }
+        starpu_mpi_task_insert(MPI_COMM_WORLD, (starpu_codelet*)type->cl,
+            STARPU_EXECUTE_ON_NODE, distrib,
+            STARPU_DATA_MODE_ARRAY, wire_descrs, type->inputs.size() + type->outputs.size(),
+            0);
+        task_id++;
+    }
+}

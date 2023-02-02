@@ -69,6 +69,8 @@ extern "C"  void xor_plain(void *buffers[], void *cl_arg);
 extern "C"  void xor_cipher(void *buffers[], void *cl_arg);
 extern "C"  void xnor_plain(void *buffers[], void *cl_arg);
 extern "C"  void xnor_cipher(void *buffers[], void *cl_arg);
+extern "C"  void not_plain(void *buffers[], void *cl_arg);
+extern "C"  void not_cipher(void *buffers[], void *cl_arg);
 extern "C"  void dff_p_plain(void *buffers[], void *cl_arg);
 extern "C"  void dff_p_cipher(void *buffers[], void *cl_arg);
 extern "C"  void dff_n_plain(void *buffers[], void *cl_arg);

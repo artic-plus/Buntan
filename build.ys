@@ -1,8 +1,8 @@
-read_verilog ./examples/counter_4b.v
-hierarchy -check -top counter_4b
+read_verilog ./examples/s9234.v
+hierarchy -check -top s9234
 proc; opt; fsm; opt; memory; opt
 techmap; opt
 flatten;
 abc -g gates,MUX
 clean -purge
-write_json ./build/examples/counter_4b.json
+write_json ./build/examples/s9234.json

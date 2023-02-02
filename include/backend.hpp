@@ -45,6 +45,10 @@ std::vector<int>* reg_handles(std::map<std::string, std::pair<int, wire**>> inpu
 
 std::vector<int>* reg_handles_mpi(std::map<std::string, std::pair<int, wire**>> inputs, int* arg_handle_id, std::map<std::string, std::pair<int, wire**>> outputs, int* retval_handles, t_val** retval_ptrs, std::map<std::string, std::pair<node*, t_val*>> FFs, starpu_data_handle_t* wire_handles, int numwires, wire* ImmTrue, wire* ImmFalse);
 
+int insert_tasks(std::vector<int>* tasks, starpu_data_handle_t* wire_handles);
+
+int insert_tasks_mpi(std::vector<int>* tasks, starpu_data_handle_t* wire_handles);
+
 int result_dump(std::map<std::string, int> outputs, std::vector<t_val> retvals
 #ifndef plain_mode
 , TFHEpp::SecretKey sk
