@@ -63,8 +63,8 @@ std::vector<int>* reg_handles_mpi(
     *Immt = true;
     *Immf = false;
 #else
-    TFHEpp::HomCONSTANTONE<lvl_param>(*Immt);
-    TFHEpp::HomCONSTANTZERO<lvl_param>(*Immf);
+    c_one(*Immt);
+    c_zero(*Immf);
 #endif
 
     starpu_variable_data_register(&wire_handles[wire_index], STARPU_MAIN_RAM, (uintptr_t)Immt, sizeof(*Immt));

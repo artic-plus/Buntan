@@ -24,8 +24,14 @@ target_link_libraries(node_cls PUBLIC tfhe++)
 target_compile_options(node_cls PUBLIC -lmpi -Wall  -rdynamic)
 target_link_options(node_cls PUBLIC -lmpi -Wall)
 target_include_directories(node_cls PUBLIC ${CMAKE_SOURCE_DIR}/include)
-target_include_directories(node_cls PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
+target_include_directories(node_cls PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/TFHEpp)
 set_property(TARGET node_cls PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+
+add_library(utils_wrap STATIC utils_wrap.cpp)
+target_link_libraries(utils_wrap PUBLIC tfhe++)
+target_include_directories(utils_wrap PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(utils_wrap PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/TFHEpp)
 
 
 if(plain_mode)

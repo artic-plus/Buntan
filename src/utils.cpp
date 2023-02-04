@@ -3,7 +3,7 @@
 std::vector<t_val> make_inputs_rand(
     std::map<std::string,int> inputs
 #ifndef plain_mode
-    , TFHEpp::SecretKey sk
+    , seckey sk
 #endif
     ,int n
 ){
@@ -34,14 +34,14 @@ std::vector<t_val> make_inputs_rand(
 #ifdef plain_mode
     return plain;
 #else
-    return TFHEpp::bootsSymEncrypt<lvl_param>(plain, sk);
+    return enc_vec(plain, sk);
 #endif
 }
 
 std::vector<t_val> make_inputs_manual(
     std::map<std::string,int> inputs
 #ifndef plain_mode
-    , TFHEpp::SecretKey sk
+    , seckey sk
 #endif
     ,int n
 ){
@@ -69,7 +69,7 @@ std::vector<t_val> make_inputs_manual(
 #ifdef plain_mode
     return plain;
 #else
-    return TFHEpp::bootsSymEncrypt<lvl_param>(plain, sk);
+    return enc_vec(plain, sk);
 #endif
 }
 
@@ -79,14 +79,14 @@ int result_dump(
     std::map<std::string,int> outputs,
     std::vector<t_val> retvals
 #ifndef plain_mode
-    , TFHEpp::SecretKey sk
+    , seckey sk
 #endif
     ,int n
 ){
 #ifdef plain_mode
     std::vector<bool> result = retvals;
 #else
-    std::vector<uint8_t> result = TFHEpp::bootsSymDecrypt<lvl_param>(retvals, sk);
+    std::vector<uint8_t> result = dec_vec(retvals, sk);
 #endif
     int ret_counter = 0;
     for(int t = 0; t < n; t++){

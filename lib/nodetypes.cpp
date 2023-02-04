@@ -8,6 +8,14 @@
 #include "nodetypes.hpp"
 #include <tfhe++.hpp>
 
+
+void c_one(bool_enc &one){
+        TFHEpp::HomCONSTANTONE<lvl_param>(one);
+}
+void c_zero(bool_enc &zero){
+        TFHEpp::HomCONSTANTZERO<lvl_param>(zero);
+}
+
 extern struct starpu_codelet and_p_cl;
 extern struct starpu_codelet and_c_cl;
 extern struct starpu_codelet nand_p_cl;

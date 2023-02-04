@@ -9,7 +9,6 @@
 #include <vector>
 #include <map>
 
-#include <tfhe++.hpp>
 
 #include "frontend.hpp"
 #include "nodetypes.hpp"
@@ -25,13 +24,13 @@ extern struct starpu_codelet copy_cl;
 int init_FFs(std::map<std::string, std::pair<node*, t_val*>>* FFs);
 std::vector<t_val> make_inputs_rand(std::map<std::string, int> inputs
 #ifndef plain_mode
-, TFHEpp::SecretKey sk
+, seckey sk
 #endif
 , int n = 1
 );
 std::vector<t_val> make_inputs_manual(std::map<std::string, int> inputs
 #ifndef plain_mode
-, TFHEpp::SecretKey sk
+, seckey sk
 #endif
 , int n = 1
 );
@@ -51,7 +50,7 @@ int insert_tasks_mpi(std::vector<int>* tasks, starpu_data_handle_t* wire_handles
 
 int result_dump(std::map<std::string, int> outputs, std::vector<t_val> retvals
 #ifndef plain_mode
-, TFHEpp::SecretKey sk
+, seckey sk
 #endif
 , int n = 1
 );

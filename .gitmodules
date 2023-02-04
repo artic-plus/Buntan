@@ -1,6 +1,6 @@
 [submodule "thirdparties/picojson"]
 	path = thirdparties/picojson
-	url = https://github.com/kazuho/picojson.git
+	url = https://github.com/kazuho/picojson
 [submodule "thirdparties/cereal"]
 	path = thirdparties/cereal
 	url = https://github.com/USCiLab/cereal.git

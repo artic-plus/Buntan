@@ -16,7 +16,7 @@
 #include "backend.hpp"
 
 int world_size;
-TFHEpp::EvalKey ek;
+evalkey ek;
 std::vector<t_val> args_in;
 std::vector<t_val> retvals;
 

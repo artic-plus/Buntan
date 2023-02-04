@@ -35,11 +35,9 @@ add_executable(runtime_unode runtime_unode.cpp frontend.cpp backend.cpp)
 target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
 target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
-target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/include)
-target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
+target_include_directories(runtime_unode PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/TFHEpp)
 target_link_libraries(runtime_unode PUBLIC node_cls)
 
-target_link_libraries(runtime_unode PUBLIC tfhe++)
 
 target_link_libraries(runtime_unode PUBLIC MPI::MPI_CXX)
 target_compile_options(runtime_unode PRIVATE -lstarpu-1.3 -Wall)
@@ -49,11 +47,9 @@ add_executable(runtime_ms runtime_ms.cpp frontend.cpp backend.cpp)
 target_include_directories(runtime_ms PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(runtime_ms PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
 target_include_directories(runtime_ms PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
-target_include_directories(runtime_ms PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/include)
-target_include_directories(runtime_ms PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
+target_include_directories(runtime_ms PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/TFHEpp)
 target_link_libraries(runtime_ms PUBLIC node_cls)
 
-target_link_libraries(runtime_ms PUBLIC tfhe++)
 
 target_link_libraries(runtime_ms PUBLIC MPI::MPI_CXX)
 target_compile_options(runtime_ms PRIVATE -lstarpu-1.3 -Wall)
@@ -65,11 +61,9 @@ if(STARPU_MPI_FOUND)
   target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/include)
   target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
   target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
-  target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/include)
-  target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
+  target_include_directories(runtime_mpi PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/TFHEpp)
   target_link_libraries(runtime_mpi PUBLIC node_cls)
 
-  target_link_libraries(runtime_mpi PUBLIC tfhe++)
 
   target_link_libraries(runtime_mpi PUBLIC MPI::MPI_CXX)
   target_compile_options(runtime_mpi PRIVATE -lstarpu-1.3 -lstarpumpi-1.3 -lmpi -Wall -rdynamic)
@@ -80,38 +74,38 @@ add_executable(client client.cpp frontend.cpp utils.cpp)
 target_include_directories(client PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(client PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
 target_include_directories(client PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
-target_include_directories(client PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
+target_include_directories(client PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/TFHEpp)
 
-target_link_libraries(client PUBLIC tfhe++)
+target_link_libraries(client PUBLIC utils_wrap)
 
 
 add_executable(client_manual client_manual.cpp frontend.cpp utils.cpp)
 target_include_directories(client_manual PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(client_manual PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
 target_include_directories(client_manual PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
-target_include_directories(client_manual PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
+target_include_directories(client_manual PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/TFHEpp)
 
-target_link_libraries(client_manual PUBLIC tfhe++)
+target_link_libraries(client_manual PUBLIC utils_wrap)
 
 
 add_executable(verify verify.cpp frontend.cpp utils.cpp)
 target_include_directories(verify PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(verify PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
 target_include_directories(verify PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
-target_include_directories(verify PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
+target_include_directories(verify PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/TFHEpp)
 
-target_link_libraries(verify PUBLIC tfhe++)
+target_link_libraries(verify PUBLIC utils_wrap)
 
 
 add_executable(dump dump.cpp  frontend.cpp backend.cpp utils.cpp)
 target_include_directories(dump PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(dump PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/picojson)
 target_include_directories(dump PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cereal/include)
-target_include_directories(dump PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/cuFHE/thirdparties/TFHEpp)
+target_include_directories(dump PUBLIC ${CMAKE_SOURCE_DIR}/thirdparties/TFHEpp)
 
 target_link_libraries(dump PUBLIC node_cls)
 
-target_link_libraries(dump PUBLIC tfhe++)
+target_link_libraries(dump PUBLIC utils_wrap)
 
 
 target_link_libraries(dump PUBLIC MPI::MPI_CXX)

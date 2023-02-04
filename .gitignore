@@ -90,7 +90,7 @@ _deps
 # End of https://www.toptal.com/developers/gitignore/api/c++,linux,visualstudiocode
 
 build/
-thirdparties/
+meas/
 *secret.key
 *cloud.key
 *cloud.data

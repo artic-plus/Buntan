@@ -47,6 +47,20 @@ typedef TFHEpp::lvl1param lvl_param;
 
 
 
+typedef TFHEpp::TLWE<lvl_param> bool_enc;
+
+typedef TFHEpp::SecretKey seckey;
+typedef TFHEpp::EvalKey evalkey;
+
+std::unique_ptr<seckey> gen_key(evalkey &ek);
+
+void c_one(bool_enc &one);
+void c_zero(bool_enc &zero);
+
+std::vector<bool_enc> enc_vec(std::vector<uint8_t> plain_vec, seckey sk);
+std::vector<uint8_t> dec_vec(std::vector<bool_enc> cipher_vec, seckey sk);
+
+
 
 extern std::map<std::string, nodetype*> nodetypes;
 extern std::map<int, nodetype*> type_id;

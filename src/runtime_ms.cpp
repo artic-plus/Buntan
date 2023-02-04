@@ -18,7 +18,7 @@
 #define STARPU_USE_MPI_MASTER_SLAVE
 
 int world_size;
-TFHEpp::EvalKey ek;
+evalkey ek;
 
 
 
@@ -31,9 +31,6 @@ int main(int argc, char** argv){
         if(!strcmp(argv[i], "--repetition"))
             n = atoi(argv[i+1]);
     }
-    // initialize StarPU
-    if (starpu_init(NULL) != 0)
-        printf("Failed to initialize Starpu.\n");
 
 
     
@@ -68,6 +65,17 @@ int main(int argc, char** argv){
         (&ek)->serialize(ar);
     }
 #endif
+    std::vector<t_val> args_in{};
+    {
+        std::ifstream ifs("./cloud.data", std::ios::binary);
+        cereal::PortableBinaryInputArchive ar(ifs);
+        ar(args_in);
+    }
+
+    // initialize StarPU
+    if (starpu_init(NULL) != 0)
+        printf("Failed to initialize Starpu.\n");
+
     inputs = new std::map<std::string, std::pair<int, wire**>>;
     outputs = new std::map<std::string, std::pair<int, wire**>>; 
     FFs = new std::map<std::string, std::pair<node*, t_val*>>;
@@ -79,12 +87,6 @@ int main(int argc, char** argv){
         return 1;
     }
     if(FFs->size() > 0)init_FFs(FFs);
-    std::vector<t_val> args_in{};
-    {
-        std::ifstream ifs("./cloud.data", std::ios::binary);
-        cereal::PortableBinaryInputArchive ar(ifs);
-        ar(args_in);
-    }
 
     std::vector<int>* tasks;
 #ifdef use_simple_FF

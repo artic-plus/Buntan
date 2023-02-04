@@ -27,10 +27,8 @@ int main(int argc, char** argv){
 #ifdef plain_mode
     auto arg_in = make_inputs_rand(*inputs, n);
 #else
-    std::unique_ptr<TFHEpp::SecretKey> sk(new TFHEpp::SecretKey);
-    TFHEpp::EvalKey ek;
-    ek.emplacebkfft<TFHEpp::lvl01param>(*sk);
-    ek.emplaceiksk<TFHEpp::lvl10param>(*sk);
+    evalkey ek;
+    auto sk = gen_key(ek);
     // export the secret key to file for later use
     {
         std::ofstream ofs{"secret.key", std::ios::binary};

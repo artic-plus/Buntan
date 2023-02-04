@@ -13,7 +13,7 @@
 #include "backend.hpp"
 
 
-TFHEpp::EvalKey ek;
+evalkey ek;
 
 int main(int argc, char** argv){
     std::string filepath = "./circuit.json";
@@ -31,9 +31,7 @@ int main(int argc, char** argv){
     auto arg_in = make_inputs_manual(*inputs_);
     types_init(1);
 #else
-    std::unique_ptr<TFHEpp::SecretKey> sk(new TFHEpp::SecretKey);
-    ek.emplacebkfft<TFHEpp::lvl01param>(*sk);
-    ek.emplaceiksk<TFHEpp::lvl10param>(*sk);
+    auto sk = gen_key(ek);
     auto arg_in = make_inputs_rand(*inputs_, *sk);
     types_init(0);
 #endif

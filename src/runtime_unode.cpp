@@ -13,7 +13,7 @@
 #include "backend.hpp"
 
 
-TFHEpp::EvalKey ek;
+evalkey ek;
 
 int main(int argc, char** argv){
     std::string filepath = "./circuit.json";

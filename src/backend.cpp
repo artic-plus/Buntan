@@ -38,7 +38,7 @@ int init_FFs(std::map<std::string, std::pair<node*, t_val*>>* FFs){
         FF->second.second = (t_val*)calloc(num_mems, sizeof(t_val));
 #ifndef plain_mode
         for(int i = 0; i < num_mems; i++)
-            TFHEpp::HomCONSTANTZERO<lvl_param>(FF->second.second[i]);
+            c_zero(FF->second.second[i]);
 #endif
     }
     return 0;
@@ -73,8 +73,8 @@ int deploygates(
     *Immt = true;
     *Immf = false;
 #else
-    TFHEpp::HomCONSTANTONE<lvl_param>(*Immt);
-    TFHEpp::HomCONSTANTZERO<lvl_param>(*Immf);
+    c_one(*Immt);
+    c_zero(*Immf);
 #endif
 
     auto handle_T = new starpu_data_handle_t;
@@ -241,8 +241,8 @@ std::vector<int>* reg_handles(
     *Immt = true;
     *Immf = false;
 #else
-    TFHEpp::HomCONSTANTONE<lvl_param>(*Immt);
-    TFHEpp::HomCONSTANTZERO<lvl_param>(*Immf);
+    c_one(*Immt);
+    c_zero(*Immf);
 #endif
 
     starpu_variable_data_register(&wire_handles[wire_index], STARPU_MAIN_RAM, (uintptr_t)Immt, sizeof(*Immt));
