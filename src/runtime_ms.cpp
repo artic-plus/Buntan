@@ -168,12 +168,12 @@ int main(int argc, char** argv){
         std::chrono::duration_cast<std::chrono::microseconds>(init - start)
             .count() /
         1000.0);
-    std::cout << "init time : " << time << "[ms]" << std::endl;
+    std::cout << "init time : " << time << " [ms]" << std::endl;
     time = static_cast<double>(
         std::chrono::duration_cast<std::chrono::microseconds>(shutdown - start)
             .count() /
         1000.0);
-    std::cout << "total time : " << time << "[ms]" << std::endl;
+    std::cout << "total time : " << time << " [ms]" << std::endl;
 #endif
 
 //    MPI_Finalize();

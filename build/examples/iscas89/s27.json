@@ -1,0 +1,376 @@
+{
+  "creator": "Yosys 0.25 (git sha1 e02b7f64bc7, clang 14.0.0-1ubuntu1 -fPIC -Os)",
+  "modules": {
+    "s27": {
+      "attributes": {
+        "top": "00000000000000000000000000000001",
+        "src": "./examples/iscas89/s27.v.modified:8.1-28.10"
+      },
+      "ports": {
+        "GND": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "VDD": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "CK": {
+          "direction": "input",
+          "bits": [ 4 ]
+        },
+        "G0": {
+          "direction": "input",
+          "bits": [ 5 ]
+        },
+        "G1": {
+          "direction": "input",
+          "bits": [ 6 ]
+        },
+        "G17": {
+          "direction": "output",
+          "bits": [ 7 ]
+        },
+        "G2": {
+          "direction": "input",
+          "bits": [ 8 ]
+        },
+        "G3": {
+          "direction": "input",
+          "bits": [ 9 ]
+        }
+      },
+      "cells": {
+        "$abc$142$auto$blifparse.cc:386:parse_blif$143": {
+          "hide_name": 1,
+          "type": "$_ORNOT_",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 5 ],
+            "B": [ 10 ],
+            "Y": [ 11 ]
+          }
+        },
+        "$abc$142$auto$blifparse.cc:386:parse_blif$144": {
+          "hide_name": 1,
+          "type": "$_NOR_",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 6 ],
+            "B": [ 12 ],
+            "Y": [ 13 ]
+          }
+        },
+        "$abc$142$auto$blifparse.cc:386:parse_blif$145": {
+          "hide_name": 1,
+          "type": "$_NAND_",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 9 ],
+            "B": [ 13 ],
+            "Y": [ 14 ]
+          }
+        },
+        "$abc$142$auto$blifparse.cc:386:parse_blif$146": {
+          "hide_name": 1,
+          "type": "$_AND_",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 11 ],
+            "B": [ 14 ],
+            "Y": [ 15 ]
+          }
+        },
+        "$abc$142$auto$blifparse.cc:386:parse_blif$147": {
+          "hide_name": 1,
+          "type": "$_OR_",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 16 ],
+            "B": [ 15 ],
+            "Y": [ 7 ]
+          }
+        },
+        "$abc$142$auto$blifparse.cc:386:parse_blif$148": {
+          "hide_name": 1,
+          "type": "$_NOT_",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 7 ],
+            "Y": [ 17 ]
+          }
+        },
+        "$abc$142$auto$blifparse.cc:386:parse_blif$149": {
+          "hide_name": 1,
+          "type": "$_AND_",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 5 ],
+            "B": [ 7 ],
+            "Y": [ 18 ]
+          }
+        },
+        "$abc$142$auto$blifparse.cc:386:parse_blif$150": {
+          "hide_name": 1,
+          "type": "$_NOR_",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 8 ],
+            "B": [ 13 ],
+            "Y": [ 19 ]
+          }
+        },
+        "$flatten\\DFF_0.$auto$ff.cc:266:slice$141": {
+          "hide_name": 1,
+          "type": "$_DFF_P_",
+          "parameters": {
+          },
+          "attributes": {
+            "src": "./examples/iscas89/s27.v.modified:14.7-14.23|./examples/basic_gates.v:5.3-5.31"
+          },
+          "port_directions": {
+            "C": "input",
+            "D": "input",
+            "Q": "output"
+          },
+          "connections": {
+            "C": [ 4 ],
+            "D": [ 18 ],
+            "Q": [ 16 ]
+          }
+        },
+        "$flatten\\DFF_1.$auto$ff.cc:266:slice$141": {
+          "hide_name": 1,
+          "type": "$_DFF_P_",
+          "parameters": {
+          },
+          "attributes": {
+            "src": "./examples/iscas89/s27.v.modified:15.7-15.23|./examples/basic_gates.v:5.3-5.31"
+          },
+          "port_directions": {
+            "C": "input",
+            "D": "input",
+            "Q": "output"
+          },
+          "connections": {
+            "C": [ 4 ],
+            "D": [ 17 ],
+            "Q": [ 10 ]
+          }
+        },
+        "$flatten\\DFF_2.$auto$ff.cc:266:slice$141": {
+          "hide_name": 1,
+          "type": "$_DFF_P_",
+          "parameters": {
+          },
+          "attributes": {
+            "src": "./examples/iscas89/s27.v.modified:16.7-16.23|./examples/basic_gates.v:5.3-5.31"
+          },
+          "port_directions": {
+            "C": "input",
+            "D": "input",
+            "Q": "output"
+          },
+          "connections": {
+            "C": [ 4 ],
+            "D": [ 19 ],
+            "Q": [ 12 ]
+          }
+        }
+      },
+      "netnames": {
+        "$abc$142$new_n12_": {
+          "hide_name": 1,
+          "bits": [ 11 ],
+          "attributes": {
+          }
+        },
+        "$abc$142$new_n13_": {
+          "hide_name": 1,
+          "bits": [ 13 ],
+          "attributes": {
+          }
+        },
+        "$abc$142$new_n14_": {
+          "hide_name": 1,
+          "bits": [ 14 ],
+          "attributes": {
+          }
+        },
+        "$abc$142$new_n15_": {
+          "hide_name": 1,
+          "bits": [ 15 ],
+          "attributes": {
+          }
+        },
+        "CK": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+            "src": "./examples/iscas89/s27.v.modified:9.15-9.17"
+          }
+        },
+        "DFF_0.D": {
+          "hide_name": 0,
+          "bits": [ 18 ],
+          "attributes": {
+            "hdlname": "DFF_0 D",
+            "src": "./examples/iscas89/s27.v.modified:14.7-14.23|./examples/basic_gates.v:2.10-2.11"
+          }
+        },
+        "DFF_0.Q": {
+          "hide_name": 0,
+          "bits": [ 16 ],
+          "attributes": {
+            "hdlname": "DFF_0 Q",
+            "src": "./examples/iscas89/s27.v.modified:14.7-14.23|./examples/basic_gates.v:3.8-3.9"
+          }
+        },
+        "DFF_1.D": {
+          "hide_name": 0,
+          "bits": [ 17 ],
+          "attributes": {
+            "hdlname": "DFF_1 D",
+            "src": "./examples/iscas89/s27.v.modified:15.7-15.23|./examples/basic_gates.v:2.10-2.11"
+          }
+        },
+        "DFF_1.Q": {
+          "hide_name": 0,
+          "bits": [ 10 ],
+          "attributes": {
+            "hdlname": "DFF_1 Q",
+            "src": "./examples/iscas89/s27.v.modified:15.7-15.23|./examples/basic_gates.v:3.8-3.9"
+          }
+        },
+        "DFF_2.D": {
+          "hide_name": 0,
+          "bits": [ 19 ],
+          "attributes": {
+            "hdlname": "DFF_2 D",
+            "src": "./examples/iscas89/s27.v.modified:16.7-16.23|./examples/basic_gates.v:2.10-2.11"
+          }
+        },
+        "DFF_2.Q": {
+          "hide_name": 0,
+          "bits": [ 12 ],
+          "attributes": {
+            "hdlname": "DFF_2 Q",
+            "src": "./examples/iscas89/s27.v.modified:16.7-16.23|./examples/basic_gates.v:3.8-3.9"
+          }
+        },
+        "G0": {
+          "hide_name": 0,
+          "bits": [ 5 ],
+          "attributes": {
+            "src": "./examples/iscas89/s27.v.modified:9.18-9.20"
+          }
+        },
+        "G1": {
+          "hide_name": 0,
+          "bits": [ 6 ],
+          "attributes": {
+            "src": "./examples/iscas89/s27.v.modified:9.21-9.23"
+          }
+        },
+        "G17": {
+          "hide_name": 0,
+          "bits": [ 7 ],
+          "attributes": {
+            "src": "./examples/iscas89/s27.v.modified:10.8-10.11"
+          }
+        },
+        "G2": {
+          "hide_name": 0,
+          "bits": [ 8 ],
+          "attributes": {
+            "src": "./examples/iscas89/s27.v.modified:9.24-9.26"
+          }
+        },
+        "G3": {
+          "hide_name": 0,
+          "bits": [ 9 ],
+          "attributes": {
+            "src": "./examples/iscas89/s27.v.modified:9.27-9.29"
+          }
+        },
+        "GND": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+            "src": "./examples/iscas89/s27.v.modified:9.7-9.10"
+          }
+        },
+        "VDD": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+            "src": "./examples/iscas89/s27.v.modified:9.11-9.14"
+          }
+        }
+      }
+    }
+  }
+}

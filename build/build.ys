@@ -1,0 +1,8 @@
+read_verilog ./examples/iscas89/s9234.v ./examples/basic_gates.v
+hierarchy -check -top s9234
+proc; opt; fsm; opt; memory; opt
+techmap; opt
+flatten;
+abc -g gates,MUX
+clean -purge
+write_json ./build/./examples/iscas89/s9234.json

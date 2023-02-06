@@ -1,458 +1,415 @@
-// Verilog
-// c880
-// Ninputs 60
-// Noutputs 26
-// NtotalGates 383
-// NAND4 13
-// AND3 12
-// NAND2 60
-// NAND3 14
-// AND2 105
-// OR2 29
-// NOT1 63
-// NOR2 61
-// BUFF1 26
+module c880g( L1gat, L8gat, L13gat, L17gat, L26gat, L29gat, L36gat, L42gat, 
+		L51gat, L55gat, L59gat, L68gat, L72gat, L73gat, L74gat, 
+		L75gat, L80gat, L85gat, L86gat, L87gat, L88gat, L89gat, 
+		L90gat, L91gat, L96gat, L101gat, L106gat, L111gat, L116gat, 
+		L121gat, L126gat, L130gat, L135gat, L138gat, L143gat, L146gat, 
+		L149gat, L152gat, L153gat, L156gat, L159gat, L165gat, L171gat, 
+		L177gat, L183gat, L189gat, L195gat, L201gat, L207gat, L210gat, 
+		L219gat, L228gat, L237gat, L246gat, L255gat, L259gat, L260gat, 
+		L261gat, L267gat, L268gat, 
+		L388gat, L389gat, L390gat, L391gat, L418gat, L419gat, L420gat, L421gat, 
+		L422gat, L423gat, L446gat, L447gat, L448gat, L449gat, L450gat, 
+		L767gat, L768gat, L850gat, L863gat, L864gat, L865gat, L866gat, 
+		L874gat, L878gat, L879gat, L880gat );
+input L1gat, L8gat, L13gat, L17gat, L26gat, L29gat, L36gat, L42gat, 
+	L51gat, L55gat, L59gat, L68gat, L72gat, L73gat, L74gat, 
+	L75gat, L80gat, L85gat, L86gat, L87gat, L88gat, L89gat, 
+	L90gat, L91gat, L96gat, L101gat, L106gat, L111gat, L116gat, 
+	L121gat, L126gat, L130gat, L135gat, L138gat, L143gat, L146gat, 
+	L149gat, L152gat, L153gat, L156gat, L159gat, L165gat, L171gat, 
+	L177gat, L183gat, L189gat, L195gat, L201gat, L207gat, L210gat, 
+	L219gat, L228gat, L237gat, L246gat, L255gat, L259gat, L260gat, 
+	L261gat, L267gat, L268gat ;
+output L388gat, L389gat, L390gat, L391gat, L418gat, L419gat, L420gat, L421gat, 
+	L422gat, L423gat, L446gat, L447gat, L448gat, L449gat, L450gat, 
+	L767gat, L768gat, L850gat, L863gat, L864gat, L865gat, L866gat, 
+	L874gat, L878gat, L879gat, L880gat ;
 
-module c880 (N1,N8,N13,N17,N26,N29,N36,N42,N51,N55,
-             N59,N68,N72,N73,N74,N75,N80,N85,N86,N87,
-             N88,N89,N90,N91,N96,N101,N106,N111,N116,N121,
-             N126,N130,N135,N138,N143,N146,N149,N152,N153,N156,
-             N159,N165,N171,N177,N183,N189,N195,N201,N207,N210,
-             N219,N228,N237,N246,N255,N259,N260,N261,N267,N268,
-             N388,N389,N390,N391,N418,N419,N420,N421,N422,N423,
-             N446,N447,N448,N449,N450,N767,N768,N850,N863,N864,
-             N865,N866,N874,N878,N879,N880);
 
-input N1,N8,N13,N17,N26,N29,N36,N42,N51,N55,
-      N59,N68,N72,N73,N74,N75,N80,N85,N86,N87,
-      N88,N89,N90,N91,N96,N101,N106,N111,N116,N121,
-      N126,N130,N135,N138,N143,N146,N149,N152,N153,N156,
-      N159,N165,N171,N177,N183,N189,N195,N201,N207,N210,
-      N219,N228,N237,N246,N255,N259,N260,N261,N267,N268;
 
-output N388,N389,N390,N391,N418,N419,N420,N421,N422,N423,
-       N446,N447,N448,N449,N450,N767,N768,N850,N863,N864,
-       N865,N866,N874,N878,N879,N880;
 
-wire N269,N270,N273,N276,N279,N280,N284,N285,N286,N287,
-     N290,N291,N292,N293,N294,N295,N296,N297,N298,N301,
-     N302,N303,N304,N305,N306,N307,N308,N309,N310,N316,
-     N317,N318,N319,N322,N323,N324,N325,N326,N327,N328,
-     N329,N330,N331,N332,N333,N334,N335,N336,N337,N338,
-     N339,N340,N341,N342,N343,N344,N345,N346,N347,N348,
-     N349,N350,N351,N352,N353,N354,N355,N356,N357,N360,
-     N363,N366,N369,N375,N376,N379,N382,N385,N392,N393,
-     N399,N400,N401,N402,N403,N404,N405,N406,N407,N408,
-     N409,N410,N411,N412,N413,N414,N415,N416,N417,N424,
-     N425,N426,N427,N432,N437,N442,N443,N444,N445,N451,
-     N460,N463,N466,N475,N476,N477,N478,N479,N480,N481,
-     N482,N483,N488,N489,N490,N491,N492,N495,N498,N499,
-     N500,N501,N502,N503,N504,N505,N506,N507,N508,N509,
-     N510,N511,N512,N513,N514,N515,N516,N517,N518,N519,
-     N520,N521,N522,N523,N524,N525,N526,N527,N528,N529,
-     N530,N533,N536,N537,N538,N539,N540,N541,N542,N543,
-     N544,N547,N550,N551,N552,N553,N557,N561,N565,N569,
-     N573,N577,N581,N585,N586,N587,N588,N589,N590,N593,
-     N596,N597,N600,N605,N606,N609,N615,N616,N619,N624,
-     N625,N628,N631,N632,N635,N640,N641,N644,N650,N651,
-     N654,N659,N660,N661,N662,N665,N669,N670,N673,N677,
-     N678,N682,N686,N687,N692,N696,N697,N700,N704,N705,
-     N708,N712,N713,N717,N721,N722,N727,N731,N732,N733,
-     N734,N735,N736,N737,N738,N739,N740,N741,N742,N743,
-     N744,N745,N746,N747,N748,N749,N750,N751,N752,N753,
-     N754,N755,N756,N757,N758,N759,N760,N761,N762,N763,
-     N764,N765,N766,N769,N770,N771,N772,N773,N777,N778,
-     N781,N782,N785,N786,N787,N788,N789,N790,N791,N792,
-     N793,N794,N795,N796,N802,N803,N804,N805,N806,N807,
-     N808,N809,N810,N811,N812,N813,N814,N815,N819,N822,
-     N825,N826,N827,N828,N829,N830,N831,N832,N833,N834,
-     N835,N836,N837,N838,N839,N840,N841,N842,N843,N844,
-     N845,N846,N847,N848,N849,N851,N852,N853,N854,N855,
-     N856,N857,N858,N859,N860,N861,N862,N867,N868,N869,
-     N870,N871,N872,N873,N875,N876,N877;
-
-nand NAND4_1 (N269, N1, N8, N13, N17);
-nand NAND4_2 (N270, N1, N26, N13, N17);
-and AND3_3 (N273, N29, N36, N42);
-and AND3_4 (N276, N1, N26, N51);
-nand NAND4_5 (N279, N1, N8, N51, N17);
-nand NAND4_6 (N280, N1, N8, N13, N55);
-nand NAND4_7 (N284, N59, N42, N68, N72);
-nand NAND2_8 (N285, N29, N68);
-nand NAND3_9 (N286, N59, N68, N74);
-and AND3_10 (N287, N29, N75, N80);
-and AND3_11 (N290, N29, N75, N42);
-and AND3_12 (N291, N29, N36, N80);
-and AND3_13 (N292, N29, N36, N42);
-and AND3_14 (N293, N59, N75, N80);
-and AND3_15 (N294, N59, N75, N42);
-and AND3_16 (N295, N59, N36, N80);
-and AND3_17 (N296, N59, N36, N42);
-and AND2_18 (N297, N85, N86);
-or OR2_19 (N298, N87, N88);
-nand NAND2_20 (N301, N91, N96);
-or OR2_21 (N302, N91, N96);
-nand NAND2_22 (N303, N101, N106);
-or OR2_23 (N304, N101, N106);
-nand NAND2_24 (N305, N111, N116);
-or OR2_25 (N306, N111, N116);
-nand NAND2_26 (N307, N121, N126);
-or OR2_27 (N308, N121, N126);
-and AND2_28 (N309, N8, N138);
-not NOT1_29 (N310, N268);
-and AND2_30 (N316, N51, N138);
-and AND2_31 (N317, N17, N138);
-and AND2_32 (N318, N152, N138);
-nand NAND2_33 (N319, N59, N156);
-nor NOR2_34 (N322, N17, N42);
-and AND2_35 (N323, N17, N42);
-nand NAND2_36 (N324, N159, N165);
-or OR2_37 (N325, N159, N165);
-nand NAND2_38 (N326, N171, N177);
-or OR2_39 (N327, N171, N177);
-nand NAND2_40 (N328, N183, N189);
-or OR2_41 (N329, N183, N189);
-nand NAND2_42 (N330, N195, N201);
-or OR2_43 (N331, N195, N201);
-and AND2_44 (N332, N210, N91);
-and AND2_45 (N333, N210, N96);
-and AND2_46 (N334, N210, N101);
-and AND2_47 (N335, N210, N106);
-and AND2_48 (N336, N210, N111);
-and AND2_49 (N337, N255, N259);
-and AND2_50 (N338, N210, N116);
-and AND2_51 (N339, N255, N260);
-and AND2_52 (N340, N210, N121);
-and AND2_53 (N341, N255, N267);
-not NOT1_54 (N342, N269);
-not NOT1_55 (N343, N273);
-or OR2_56 (N344, N270, N273);
-not NOT1_57 (N345, N276);
-not NOT1_58 (N346, N276);
-not NOT1_59 (N347, N279);
-nor NOR2_60 (N348, N280, N284);
-or OR2_61 (N349, N280, N285);
-or OR2_62 (N350, N280, N286);
-not NOT1_63 (N351, N293);
-not NOT1_64 (N352, N294);
-not NOT1_65 (N353, N295);
-not NOT1_66 (N354, N296);
-nand NAND2_67 (N355, N89, N298);
-and AND2_68 (N356, N90, N298);
-nand NAND2_69 (N357, N301, N302);
-nand NAND2_70 (N360, N303, N304);
-nand NAND2_71 (N363, N305, N306);
-nand NAND2_72 (N366, N307, N308);
-not NOT1_73 (N369, N310);
-nor NOR2_74 (N375, N322, N323);
-nand NAND2_75 (N376, N324, N325);
-nand NAND2_76 (N379, N326, N327);
-nand NAND2_77 (N382, N328, N329);
-nand NAND2_78 (N385, N330, N331);
-buf BUFF1_79 (N388, N290);
-buf BUFF1_80 (N389, N291);
-buf BUFF1_81 (N390, N292);
-buf BUFF1_82 (N391, N297);
-or OR2_83 (N392, N270, N343);
-not NOT1_84 (N393, N345);
-not NOT1_85 (N399, N346);
-and AND2_86 (N400, N348, N73);
-not NOT1_87 (N401, N349);
-not NOT1_88 (N402, N350);
-not NOT1_89 (N403, N355);
-not NOT1_90 (N404, N357);
-not NOT1_91 (N405, N360);
-and AND2_92 (N406, N357, N360);
-not NOT1_93 (N407, N363);
-not NOT1_94 (N408, N366);
-and AND2_95 (N409, N363, N366);
-nand NAND2_96 (N410, N347, N352);
-not NOT1_97 (N411, N376);
-not NOT1_98 (N412, N379);
-and AND2_99 (N413, N376, N379);
-not NOT1_100 (N414, N382);
-not NOT1_101 (N415, N385);
-and AND2_102 (N416, N382, N385);
-and AND2_103 (N417, N210, N369);
-buf BUFF1_104 (N418, N342);
-buf BUFF1_105 (N419, N344);
-buf BUFF1_106 (N420, N351);
-buf BUFF1_107 (N421, N353);
-buf BUFF1_108 (N422, N354);
-buf BUFF1_109 (N423, N356);
-not NOT1_110 (N424, N400);
-and AND2_111 (N425, N404, N405);
-and AND2_112 (N426, N407, N408);
-and AND3_113 (N427, N319, N393, N55);
-and AND3_114 (N432, N393, N17, N287);
-nand NAND3_115 (N437, N393, N287, N55);
-nand NAND4_116 (N442, N375, N59, N156, N393);
-nand NAND3_117 (N443, N393, N319, N17);
-and AND2_118 (N444, N411, N412);
-and AND2_119 (N445, N414, N415);
-buf BUFF1_120 (N446, N392);
-buf BUFF1_121 (N447, N399);
-buf BUFF1_122 (N448, N401);
-buf BUFF1_123 (N449, N402);
-buf BUFF1_124 (N450, N403);
-not NOT1_125 (N451, N424);
-nor NOR2_126 (N460, N406, N425);
-nor NOR2_127 (N463, N409, N426);
-nand NAND2_128 (N466, N442, N410);
-and AND2_129 (N475, N143, N427);
-and AND2_130 (N476, N310, N432);
-and AND2_131 (N477, N146, N427);
-and AND2_132 (N478, N310, N432);
-and AND2_133 (N479, N149, N427);
-and AND2_134 (N480, N310, N432);
-and AND2_135 (N481, N153, N427);
-and AND2_136 (N482, N310, N432);
-nand NAND2_137 (N483, N443, N1);
-or OR2_138 (N488, N369, N437);
-or OR2_139 (N489, N369, N437);
-or OR2_140 (N490, N369, N437);
-or OR2_141 (N491, N369, N437);
-nor NOR2_142 (N492, N413, N444);
-nor NOR2_143 (N495, N416, N445);
-nand NAND2_144 (N498, N130, N460);
-or OR2_145 (N499, N130, N460);
-nand NAND2_146 (N500, N463, N135);
-or OR2_147 (N501, N463, N135);
-and AND2_148 (N502, N91, N466);
-nor NOR2_149 (N503, N475, N476);
-and AND2_150 (N504, N96, N466);
-nor NOR2_151 (N505, N477, N478);
-and AND2_152 (N506, N101, N466);
-nor NOR2_153 (N507, N479, N480);
-and AND2_154 (N508, N106, N466);
-nor NOR2_155 (N509, N481, N482);
-and AND2_156 (N510, N143, N483);
-and AND2_157 (N511, N111, N466);
-and AND2_158 (N512, N146, N483);
-and AND2_159 (N513, N116, N466);
-and AND2_160 (N514, N149, N483);
-and AND2_161 (N515, N121, N466);
-and AND2_162 (N516, N153, N483);
-and AND2_163 (N517, N126, N466);
-nand NAND2_164 (N518, N130, N492);
-or OR2_165 (N519, N130, N492);
-nand NAND2_166 (N520, N495, N207);
-or OR2_167 (N521, N495, N207);
-and AND2_168 (N522, N451, N159);
-and AND2_169 (N523, N451, N165);
-and AND2_170 (N524, N451, N171);
-and AND2_171 (N525, N451, N177);
-and AND2_172 (N526, N451, N183);
-nand NAND2_173 (N527, N451, N189);
-nand NAND2_174 (N528, N451, N195);
-nand NAND2_175 (N529, N451, N201);
-nand NAND2_176 (N530, N498, N499);
-nand NAND2_177 (N533, N500, N501);
-nor NOR2_178 (N536, N309, N502);
-nor NOR2_179 (N537, N316, N504);
-nor NOR2_180 (N538, N317, N506);
-nor NOR2_181 (N539, N318, N508);
-nor NOR2_182 (N540, N510, N511);
-nor NOR2_183 (N541, N512, N513);
-nor NOR2_184 (N542, N514, N515);
-nor NOR2_185 (N543, N516, N517);
-nand NAND2_186 (N544, N518, N519);
-nand NAND2_187 (N547, N520, N521);
-not NOT1_188 (N550, N530);
-not NOT1_189 (N551, N533);
-and AND2_190 (N552, N530, N533);
-nand NAND2_191 (N553, N536, N503);
-nand NAND2_192 (N557, N537, N505);
-nand NAND2_193 (N561, N538, N507);
-nand NAND2_194 (N565, N539, N509);
-nand NAND2_195 (N569, N488, N540);
-nand NAND2_196 (N573, N489, N541);
-nand NAND2_197 (N577, N490, N542);
-nand NAND2_198 (N581, N491, N543);
-not NOT1_199 (N585, N544);
-not NOT1_200 (N586, N547);
-and AND2_201 (N587, N544, N547);
-and AND2_202 (N588, N550, N551);
-and AND2_203 (N589, N585, N586);
-nand NAND2_204 (N590, N553, N159);
-or OR2_205 (N593, N553, N159);
-and AND2_206 (N596, N246, N553);
-nand NAND2_207 (N597, N557, N165);
-or OR2_208 (N600, N557, N165);
-and AND2_209 (N605, N246, N557);
-nand NAND2_210 (N606, N561, N171);
-or OR2_211 (N609, N561, N171);
-and AND2_212 (N615, N246, N561);
-nand NAND2_213 (N616, N565, N177);
-or OR2_214 (N619, N565, N177);
-and AND2_215 (N624, N246, N565);
-nand NAND2_216 (N625, N569, N183);
-or OR2_217 (N628, N569, N183);
-and AND2_218 (N631, N246, N569);
-nand NAND2_219 (N632, N573, N189);
-or OR2_220 (N635, N573, N189);
-and AND2_221 (N640, N246, N573);
-nand NAND2_222 (N641, N577, N195);
-or OR2_223 (N644, N577, N195);
-and AND2_224 (N650, N246, N577);
-nand NAND2_225 (N651, N581, N201);
-or OR2_226 (N654, N581, N201);
-and AND2_227 (N659, N246, N581);
-nor NOR2_228 (N660, N552, N588);
-nor NOR2_229 (N661, N587, N589);
-not NOT1_230 (N662, N590);
-and AND2_231 (N665, N593, N590);
-nor NOR2_232 (N669, N596, N522);
-not NOT1_233 (N670, N597);
-and AND2_234 (N673, N600, N597);
-nor NOR2_235 (N677, N605, N523);
-not NOT1_236 (N678, N606);
-and AND2_237 (N682, N609, N606);
-nor NOR2_238 (N686, N615, N524);
-not NOT1_239 (N687, N616);
-and AND2_240 (N692, N619, N616);
-nor NOR2_241 (N696, N624, N525);
-not NOT1_242 (N697, N625);
-and AND2_243 (N700, N628, N625);
-nor NOR2_244 (N704, N631, N526);
-not NOT1_245 (N705, N632);
-and AND2_246 (N708, N635, N632);
-nor NOR2_247 (N712, N337, N640);
-not NOT1_248 (N713, N641);
-and AND2_249 (N717, N644, N641);
-nor NOR2_250 (N721, N339, N650);
-not NOT1_251 (N722, N651);
-and AND2_252 (N727, N654, N651);
-nor NOR2_253 (N731, N341, N659);
-nand NAND2_254 (N732, N654, N261);
-nand NAND3_255 (N733, N644, N654, N261);
-nand NAND4_256 (N734, N635, N644, N654, N261);
-not NOT1_257 (N735, N662);
-and AND2_258 (N736, N228, N665);
-and AND2_259 (N737, N237, N662);
-not NOT1_260 (N738, N670);
-and AND2_261 (N739, N228, N673);
-and AND2_262 (N740, N237, N670);
-not NOT1_263 (N741, N678);
-and AND2_264 (N742, N228, N682);
-and AND2_265 (N743, N237, N678);
-not NOT1_266 (N744, N687);
-and AND2_267 (N745, N228, N692);
-and AND2_268 (N746, N237, N687);
-not NOT1_269 (N747, N697);
-and AND2_270 (N748, N228, N700);
-and AND2_271 (N749, N237, N697);
-not NOT1_272 (N750, N705);
-and AND2_273 (N751, N228, N708);
-and AND2_274 (N752, N237, N705);
-not NOT1_275 (N753, N713);
-and AND2_276 (N754, N228, N717);
-and AND2_277 (N755, N237, N713);
-not NOT1_278 (N756, N722);
-nor NOR2_279 (N757, N727, N261);
-and AND2_280 (N758, N727, N261);
-and AND2_281 (N759, N228, N727);
-and AND2_282 (N760, N237, N722);
-nand NAND2_283 (N761, N644, N722);
-nand NAND2_284 (N762, N635, N713);
-nand NAND3_285 (N763, N635, N644, N722);
-nand NAND2_286 (N764, N609, N687);
-nand NAND2_287 (N765, N600, N678);
-nand NAND3_288 (N766, N600, N609, N687);
-buf BUFF1_289 (N767, N660);
-buf BUFF1_290 (N768, N661);
-nor NOR2_291 (N769, N736, N737);
-nor NOR2_292 (N770, N739, N740);
-nor NOR2_293 (N771, N742, N743);
-nor NOR2_294 (N772, N745, N746);
-nand NAND4_295 (N773, N750, N762, N763, N734);
-nor NOR2_296 (N777, N748, N749);
-nand NAND3_297 (N778, N753, N761, N733);
-nor NOR2_298 (N781, N751, N752);
-nand NAND2_299 (N782, N756, N732);
-nor NOR2_300 (N785, N754, N755);
-nor NOR2_301 (N786, N757, N758);
-nor NOR2_302 (N787, N759, N760);
-nor NOR2_303 (N788, N700, N773);
-and AND2_304 (N789, N700, N773);
-nor NOR2_305 (N790, N708, N778);
-and AND2_306 (N791, N708, N778);
-nor NOR2_307 (N792, N717, N782);
-and AND2_308 (N793, N717, N782);
-and AND2_309 (N794, N219, N786);
-nand NAND2_310 (N795, N628, N773);
-nand NAND2_311 (N796, N795, N747);
-nor NOR2_312 (N802, N788, N789);
-nor NOR2_313 (N803, N790, N791);
-nor NOR2_314 (N804, N792, N793);
-nor NOR2_315 (N805, N340, N794);
-nor NOR2_316 (N806, N692, N796);
-and AND2_317 (N807, N692, N796);
-and AND2_318 (N808, N219, N802);
-and AND2_319 (N809, N219, N803);
-and AND2_320 (N810, N219, N804);
-nand NAND4_321 (N811, N805, N787, N731, N529);
-nand NAND2_322 (N812, N619, N796);
-nand NAND3_323 (N813, N609, N619, N796);
-nand NAND4_324 (N814, N600, N609, N619, N796);
-nand NAND4_325 (N815, N738, N765, N766, N814);
-nand NAND3_326 (N819, N741, N764, N813);
-nand NAND2_327 (N822, N744, N812);
-nor NOR2_328 (N825, N806, N807);
-nor NOR2_329 (N826, N335, N808);
-nor NOR2_330 (N827, N336, N809);
-nor NOR2_331 (N828, N338, N810);
-not NOT1_332 (N829, N811);
-nor NOR2_333 (N830, N665, N815);
-and AND2_334 (N831, N665, N815);
-nor NOR2_335 (N832, N673, N819);
-and AND2_336 (N833, N673, N819);
-nor NOR2_337 (N834, N682, N822);
-and AND2_338 (N835, N682, N822);
-and AND2_339 (N836, N219, N825);
-nand NAND3_340 (N837, N826, N777, N704);
-nand NAND4_341 (N838, N827, N781, N712, N527);
-nand NAND4_342 (N839, N828, N785, N721, N528);
-not NOT1_343 (N840, N829);
-nand NAND2_344 (N841, N815, N593);
-nor NOR2_345 (N842, N830, N831);
-nor NOR2_346 (N843, N832, N833);
-nor NOR2_347 (N844, N834, N835);
-nor NOR2_348 (N845, N334, N836);
-not NOT1_349 (N846, N837);
-not NOT1_350 (N847, N838);
-not NOT1_351 (N848, N839);
-and AND2_352 (N849, N735, N841);
-buf BUFF1_353 (N850, N840);
-and AND2_354 (N851, N219, N842);
-and AND2_355 (N852, N219, N843);
-and AND2_356 (N853, N219, N844);
-nand NAND3_357 (N854, N845, N772, N696);
-not NOT1_358 (N855, N846);
-not NOT1_359 (N856, N847);
-not NOT1_360 (N857, N848);
-not NOT1_361 (N858, N849);
-nor NOR2_362 (N859, N417, N851);
-nor NOR2_363 (N860, N332, N852);
-nor NOR2_364 (N861, N333, N853);
-not NOT1_365 (N862, N854);
-buf BUFF1_366 (N863, N855);
-buf BUFF1_367 (N864, N856);
-buf BUFF1_368 (N865, N857);
-buf BUFF1_369 (N866, N858);
-nand NAND3_370 (N867, N859, N769, N669);
-nand NAND3_371 (N868, N860, N770, N677);
-nand NAND3_372 (N869, N861, N771, N686);
-not NOT1_373 (N870, N862);
-not NOT1_374 (N871, N867);
-not NOT1_375 (N872, N868);
-not NOT1_376 (N873, N869);
-buf BUFF1_377 (N874, N870);
-not NOT1_378 (N875, N871);
-not NOT1_379 (N876, N872);
-not NOT1_380 (N877, N873);
-buf BUFF1_381 (N878, N875);
-buf BUFF1_382 (N879, N876);
-buf BUFF1_383 (N880, N877);
-
+   NA4 U1 ( L1gat, L8gat, L13gat, L17gat, L269gat ); 
+   NA4 U2 ( L1gat, L26gat, L13gat, L17gat, L270gat ); 
+   AND3 U3 ( L29gat, L36gat, L42gat, L273gat ); 
+   AND3 U4 ( L1gat, L26gat, L51gat, L276gat ); 
+   NA4 U5 ( L1gat, L8gat, L51gat, L17gat, L279gat ); 
+   NA4 U6 ( L1gat, L8gat, L13gat, L55gat, L280gat ); 
+   NA4 U7 ( L59gat, L42gat, L68gat, L72gat, L284gat ); 
+   NA2 U8 ( L29gat, L68gat, L285gat ); 
+   NA3 U9 ( L59gat, L68gat, L74gat, L286gat ); 
+   AND3 U10 ( L29gat, L75gat, L80gat, L287gat ); 
+   AND3 U11 ( L29gat, L75gat, L42gat, L290gat ); 
+   AND3 U12 ( L29gat, L36gat, L80gat, L291gat ); 
+   AND3 U13 ( L29gat, L36gat, L42gat, L292gat ); 
+   AND3 U14 ( L59gat, L75gat, L80gat, L293gat ); 
+   AND3 U15 ( L59gat, L75gat, L42gat, L294gat ); 
+   AND3 U16 ( L59gat, L36gat, L80gat, L295gat ); 
+   AND3 U17 ( L59gat, L36gat, L42gat, L296gat ); 
+   AND2 U18 ( L85gat, L86gat, L297gat ); 
+   OR2 U19 ( L87gat, L88gat, L298gat ); 
+   NA2 U20 ( L91gat, L96gat, L301gat ); 
+   OR2 U21 ( L91gat, L96gat, L302gat ); 
+   NA2 U22 ( L101gat, L106gat, L303gat ); 
+   OR2 U23 ( L101gat, L106gat, L304gat ); 
+   NA2 U24 ( L111gat, L116gat, L305gat ); 
+   OR2 U25 ( L111gat, L116gat, L306gat ); 
+   NA2 U26 ( L121gat, L126gat, L307gat ); 
+   OR2 U27 ( L121gat, L126gat, L308gat ); 
+   AND2 U28 ( L8gat, L138gat, L309gat ); 
+   IN1 U29 ( L268gat, L310gat ); 
+   AND2 U30 ( L51gat, L138gat, L316gat ); 
+   AND2 U31 ( L17gat, L138gat, L317gat ); 
+   AND2 U32 ( L152gat, L138gat, L318gat ); 
+   NA2 U33 ( L59gat, L156gat, L319gat ); 
+   NO2 U34 ( L17gat, L42gat, L322gat ); 
+   AND2 U35 ( L17gat, L42gat, L323gat ); 
+   NA2 U36 ( L159gat, L165gat, L324gat ); 
+   OR2 U37 ( L159gat, L165gat, L325gat ); 
+   NA2 U38 ( L171gat, L177gat, L326gat ); 
+   OR2 U39 ( L171gat, L177gat, L327gat ); 
+   NA2 U40 ( L183gat, L189gat, L328gat ); 
+   OR2 U41 ( L183gat, L189gat, L329gat ); 
+   NA2 U42 ( L195gat, L201gat, L330gat ); 
+   OR2 U43 ( L195gat, L201gat, L331gat ); 
+   AND2 U44 ( L210gat, L91gat, L332gat ); 
+   AND2 U45 ( L210gat, L96gat, L333gat ); 
+   AND2 U46 ( L210gat, L101gat, L334gat ); 
+   AND2 U47 ( L210gat, L106gat, L335gat ); 
+   AND2 U48 ( L210gat, L111gat, L336gat ); 
+   AND2 U49 ( L255gat, L259gat, L337gat ); 
+   AND2 U50 ( L210gat, L116gat, L338gat ); 
+   AND2 U51 ( L255gat, L260gat, L339gat ); 
+   AND2 U52 ( L210gat, L121gat, L340gat ); 
+   AND2 U53 ( L255gat, L267gat, L341gat ); 
+   IN1 U54 ( L269gat, L342gat ); 
+   IN1 U55 ( L273gat, L343gat ); 
+   OR2 U56 ( L270gat, L273gat, L344gat ); 
+   IN1 U57 ( L276gat, L345gat ); 
+   IN1 U58 ( L276gat, L346gat ); 
+   IN1 U59 ( L279gat, L347gat ); 
+   NO2 U60 ( L280gat, L284gat, L348gat ); 
+   OR2 U61 ( L280gat, L285gat, L349gat ); 
+   OR2 U62 ( L280gat, L286gat, L350gat ); 
+   IN1 U63 ( L293gat, L351gat ); 
+   IN1 U64 ( L294gat, L352gat ); 
+   IN1 U65 ( L295gat, L353gat ); 
+   IN1 U66 ( L296gat, L354gat ); 
+   NA2 U67 ( L89gat, L298gat, L355gat ); 
+   AND2 U68 ( L90gat, L298gat, L356gat ); 
+   NA2 U69 ( L301gat, L302gat, L357gat ); 
+   NA2 U70 ( L303gat, L304gat, L360gat ); 
+   NA2 U71 ( L305gat, L306gat, L363gat ); 
+   NA2 U72 ( L307gat, L308gat, L366gat ); 
+   IN1 U73 ( L310gat, L369gat ); 
+   NO2 U74 ( L322gat, L323gat, L375gat ); 
+   NA2 U75 ( L324gat, L325gat, L376gat ); 
+   NA2 U76 ( L326gat, L327gat, L379gat ); 
+   NA2 U77 ( L328gat, L329gat, L382gat ); 
+   NA2 U78 ( L330gat, L331gat, L385gat ); 
+   BU1 U79 ( L290gat, L388gat ); 
+   BU1 U80 ( L291gat, L389gat ); 
+   BU1 U81 ( L292gat, L390gat ); 
+   BU1 U82 ( L297gat, L391gat ); 
+   OR2 U83 ( L270gat, L343gat, L392gat ); 
+   IN1 U84 ( L345gat, L393gat ); 
+   IN1 U85 ( L346gat, L399gat ); 
+   AND2 U86 ( L348gat, L73gat, L400gat ); 
+   IN1 U87 ( L349gat, L401gat ); 
+   IN1 U88 ( L350gat, L402gat ); 
+   IN1 U89 ( L355gat, L403gat ); 
+   IN1 U90 ( L357gat, L404gat ); 
+   IN1 U91 ( L360gat, L405gat ); 
+   AND2 U92 ( L357gat, L360gat, L406gat ); 
+   IN1 U93 ( L363gat, L407gat ); 
+   IN1 U94 ( L366gat, L408gat ); 
+   AND2 U95 ( L363gat, L366gat, L409gat ); 
+   NA2 U96 ( L347gat, L352gat, L410gat ); 
+   IN1 U97 ( L376gat, L411gat ); 
+   IN1 U98 ( L379gat, L412gat ); 
+   AND2 U99 ( L376gat, L379gat, L413gat ); 
+   IN1 U100 ( L382gat, L414gat ); 
+   IN1 U101 ( L385gat, L415gat ); 
+   AND2 U102 ( L382gat, L385gat, L416gat ); 
+   AND2 U103 ( L210gat, L369gat, L417gat ); 
+   BU1 U104 ( L342gat, L418gat ); 
+   BU1 U105 ( L344gat, L419gat ); 
+   BU1 U106 ( L351gat, L420gat ); 
+   BU1 U107 ( L353gat, L421gat ); 
+   BU1 U108 ( L354gat, L422gat ); 
+   BU1 U109 ( L356gat, L423gat ); 
+   IN1 U110 ( L400gat, L424gat ); 
+   AND2 U111 ( L404gat, L405gat, L425gat ); 
+   AND2 U112 ( L407gat, L408gat, L426gat ); 
+   AND3 U113 ( L319gat, L393gat, L55gat, L427gat ); 
+   AND3 U114 ( L393gat, L17gat, L287gat, L432gat ); 
+   NA3 U115 ( L393gat, L287gat, L55gat, L437gat ); 
+   NA4 U116 ( L375gat, L59gat, L156gat, L393gat, L442gat ); 
+   NA3 U117 ( L393gat, L319gat, L17gat, L443gat ); 
+   AND2 U118 ( L411gat, L412gat, L444gat ); 
+   AND2 U119 ( L414gat, L415gat, L445gat ); 
+   BU1 U120 ( L392gat, L446gat ); 
+   BU1 U121 ( L399gat, L447gat ); 
+   BU1 U122 ( L401gat, L448gat ); 
+   BU1 U123 ( L402gat, L449gat ); 
+   BU1 U124 ( L403gat, L450gat ); 
+   IN1 U125 ( L424gat, L451gat ); 
+   NO2 U126 ( L406gat, L425gat, L460gat ); 
+   NO2 U127 ( L409gat, L426gat, L463gat ); 
+   NA2 U128 ( L442gat, L410gat, L466gat ); 
+   AND2 U129 ( L143gat, L427gat, L475gat ); 
+   AND2 U130 ( L310gat, L432gat, L476gat ); 
+   AND2 U131 ( L146gat, L427gat, L477gat ); 
+   AND2 U132 ( L310gat, L432gat, L478gat ); 
+   AND2 U133 ( L149gat, L427gat, L479gat ); 
+   AND2 U134 ( L310gat, L432gat, L480gat ); 
+   AND2 U135 ( L153gat, L427gat, L481gat ); 
+   AND2 U136 ( L310gat, L432gat, L482gat ); 
+   NA2 U137 ( L443gat, L1gat, L483gat ); 
+   OR2 U138 ( L369gat, L437gat, L488gat ); 
+   OR2 U139 ( L369gat, L437gat, L489gat ); 
+   OR2 U140 ( L369gat, L437gat, L490gat ); 
+   OR2 U141 ( L369gat, L437gat, L491gat ); 
+   NO2 U142 ( L413gat, L444gat, L492gat ); 
+   NO2 U143 ( L416gat, L445gat, L495gat ); 
+   NA2 U144 ( L130gat, L460gat, L498gat ); 
+   OR2 U145 ( L130gat, L460gat, L499gat ); 
+   NA2 U146 ( L463gat, L135gat, L500gat ); 
+   OR2 U147 ( L463gat, L135gat, L501gat ); 
+   AND2 U148 ( L91gat, L466gat, L502gat ); 
+   NO2 U149 ( L475gat, L476gat, L503gat ); 
+   AND2 U150 ( L96gat, L466gat, L504gat ); 
+   NO2 U151 ( L477gat, L478gat, L505gat ); 
+   AND2 U152 ( L101gat, L466gat, L506gat ); 
+   NO2 U153 ( L479gat, L480gat, L507gat ); 
+   AND2 U154 ( L106gat, L466gat, L508gat ); 
+   NO2 U155 ( L481gat, L482gat, L509gat ); 
+   AND2 U156 ( L143gat, L483gat, L510gat ); 
+   AND2 U157 ( L111gat, L466gat, L511gat ); 
+   AND2 U158 ( L146gat, L483gat, L512gat ); 
+   AND2 U159 ( L116gat, L466gat, L513gat ); 
+   AND2 U160 ( L149gat, L483gat, L514gat ); 
+   AND2 U161 ( L121gat, L466gat, L515gat ); 
+   AND2 U162 ( L153gat, L483gat, L516gat ); 
+   AND2 U163 ( L126gat, L466gat, L517gat ); 
+   NA2 U164 ( L130gat, L492gat, L518gat ); 
+   OR2 U165 ( L130gat, L492gat, L519gat ); 
+   NA2 U166 ( L495gat, L207gat, L520gat ); 
+   OR2 U167 ( L495gat, L207gat, L521gat ); 
+   AND2 U168 ( L451gat, L159gat, L522gat ); 
+   AND2 U169 ( L451gat, L165gat, L523gat ); 
+   AND2 U170 ( L451gat, L171gat, L524gat ); 
+   AND2 U171 ( L451gat, L177gat, L525gat ); 
+   AND2 U172 ( L451gat, L183gat, L526gat ); 
+   NA2 U173 ( L451gat, L189gat, L527gat ); 
+   NA2 U174 ( L451gat, L195gat, L528gat ); 
+   NA2 U175 ( L451gat, L201gat, L529gat ); 
+   NA2 U176 ( L498gat, L499gat, L530gat ); 
+   NA2 U177 ( L500gat, L501gat, L533gat ); 
+   NO2 U178 ( L309gat, L502gat, L536gat ); 
+   NO2 U179 ( L316gat, L504gat, L537gat ); 
+   NO2 U180 ( L317gat, L506gat, L538gat ); 
+   NO2 U181 ( L318gat, L508gat, L539gat ); 
+   NO2 U182 ( L510gat, L511gat, L540gat ); 
+   NO2 U183 ( L512gat, L513gat, L541gat ); 
+   NO2 U184 ( L514gat, L515gat, L542gat ); 
+   NO2 U185 ( L516gat, L517gat, L543gat ); 
+   NA2 U186 ( L518gat, L519gat, L544gat ); 
+   NA2 U187 ( L520gat, L521gat, L547gat ); 
+   IN1 U188 ( L530gat, L550gat ); 
+   IN1 U189 ( L533gat, L551gat ); 
+   AND2 U190 ( L530gat, L533gat, L552gat ); 
+   NA2 U191 ( L536gat, L503gat, L553gat ); 
+   NA2 U192 ( L537gat, L505gat, L557gat ); 
+   NA2 U193 ( L538gat, L507gat, L561gat ); 
+   NA2 U194 ( L539gat, L509gat, L565gat ); 
+   NA2 U195 ( L488gat, L540gat, L569gat ); 
+   NA2 U196 ( L489gat, L541gat, L573gat ); 
+   NA2 U197 ( L490gat, L542gat, L577gat ); 
+   NA2 U198 ( L491gat, L543gat, L581gat ); 
+   IN1 U199 ( L544gat, L585gat ); 
+   IN1 U200 ( L547gat, L586gat ); 
+   AND2 U201 ( L544gat, L547gat, L587gat ); 
+   AND2 U202 ( L550gat, L551gat, L588gat ); 
+   AND2 U203 ( L585gat, L586gat, L589gat ); 
+   NA2 U204 ( L553gat, L159gat, L590gat ); 
+   OR2 U205 ( L553gat, L159gat, L593gat ); 
+   AND2 U206 ( L246gat, L553gat, L596gat ); 
+   NA2 U207 ( L557gat, L165gat, L597gat ); 
+   OR2 U208 ( L557gat, L165gat, L600gat ); 
+   AND2 U209 ( L246gat, L557gat, L605gat ); 
+   NA2 U210 ( L561gat, L171gat, L606gat ); 
+   OR2 U211 ( L561gat, L171gat, L609gat ); 
+   AND2 U212 ( L246gat, L561gat, L615gat ); 
+   NA2 U213 ( L565gat, L177gat, L616gat ); 
+   OR2 U214 ( L565gat, L177gat, L619gat ); 
+   AND2 U215 ( L246gat, L565gat, L624gat ); 
+   NA2 U216 ( L569gat, L183gat, L625gat ); 
+   OR2 U217 ( L569gat, L183gat, L628gat ); 
+   AND2 U218 ( L246gat, L569gat, L631gat ); 
+   NA2 U219 ( L573gat, L189gat, L632gat ); 
+   OR2 U220 ( L573gat, L189gat, L635gat ); 
+   AND2 U221 ( L246gat, L573gat, L640gat ); 
+   NA2 U222 ( L577gat, L195gat, L641gat ); 
+   OR2 U223 ( L577gat, L195gat, L644gat ); 
+   AND2 U224 ( L246gat, L577gat, L650gat ); 
+   NA2 U225 ( L581gat, L201gat, L651gat ); 
+   OR2 U226 ( L581gat, L201gat, L654gat ); 
+   AND2 U227 ( L246gat, L581gat, L659gat ); 
+   NO2 U228 ( L552gat, L588gat, L660gat ); 
+   NO2 U229 ( L587gat, L589gat, L661gat ); 
+   IN1 U230 ( L590gat, L662gat ); 
+   AND2 U231 ( L593gat, L590gat, L665gat ); 
+   NO2 U232 ( L596gat, L522gat, L669gat ); 
+   IN1 U233 ( L597gat, L670gat ); 
+   AND2 U234 ( L600gat, L597gat, L673gat ); 
+   NO2 U235 ( L605gat, L523gat, L677gat ); 
+   IN1 U236 ( L606gat, L678gat ); 
+   AND2 U237 ( L609gat, L606gat, L682gat ); 
+   NO2 U238 ( L615gat, L524gat, L686gat ); 
+   IN1 U239 ( L616gat, L687gat ); 
+   AND2 U240 ( L619gat, L616gat, L692gat ); 
+   NO2 U241 ( L624gat, L525gat, L696gat ); 
+   IN1 U242 ( L625gat, L697gat ); 
+   AND2 U243 ( L628gat, L625gat, L700gat ); 
+   NO2 U244 ( L631gat, L526gat, L704gat ); 
+   IN1 U245 ( L632gat, L705gat ); 
+   AND2 U246 ( L635gat, L632gat, L708gat ); 
+   NO2 U247 ( L337gat, L640gat, L712gat ); 
+   IN1 U248 ( L641gat, L713gat ); 
+   AND2 U249 ( L644gat, L641gat, L717gat ); 
+   NO2 U250 ( L339gat, L650gat, L721gat ); 
+   IN1 U251 ( L651gat, L722gat ); 
+   AND2 U252 ( L654gat, L651gat, L727gat ); 
+   NO2 U253 ( L341gat, L659gat, L731gat ); 
+   NA2 U254 ( L654gat, L261gat, L732gat ); 
+   NA3 U255 ( L644gat, L654gat, L261gat, L733gat ); 
+   NA4 U256 ( L635gat, L644gat, L654gat, L261gat, L734gat ); 
+   IN1 U257 ( L662gat, L735gat ); 
+   AND2 U258 ( L228gat, L665gat, L736gat ); 
+   AND2 U259 ( L237gat, L662gat, L737gat ); 
+   IN1 U260 ( L670gat, L738gat ); 
+   AND2 U261 ( L228gat, L673gat, L739gat ); 
+   AND2 U262 ( L237gat, L670gat, L740gat ); 
+   IN1 U263 ( L678gat, L741gat ); 
+   AND2 U264 ( L228gat, L682gat, L742gat ); 
+   AND2 U265 ( L237gat, L678gat, L743gat ); 
+   IN1 U266 ( L687gat, L744gat ); 
+   AND2 U267 ( L228gat, L692gat, L745gat ); 
+   AND2 U268 ( L237gat, L687gat, L746gat ); 
+   IN1 U269 ( L697gat, L747gat ); 
+   AND2 U270 ( L228gat, L700gat, L748gat ); 
+   AND2 U271 ( L237gat, L697gat, L749gat ); 
+   IN1 U272 ( L705gat, L750gat ); 
+   AND2 U273 ( L228gat, L708gat, L751gat ); 
+   AND2 U274 ( L237gat, L705gat, L752gat ); 
+   IN1 U275 ( L713gat, L753gat ); 
+   AND2 U276 ( L228gat, L717gat, L754gat ); 
+   AND2 U277 ( L237gat, L713gat, L755gat ); 
+   IN1 U278 ( L722gat, L756gat ); 
+   NO2 U279 ( L727gat, L261gat, L757gat ); 
+   AND2 U280 ( L727gat, L261gat, L758gat ); 
+   AND2 U281 ( L228gat, L727gat, L759gat ); 
+   AND2 U282 ( L237gat, L722gat, L760gat ); 
+   NA2 U283 ( L644gat, L722gat, L761gat ); 
+   NA2 U284 ( L635gat, L713gat, L762gat ); 
+   NA3 U285 ( L635gat, L644gat, L722gat, L763gat ); 
+   NA2 U286 ( L609gat, L687gat, L764gat ); 
+   NA2 U287 ( L600gat, L678gat, L765gat ); 
+   NA3 U288 ( L600gat, L609gat, L687gat, L766gat ); 
+   BU1 U289 ( L660gat, L767gat ); 
+   BU1 U290 ( L661gat, L768gat ); 
+   NO2 U291 ( L736gat, L737gat, L769gat ); 
+   NO2 U292 ( L739gat, L740gat, L770gat ); 
+   NO2 U293 ( L742gat, L743gat, L771gat ); 
+   NO2 U294 ( L745gat, L746gat, L772gat ); 
+   NA4 U295 ( L750gat, L762gat, L763gat, L734gat, L773gat ); 
+   NO2 U296 ( L748gat, L749gat, L777gat ); 
+   NA3 U297 ( L753gat, L761gat, L733gat, L778gat ); 
+   NO2 U298 ( L751gat, L752gat, L781gat ); 
+   NA2 U299 ( L756gat, L732gat, L782gat ); 
+   NO2 U300 ( L754gat, L755gat, L785gat ); 
+   NO2 U301 ( L757gat, L758gat, L786gat ); 
+   NO2 U302 ( L759gat, L760gat, L787gat ); 
+   NO2 U303 ( L700gat, L773gat, L788gat ); 
+   AND2 U304 ( L700gat, L773gat, L789gat ); 
+   NO2 U305 ( L708gat, L778gat, L790gat ); 
+   AND2 U306 ( L708gat, L778gat, L791gat ); 
+   NO2 U307 ( L717gat, L782gat, L792gat ); 
+   AND2 U308 ( L717gat, L782gat, L793gat ); 
+   AND2 U309 ( L219gat, L786gat, L794gat ); 
+   NA2 U310 ( L628gat, L773gat, L795gat ); 
+   NA2 U311 ( L795gat, L747gat, L796gat ); 
+   NO2 U312 ( L788gat, L789gat, L802gat ); 
+   NO2 U313 ( L790gat, L791gat, L803gat ); 
+   NO2 U314 ( L792gat, L793gat, L804gat ); 
+   NO2 U315 ( L340gat, L794gat, L805gat ); 
+   NO2 U316 ( L692gat, L796gat, L806gat ); 
+   AND2 U317 ( L692gat, L796gat, L807gat ); 
+   AND2 U318 ( L219gat, L802gat, L808gat ); 
+   AND2 U319 ( L219gat, L803gat, L809gat ); 
+   AND2 U320 ( L219gat, L804gat, L810gat ); 
+   NA4 U321 ( L805gat, L787gat, L731gat, L529gat, L811gat ); 
+   NA2 U322 ( L619gat, L796gat, L812gat ); 
+   NA3 U323 ( L609gat, L619gat, L796gat, L813gat ); 
+   NA4 U324 ( L600gat, L609gat, L619gat, L796gat, L814gat ); 
+   NA4 U325 ( L738gat, L765gat, L766gat, L814gat, L815gat ); 
+   NA3 U326 ( L741gat, L764gat, L813gat, L819gat ); 
+   NA2 U327 ( L744gat, L812gat, L822gat ); 
+   NO2 U328 ( L806gat, L807gat, L825gat ); 
+   NO2 U329 ( L335gat, L808gat, L826gat ); 
+   NO2 U330 ( L336gat, L809gat, L827gat ); 
+   NO2 U331 ( L338gat, L810gat, L828gat ); 
+   IN1 U332 ( L811gat, L829gat ); 
+   NO2 U333 ( L665gat, L815gat, L830gat ); 
+   AND2 U334 ( L665gat, L815gat, L831gat ); 
+   NO2 U335 ( L673gat, L819gat, L832gat ); 
+   AND2 U336 ( L673gat, L819gat, L833gat ); 
+   NO2 U337 ( L682gat, L822gat, L834gat ); 
+   AND2 U338 ( L682gat, L822gat, L835gat ); 
+   AND2 U339 ( L219gat, L825gat, L836gat ); 
+   NA3 U340 ( L826gat, L777gat, L704gat, L837gat ); 
+   NA4 U341 ( L827gat, L781gat, L712gat, L527gat, L838gat ); 
+   NA4 U342 ( L828gat, L785gat, L721gat, L528gat, L839gat ); 
+   IN1 U343 ( L829gat, L840gat ); 
+   NA2 U344 ( L815gat, L593gat, L841gat ); 
+   NO2 U345 ( L830gat, L831gat, L842gat ); 
+   NO2 U346 ( L832gat, L833gat, L843gat ); 
+   NO2 U347 ( L834gat, L835gat, L844gat ); 
+   NO2 U348 ( L334gat, L836gat, L845gat ); 
+   IN1 U349 ( L837gat, L846gat ); 
+   IN1 U350 ( L838gat, L847gat ); 
+   IN1 U351 ( L839gat, L848gat ); 
+   AND2 U352 ( L735gat, L841gat, L849gat ); 
+   BU1 U353 ( L840gat, L850gat ); 
+   AND2 U354 ( L219gat, L842gat, L851gat ); 
+   AND2 U355 ( L219gat, L843gat, L852gat ); 
+   AND2 U356 ( L219gat, L844gat, L853gat ); 
+   NA3 U357 ( L845gat, L772gat, L696gat, L854gat ); 
+   IN1 U358 ( L846gat, L855gat ); 
+   IN1 U359 ( L847gat, L856gat ); 
+   IN1 U360 ( L848gat, L857gat ); 
+   IN1 U361 ( L849gat, L858gat ); 
+   NO2 U362 ( L417gat, L851gat, L859gat ); 
+   NO2 U363 ( L332gat, L852gat, L860gat ); 
+   NO2 U364 ( L333gat, L853gat, L861gat ); 
+   IN1 U365 ( L854gat, L862gat ); 
+   BU1 U366 ( L855gat, L863gat ); 
+   BU1 U367 ( L856gat, L864gat ); 
+   BU1 U368 ( L857gat, L865gat ); 
+   BU1 U369 ( L858gat, L866gat ); 
+   NA3 U370 ( L859gat, L769gat, L669gat, L867gat ); 
+   NA3 U371 ( L860gat, L770gat, L677gat, L868gat ); 
+   NA3 U372 ( L861gat, L771gat, L686gat, L869gat ); 
+   IN1 U373 ( L862gat, L870gat ); 
+   IN1 U374 ( L867gat, L871gat ); 
+   IN1 U375 ( L868gat, L872gat ); 
+   IN1 U376 ( L869gat, L873gat ); 
+   BU1 U377 ( L870gat, L874gat ); 
+   IN1 U378 ( L871gat, L875gat ); 
+   IN1 U379 ( L872gat, L876gat ); 
+   IN1 U380 ( L873gat, L877gat ); 
+   BU1 U381 ( L875gat, L878gat ); 
+   BU1 U382 ( L876gat, L879gat ); 
+   BU1 U383 ( L877gat, L880gat ); 
 endmodule
+
