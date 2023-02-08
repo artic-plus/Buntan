@@ -8,14 +8,14 @@ import subprocess
 
 numthreads = 2;
 hosts = '' # define hostnames to run on
-clk = 10;
 rep = 10;
 
 def main():
 	args = sys.argv
-	if(len(args) < 2):
+	if(len(args) < 3):
 		print("input required!")
 		return
+	clk = args[2]
 	ls_v = glob.glob(args[1] + "*.json")
 	print(len(ls_v))
 	datestr = datetime.datetime.now().strftime('%Y:%m:%d_%H:%M')

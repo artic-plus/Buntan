@@ -89,8 +89,10 @@ _deps
 
 # End of https://www.toptal.com/developers/gitignore/api/c++,linux,visualstudiocode
 
-
+build/
 meas/
+examples/iscas85/
+examples/iscas89/
 *secret.key
 *cloud.key
 *cloud.data
