@@ -57,8 +57,17 @@ int yosys_json_parser(
 				top = it->first;
 				break;
 			}
+		}else if (module["attributes"].get<picojson::object>()["top"].is<int64_t>()){
+			if (module["attributes"].get<picojson::object>()["top"].get<int64_t>()){
+				top = it->first;
+				break;
+			}
 		}
 	}
+    if(top == ""){
+        std::cerr << 'err:top module not found!' << std::endl;
+        return 1;
+    }
 	std::cout << "top moodule is '" << top << "'" << std::endl;
     numwires[0] = parsemodule(modules, top, inputs, outputs, FFs, ImmTrue, ImmFalse) + 2;
     if (numwires[0] < 0){
@@ -415,8 +424,17 @@ int getio(std::string json_path, std::map<std::string, int>* inputs, std::map<st
 				top = it->first;
 				break;
 			}
+		}else if (module["attributes"].get<picojson::object>()["top"].is<int64_t>()){
+			if (module["attributes"].get<picojson::object>()["top"].get<int64_t>()){
+				top = it->first;
+				break;
+			}
 		}
 	}
+    if(top == ""){
+        std::cerr << 'err:top module not found!' << std::endl;
+        return 1;
+    }
 	std::cout << "top moodule is '" << top << "'" << std::endl;
     auto module = modules[top].get<picojson::object>(); 
 	picojson::object ports = module["ports"].get<picojson::object>();

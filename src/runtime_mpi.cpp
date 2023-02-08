@@ -6,6 +6,7 @@
 #include <string>
 #include <string.h>
 #include <random>
+#include <chrono>
 #include <vector>
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/vector.hpp>
@@ -14,9 +15,8 @@
 #include "nodetypes.hpp"
 #include "backend.hpp"
 
-
 int world_size;
-TFHEpp::EvalKey ek;
+evalkey ek;
 std::vector<t_val> args_in;
 std::vector<t_val> retvals;
 
@@ -69,14 +69,13 @@ int main(int argc, char** argv){
     
 
 #ifdef perf_measure
-        double  start, init, shutdown;
-        double end[n];
+        std::chrono::system_clock::time_point start, init, shutdown;
     if(my_rank == 0){
-        start = MPI_Wtime();
+        //start = MPI_Wtime();
+        start = std::chrono::system_clock::now();
     }
 #endif    
 
-    types_init();
 
     std::map<std::string, std::pair<int, wire**>> *inputs;
     std::map<std::string, std::pair<int, wire**>> *outputs;
@@ -95,7 +94,10 @@ int main(int argc, char** argv){
     MPI_Type_commit(&TypeKey);
     */
     
-#ifndef plain_mode
+#ifdef plain_mode
+    types_init(1);
+#else
+    types_init(0);
     //if(my_rank == 0)
     {
         const std::string path = "./cloud.key";
@@ -195,7 +197,7 @@ int main(int argc, char** argv){
     };
 #ifdef perf_measure
     if(my_rank == 0)
-        init = MPI_Wtime();
+        init = std::chrono::system_clock::now();
 #endif
     for(int t = 0; t < n; t++){
         starpu_mpi_task_insert(MPI_COMM_WORLD, &load_cl,
@@ -204,38 +206,7 @@ int main(int argc, char** argv){
             STARPU_VALUE, &t, sizeof(int),
             STARPU_DATA_MODE_ARRAY, arg_descrs, numwires[1],
             0);
-        int task_index = 0;
-        int task_id = 0;
-        /*
-        while(task_index < tasksize){
-            reinterpret_cast<void (*)(starpu_data_handle_t*, int*, int)>(type_id[(*tasks)[task_index]]->task_insert_mpi)(wire_handles, &(*tasks)[task_index + 1], gate_distrib(task_id));
-            if(type_id[(*tasks)[task_index]]->isFF)
-                task_index = task_index + type_id[(*tasks)[task_index]]->inputs.size() + num_mems + 1;
-            else
-                task_index = task_index + type_id[(*tasks)[task_index]]->inputs.size() + type_id[(*tasks)[task_index]]->outputs.size() + 1;
-            task_id++;
-        }
-        */
-        while(task_index < tasksize){
-            nodetype* type = type_id[(*tasks)[task_index]];
-            task_index++;
-            auto wire_descrs = (struct starpu_data_descr*)calloc(type->inputs.size() + type->outputs.size(), sizeof(struct starpu_data_descr));
-            for(int i = 0; i < type->inputs.size(); i++){
-                wire_descrs[i].handle = wire_handles[(*tasks)[task_index]];
-                wire_descrs[i].mode = STARPU_R;
-                task_index++;
-            }
-            for(int i = 0; i < type->outputs.size(); i++){
-                wire_descrs[type->inputs.size() + i].handle = wire_handles[(*tasks)[task_index]];
-                wire_descrs[type->inputs.size() + i].mode = STARPU_RW;
-                task_index++;
-            }
-            starpu_mpi_task_insert(MPI_COMM_WORLD, (starpu_codelet*)type->cl,
-//                STARPU_EXECUTE_ON_NODE, gate_distrib(task_id),
-                STARPU_DATA_MODE_ARRAY, wire_descrs, type->inputs.size() + type->outputs.size(),
-                0);
-            task_id++;
-        }
+        insert_tasks_mpi(tasks, wire_handles);
 #ifdef use_simple_FF
         for(int i = 0; i < numwires[3]; i++){
             starpu_mpi_task_insert(MPI_COMM_WORLD, &copy_cl,
@@ -249,10 +220,6 @@ int main(int argc, char** argv){
                 STARPU_VALUE, &(numwires[2]), sizeof(int),
                 STARPU_DATA_MODE_ARRAY, retval_descrs, numwires[2],
                 0);
-#ifdef perf_measure
-            if(my_rank == 0)
-                end[t] = MPI_Wtime();
-#endif
 
     }
     
@@ -267,14 +234,17 @@ int main(int argc, char** argv){
     starpu_shutdown();
     #ifdef perf_measure
 if(my_rank == 0){
-        shutdown = MPI_Wtime();
-        std::cout << "init time : " << init - start << "[s]" << std::endl;
-        std::cout << "1st run time : " << end[0] - init << "[s]" << std::endl;
-        for(int t = 0; t < n - 1; t++){
-            std::cout << t + 2 << "th run time : " << end[t + 1] - end[t] << "[s]" << std::endl;
-        }
-
-        std::cout << "total time : " << shutdown - start << "[s]" << std::endl;
+        shutdown = std::chrono::system_clock::now();
+        double time = static_cast<double>(
+            std::chrono::duration_cast<std::chrono::microseconds>(init - start)
+                .count() /
+            1000.0);
+        std::cout << "init time : " << time << " [ms]" << std::endl;
+        time = static_cast<double>(
+            std::chrono::duration_cast<std::chrono::microseconds>(shutdown - start)
+                .count() /
+            1000.0);
+        std::cout << "total time : " << time << " [ms]" << std::endl;
     }
 #endif
 

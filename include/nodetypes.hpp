@@ -10,6 +10,7 @@
 #include <starpu.h>
 #include <tfhe++.hpp>
 
+
 #define bnode_inputs  {"A", "B"}
 #define unode_input  {"A"}
 #define dff_inputs  {"D", "C"}
@@ -30,6 +31,7 @@ struct nodetype{
 	int id;
 };
 
+extern TFHEpp::EvalKey ek;
 extern int my_rank;
 
 
@@ -43,47 +45,70 @@ typedef TFHEpp::lvl0param lvl_param;
 typedef TFHEpp::lvl1param lvl_param;
 #endif
 
-#ifdef plain_mode
-typedef bool t_val;
-#else
-typedef TFHEpp::TLWE<lvl_param> t_val;
-#endif
+
+
+typedef TFHEpp::TLWE<lvl_param> bool_enc;
+
+typedef TFHEpp::SecretKey seckey;
+typedef TFHEpp::EvalKey evalkey;
+
+std::unique_ptr<seckey> gen_key(evalkey &ek);
+
+void c_one(bool_enc &one);
+void c_zero(bool_enc &zero);
+
+std::vector<bool_enc> enc_vec(std::vector<uint8_t> plain_vec, seckey sk);
+std::vector<uint8_t> dec_vec(std::vector<bool_enc> cipher_vec, seckey sk);
+
 
 
 extern std::map<std::string, nodetype*> nodetypes;
 extern std::map<int, nodetype*> type_id;
-int types_init();
+int types_init(bool plain);
 
 
-void and_plain(void *buffers[], void *cl_arg);
-void and_cipher(void *buffers[], void *cl_arg);
-void nand_plain(void *buffers[], void *cl_arg);
-void nand_cipher(void *buffers[], void *cl_arg);
-void andnot_plain(void *buffers[], void *cl_arg);
-void andnot_cipher(void *buffers[], void *cl_arg);
-void or_plain(void *buffers[], void *cl_arg);
-void or_cipher(void *buffers[], void *cl_arg);
-void nor_plain(void *buffers[], void *cl_arg);
-void nor_cipher(void *buffers[], void *cl_arg);
-void ornot_plain(void *buffers[], void *cl_arg);
-void ornot_cipher(void *buffers[], void *cl_arg);
-void xor_plain(void *buffers[], void *cl_arg);
-void xor_cipher(void *buffers[], void *cl_arg);
-void xnor_plain(void *buffers[], void *cl_arg);
-void xnor_cipher(void *buffers[], void *cl_arg);
-void dff_p_plain(void *buffers[], void *cl_arg);
-void dff_p_cipher(void *buffers[], void *cl_arg);
-void dff_n_plain(void *buffers[], void *cl_arg);
-void dff_n_cipher(void *buffers[], void *cl_arg);
-void adff_po1_plain(void *buffers[], void *cl_arg);
-void adff_po1_cipher(void *buffers[], void *cl_arg);
-void adff_pp0_plain(void *buffers[], void *cl_arg);
-void adff_pp0_cipher(void *buffers[], void *cl_arg);
-void dffe_pp_plain(void *buffers[], void *cl_arg);
-void dffe_pp_cipher(void *buffers[], void *cl_arg);
-void mux_plain(void *buffers[], void *cl_arg);
-void mux_cipher(void *buffers[], void *cl_arg);
-void nmux_plain(void *buffers[], void *cl_arg);
-void nmux_cipher(void *buffers[], void *cl_arg);
+extern "C"  void and_plain(void *buffers[], void *cl_arg);
+extern "C"  void and_cipher(void *buffers[], void *cl_arg);
+extern "C"  void nand_plain(void *buffers[], void *cl_arg);
+extern "C"  void nand_cipher(void *buffers[], void *cl_arg);
+extern "C"  void andnot_plain(void *buffers[], void *cl_arg);
+extern "C"  void andnot_cipher(void *buffers[], void *cl_arg);
+extern "C"  void or_plain(void *buffers[], void *cl_arg);
+extern "C"  void or_cipher(void *buffers[], void *cl_arg);
+extern "C"  void nor_plain(void *buffers[], void *cl_arg);
+extern "C"  void nor_cipher(void *buffers[], void *cl_arg);
+extern "C"  void ornot_plain(void *buffers[], void *cl_arg);
+extern "C"  void ornot_cipher(void *buffers[], void *cl_arg);
+extern "C"  void xor_plain(void *buffers[], void *cl_arg);
+extern "C"  void xor_cipher(void *buffers[], void *cl_arg);
+extern "C"  void xnor_plain(void *buffers[], void *cl_arg);
+extern "C"  void xnor_cipher(void *buffers[], void *cl_arg);
+extern "C"  void not_plain(void *buffers[], void *cl_arg);
+extern "C"  void not_cipher(void *buffers[], void *cl_arg);
+extern "C"  void dff_p_plain(void *buffers[], void *cl_arg);
+extern "C"  void dff_p_cipher(void *buffers[], void *cl_arg);
+extern "C"  void dff_n_plain(void *buffers[], void *cl_arg);
+extern "C"  void dff_n_cipher(void *buffers[], void *cl_arg);
+extern "C"  void adff_po1_plain(void *buffers[], void *cl_arg);
+extern "C"  void adff_po1_cipher(void *buffers[], void *cl_arg);
+extern "C"  void adff_pp0_plain(void *buffers[], void *cl_arg);
+extern "C"  void adff_pp0_cipher(void *buffers[], void *cl_arg);
+extern "C"  void dffe_pp_plain(void *buffers[], void *cl_arg);
+extern "C"  void dffe_pp_cipher(void *buffers[], void *cl_arg);
+extern "C"  void mux_plain(void *buffers[], void *cl_arg);
+extern "C"  void mux_cipher(void *buffers[], void *cl_arg);
+extern "C"  void nmux_plain(void *buffers[], void *cl_arg);
+extern "C"  void nmux_cipher(void *buffers[], void *cl_arg);
+
+extern struct starpu_codelet init_p_cl;
+extern struct starpu_codelet init_c_cl;
+extern struct starpu_codelet copy_p_cl;
+extern struct starpu_codelet copy_c_cl;
+
+
+extern "C"  void init_plain(void *buffers[], void *cl_arg);
+extern "C"  void init_cipher(void *buffers[], void *cl_arg);
+extern "C"  void copy_plain(void *buffers[], void *cl_arg);
+extern "C"  void copy_cipher(void *buffers[], void *cl_arg);
 
 #endif

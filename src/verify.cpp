@@ -24,11 +24,7 @@ int main(int argc, char** argv){
     auto inputs = new std::map<std::string, int>;
     auto outputs = new std::map<std::string, int>; 
     if(getio(filepath, inputs, outputs)) return 1;
-#ifdef plain_mode
-    std::vector<bool> result{};
-#else
-    std::vector<TFHEpp::TLWE<lvl_param>> result{};
-#endif
+    std::vector<t_val> result{};
     {
         std::ifstream ifs("./result.data", std::ios::binary);
         cereal::PortableBinaryInputArchive ar(ifs);
@@ -37,7 +33,7 @@ int main(int argc, char** argv){
 #ifdef plain_mode
     result_dump(*outputs, result, n);
 #else
-    TFHEpp::SecretKey sk;
+    seckey sk;
     {
         std::ifstream ifs{"secret.key", std::ios::binary};
         cereal::PortableBinaryInputArchive ar(ifs);

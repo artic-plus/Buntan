@@ -21,25 +21,6 @@ int gate_distrib(int gate_index)
 	return gate_index % world_size;
 }
 
-void copy_plain(void *buffers[], void *cl_arg){
-    *(bool*)STARPU_VARIABLE_GET_PTR(buffers[1]) = *(bool*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-}
-
-void copy_cipher(void *buffers[], void *cl_arg){
-    TFHEpp::TLWE<lvl_param> *A = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[0]);
-    TFHEpp::TLWE<lvl_param> *Y = (TFHEpp::TLWE<lvl_param>*)STARPU_VARIABLE_GET_PTR(buffers[1]);
-    TFHEpp::HomCOPY<lvl_param>(*Y, *A);
-}
-
-struct starpu_codelet copy_cl = {
-#ifdef plain_mode
-	.cpu_funcs = {copy_plain},
-#else
-    .cpu_funcs = {copy_cipher},
-#endif
-    .nbuffers = 2,
-    .modes = {STARPU_R, STARPU_W}
-};
 
 
 //return a vector of inputs for "insert_***_mpi" functions
@@ -82,8 +63,8 @@ std::vector<int>* reg_handles_mpi(
     *Immt = true;
     *Immf = false;
 #else
-    TFHEpp::HomCONSTANTONE<lvl_param>(*Immt);
-    TFHEpp::HomCONSTANTZERO<lvl_param>(*Immf);
+    c_one(*Immt);
+    c_zero(*Immf);
 #endif
 
     starpu_variable_data_register(&wire_handles[wire_index], STARPU_MAIN_RAM, (uintptr_t)Immt, sizeof(*Immt));
@@ -126,6 +107,7 @@ std::vector<int>* reg_handles_mpi(
     
     wire* next;
     int next_handle_id;
+    int task_id = 0;
     while(!wires_queue.empty())
     {
         next = wires_queue.front().first;
@@ -143,6 +125,7 @@ std::vector<int>* reg_handles_mpi(
             }
             if((nextnode->d_counter == 0) && !(nextnode->type->isFF)){
                 tasks->push_back(nextnode->type->id);
+                tasks->push_back(gate_distrib(task_id));
                 for(int i = 0; i < nextnode->num_inputs; i++) tasks->push_back((int)(intptr_t)nextnode->inputs[i].first);
                 for(int i = 0; i < nextnode->num_outputs; i++){
                     t_val* out_b = (t_val*)calloc(1, sizeof(t_val));
@@ -157,6 +140,7 @@ std::vector<int>* reg_handles_mpi(
                     wire_index++;
                 }
                 nextnode->d_counter = nextnode->num_inputs;
+                task_id++;
             } 
             newqueue->push(next->dep->front());
             next->dep->pop();
@@ -183,3 +167,32 @@ std::vector<int>* reg_handles_mpi(
 
 }
 
+int insert_tasks_mpi(
+    std::vector<int>* tasks,
+    starpu_data_handle_t* wire_handles
+){
+    int task_index = 0;
+    int task_id = 0;
+    while(task_index < tasksize){
+        nodetype* type = type_id[(*tasks)[task_index]];
+        task_index++;
+        int distrib = (*tasks)[task_index];
+        task_index++;
+        auto wire_descrs = (struct starpu_data_descr*)calloc(type->inputs.size() + type->outputs.size(), sizeof(struct starpu_data_descr));
+        for(int i = 0; i < type->inputs.size(); i++){
+            wire_descrs[i].handle = wire_handles[(*tasks)[task_index]];
+            wire_descrs[i].mode = STARPU_R;
+            task_index++;
+        }
+        for(int i = 0; i < type->outputs.size(); i++){
+            wire_descrs[type->inputs.size() + i].handle = wire_handles[(*tasks)[task_index]];
+            wire_descrs[type->inputs.size() + i].mode = STARPU_RW;
+            task_index++;
+        }
+        starpu_mpi_task_insert(MPI_COMM_WORLD, (starpu_codelet*)type->cl,
+            STARPU_EXECUTE_ON_NODE, distrib,
+            STARPU_DATA_MODE_ARRAY, wire_descrs, type->inputs.size() + type->outputs.size(),
+            0);
+        task_id++;
+    }
+}

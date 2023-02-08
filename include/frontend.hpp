@@ -13,6 +13,11 @@
 
 struct  node;
 
+#ifdef plain_mode
+typedef bool t_val;
+#else
+typedef bool_enc t_val;
+#endif
 
 struct wire{
 	node* src; 

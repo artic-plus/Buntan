@@ -1,0 +1,963 @@
+{
+  "creator": "Yosys 0.25 (git sha1 e02b7f64bc7, clang 14.0.0-1ubuntu1 -fPIC -Os)",
+  "modules": {
+    "c880g": {
+      "attributes": {
+        "top": "00000000000000000000000000000001",
+        "src": "examples/iscas85/c880g.v:2.1-559.10"
+      },
+      "ports": {
+        "L1gat": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "L8gat": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "L13gat": {
+          "direction": "input",
+          "bits": [ 4 ]
+        },
+        "L17gat": {
+          "direction": "input",
+          "bits": [ 5 ]
+        },
+        "L26gat": {
+          "direction": "input",
+          "bits": [ 6 ]
+        },
+        "L29gat": {
+          "direction": "input",
+          "bits": [ 7 ]
+        },
+        "L36gat": {
+          "direction": "input",
+          "bits": [ 8 ]
+        },
+        "L42gat": {
+          "direction": "input",
+          "bits": [ 9 ]
+        },
+        "L51gat": {
+          "direction": "input",
+          "bits": [ 10 ]
+        },
+        "L55gat": {
+          "direction": "input",
+          "bits": [ 11 ]
+        },
+        "L59gat": {
+          "direction": "input",
+          "bits": [ 12 ]
+        },
+        "L68gat": {
+          "direction": "input",
+          "bits": [ 13 ]
+        },
+        "L72gat": {
+          "direction": "input",
+          "bits": [ 14 ]
+        },
+        "L73gat": {
+          "direction": "input",
+          "bits": [ 15 ]
+        },
+        "L74gat": {
+          "direction": "input",
+          "bits": [ 16 ]
+        },
+        "L75gat": {
+          "direction": "input",
+          "bits": [ 17 ]
+        },
+        "L80gat": {
+          "direction": "input",
+          "bits": [ 18 ]
+        },
+        "L85gat": {
+          "direction": "input",
+          "bits": [ 19 ]
+        },
+        "L86gat": {
+          "direction": "input",
+          "bits": [ 20 ]
+        },
+        "L87gat": {
+          "direction": "input",
+          "bits": [ 21 ]
+        },
+        "L88gat": {
+          "direction": "input",
+          "bits": [ 22 ]
+        },
+        "L89gat": {
+          "direction": "input",
+          "bits": [ 23 ]
+        },
+        "L90gat": {
+          "direction": "input",
+          "bits": [ 24 ]
+        },
+        "L91gat": {
+          "direction": "input",
+          "bits": [ 25 ]
+        },
+        "L96gat": {
+          "direction": "input",
+          "bits": [ 26 ]
+        },
+        "L101gat": {
+          "direction": "input",
+          "bits": [ 27 ]
+        },
+        "L106gat": {
+          "direction": "input",
+          "bits": [ 28 ]
+        },
+        "L111gat": {
+          "direction": "input",
+          "bits": [ 29 ]
+        },
+        "L116gat": {
+          "direction": "input",
+          "bits": [ 30 ]
+        },
+        "L121gat": {
+          "direction": "input",
+          "bits": [ 31 ]
+        },
+        "L126gat": {
+          "direction": "input",
+          "bits": [ 32 ]
+        },
+        "L130gat": {
+          "direction": "input",
+          "bits": [ 33 ]
+        },
+        "L135gat": {
+          "direction": "input",
+          "bits": [ 34 ]
+        },
+        "L138gat": {
+          "direction": "input",
+          "bits": [ 35 ]
+        },
+        "L143gat": {
+          "direction": "input",
+          "bits": [ 36 ]
+        },
+        "L146gat": {
+          "direction": "input",
+          "bits": [ 37 ]
+        },
+        "L149gat": {
+          "direction": "input",
+          "bits": [ 38 ]
+        },
+        "L152gat": {
+          "direction": "input",
+          "bits": [ 39 ]
+        },
+        "L153gat": {
+          "direction": "input",
+          "bits": [ 40 ]
+        },
+        "L156gat": {
+          "direction": "input",
+          "bits": [ 41 ]
+        },
+        "L159gat": {
+          "direction": "input",
+          "bits": [ 42 ]
+        },
+        "L165gat": {
+          "direction": "input",
+          "bits": [ 43 ]
+        },
+        "L171gat": {
+          "direction": "input",
+          "bits": [ 44 ]
+        },
+        "L177gat": {
+          "direction": "input",
+          "bits": [ 45 ]
+        },
+        "L183gat": {
+          "direction": "input",
+          "bits": [ 46 ]
+        },
+        "L189gat": {
+          "direction": "input",
+          "bits": [ 47 ]
+        },
+        "L195gat": {
+          "direction": "input",
+          "bits": [ 48 ]
+        },
+        "L201gat": {
+          "direction": "input",
+          "bits": [ 49 ]
+        },
+        "L207gat": {
+          "direction": "input",
+          "bits": [ 50 ]
+        },
+        "L210gat": {
+          "direction": "input",
+          "bits": [ 51 ]
+        },
+        "L219gat": {
+          "direction": "input",
+          "bits": [ 52 ]
+        },
+        "L228gat": {
+          "direction": "input",
+          "bits": [ 53 ]
+        },
+        "L237gat": {
+          "direction": "input",
+          "bits": [ 54 ]
+        },
+        "L246gat": {
+          "direction": "input",
+          "bits": [ 55 ]
+        },
+        "L255gat": {
+          "direction": "input",
+          "bits": [ 56 ]
+        },
+        "L259gat": {
+          "direction": "input",
+          "bits": [ 57 ]
+        },
+        "L260gat": {
+          "direction": "input",
+          "bits": [ 58 ]
+        },
+        "L261gat": {
+          "direction": "input",
+          "bits": [ 59 ]
+        },
+        "L267gat": {
+          "direction": "input",
+          "bits": [ 60 ]
+        },
+        "L268gat": {
+          "direction": "input",
+          "bits": [ 61 ]
+        },
+        "L388gat": {
+          "direction": "output",
+          "bits": [ 62 ]
+        },
+        "L389gat": {
+          "direction": "output",
+          "bits": [ 63 ]
+        },
+        "L390gat": {
+          "direction": "output",
+          "bits": [ 64 ]
+        },
+        "L391gat": {
+          "direction": "output",
+          "bits": [ 65 ]
+        },
+        "L418gat": {
+          "direction": "output",
+          "bits": [ 66 ]
+        },
+        "L419gat": {
+          "direction": "output",
+          "bits": [ 67 ]
+        },
+        "L420gat": {
+          "direction": "output",
+          "bits": [ 68 ]
+        },
+        "L421gat": {
+          "direction": "output",
+          "bits": [ 69 ]
+        },
+        "L422gat": {
+          "direction": "output",
+          "bits": [ 70 ]
+        },
+        "L423gat": {
+          "direction": "output",
+          "bits": [ 71 ]
+        },
+        "L446gat": {
+          "direction": "output",
+          "bits": [ 72 ]
+        },
+        "L447gat": {
+          "direction": "output",
+          "bits": [ 73 ]
+        },
+        "L448gat": {
+          "direction": "output",
+          "bits": [ 74 ]
+        },
+        "L449gat": {
+          "direction": "output",
+          "bits": [ 75 ]
+        },
+        "L450gat": {
+          "direction": "output",
+          "bits": [ 76 ]
+        },
+        "L767gat": {
+          "direction": "output",
+          "bits": [ 77 ]
+        },
+        "L768gat": {
+          "direction": "output",
+          "bits": [ 78 ]
+        },
+        "L850gat": {
+          "direction": "output",
+          "bits": [ 79 ]
+        },
+        "L863gat": {
+          "direction": "output",
+          "bits": [ 80 ]
+        },
+        "L864gat": {
+          "direction": "output",
+          "bits": [ 81 ]
+        },
+        "L865gat": {
+          "direction": "output",
+          "bits": [ 82 ]
+        },
+        "L866gat": {
+          "direction": "output",
+          "bits": [ 83 ]
+        },
+        "L874gat": {
+          "direction": "output",
+          "bits": [ 84 ]
+        },
+        "L878gat": {
+          "direction": "output",
+          "bits": [ 85 ]
+        },
+        "L879gat": {
+          "direction": "output",
+          "bits": [ 86 ]
+        },
+        "L880gat": {
+          "direction": "output",
+          "bits": [ 87 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "L101gat": {
+          "hide_name": 0,
+          "bits": [ 27 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:15.61-15.68"
+          }
+        },
+        "L106gat": {
+          "hide_name": 0,
+          "bits": [ 28 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:15.70-15.77"
+          }
+        },
+        "L111gat": {
+          "hide_name": 0,
+          "bits": [ 29 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:16.5-16.12"
+          }
+        },
+        "L116gat": {
+          "hide_name": 0,
+          "bits": [ 30 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:16.14-16.21"
+          }
+        },
+        "L121gat": {
+          "hide_name": 0,
+          "bits": [ 31 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:16.23-16.30"
+          }
+        },
+        "L126gat": {
+          "hide_name": 0,
+          "bits": [ 32 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:16.32-16.39"
+          }
+        },
+        "L130gat": {
+          "hide_name": 0,
+          "bits": [ 33 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:16.41-16.48"
+          }
+        },
+        "L135gat": {
+          "hide_name": 0,
+          "bits": [ 34 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:16.50-16.57"
+          }
+        },
+        "L138gat": {
+          "hide_name": 0,
+          "bits": [ 35 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:16.59-16.66"
+          }
+        },
+        "L13gat": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:13.22-13.28"
+          }
+        },
+        "L143gat": {
+          "hide_name": 0,
+          "bits": [ 36 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:16.68-16.75"
+          }
+        },
+        "L146gat": {
+          "hide_name": 0,
+          "bits": [ 37 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:17.5-17.12"
+          }
+        },
+        "L149gat": {
+          "hide_name": 0,
+          "bits": [ 38 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:17.14-17.21"
+          }
+        },
+        "L152gat": {
+          "hide_name": 0,
+          "bits": [ 39 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:17.23-17.30"
+          }
+        },
+        "L153gat": {
+          "hide_name": 0,
+          "bits": [ 40 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:17.32-17.39"
+          }
+        },
+        "L156gat": {
+          "hide_name": 0,
+          "bits": [ 41 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:17.41-17.48"
+          }
+        },
+        "L159gat": {
+          "hide_name": 0,
+          "bits": [ 42 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:17.50-17.57"
+          }
+        },
+        "L165gat": {
+          "hide_name": 0,
+          "bits": [ 43 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:17.59-17.66"
+          }
+        },
+        "L171gat": {
+          "hide_name": 0,
+          "bits": [ 44 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:17.68-17.75"
+          }
+        },
+        "L177gat": {
+          "hide_name": 0,
+          "bits": [ 45 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:18.5-18.12"
+          }
+        },
+        "L17gat": {
+          "hide_name": 0,
+          "bits": [ 5 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:13.30-13.36"
+          }
+        },
+        "L183gat": {
+          "hide_name": 0,
+          "bits": [ 46 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:18.14-18.21"
+          }
+        },
+        "L189gat": {
+          "hide_name": 0,
+          "bits": [ 47 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:18.23-18.30"
+          }
+        },
+        "L195gat": {
+          "hide_name": 0,
+          "bits": [ 48 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:18.32-18.39"
+          }
+        },
+        "L1gat": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:13.8-13.13"
+          }
+        },
+        "L201gat": {
+          "hide_name": 0,
+          "bits": [ 49 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:18.41-18.48"
+          }
+        },
+        "L207gat": {
+          "hide_name": 0,
+          "bits": [ 50 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:18.50-18.57"
+          }
+        },
+        "L210gat": {
+          "hide_name": 0,
+          "bits": [ 51 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:18.59-18.66"
+          }
+        },
+        "L219gat": {
+          "hide_name": 0,
+          "bits": [ 52 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:18.68-18.75"
+          }
+        },
+        "L228gat": {
+          "hide_name": 0,
+          "bits": [ 53 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:19.5-19.12"
+          }
+        },
+        "L237gat": {
+          "hide_name": 0,
+          "bits": [ 54 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:19.14-19.21"
+          }
+        },
+        "L246gat": {
+          "hide_name": 0,
+          "bits": [ 55 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:19.23-19.30"
+          }
+        },
+        "L255gat": {
+          "hide_name": 0,
+          "bits": [ 56 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:19.32-19.39"
+          }
+        },
+        "L259gat": {
+          "hide_name": 0,
+          "bits": [ 57 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:19.41-19.48"
+          }
+        },
+        "L260gat": {
+          "hide_name": 0,
+          "bits": [ 58 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:19.50-19.57"
+          }
+        },
+        "L261gat": {
+          "hide_name": 0,
+          "bits": [ 59 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:19.59-19.66"
+          }
+        },
+        "L267gat": {
+          "hide_name": 0,
+          "bits": [ 60 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:19.68-19.75"
+          }
+        },
+        "L268gat": {
+          "hide_name": 0,
+          "bits": [ 61 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:20.5-20.12"
+          }
+        },
+        "L26gat": {
+          "hide_name": 0,
+          "bits": [ 6 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:13.38-13.44"
+          }
+        },
+        "L29gat": {
+          "hide_name": 0,
+          "bits": [ 7 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:13.46-13.52"
+          }
+        },
+        "L36gat": {
+          "hide_name": 0,
+          "bits": [ 8 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:13.54-13.60"
+          }
+        },
+        "L388gat": {
+          "hide_name": 0,
+          "bits": [ 62 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:21.8-21.15"
+          }
+        },
+        "L389gat": {
+          "hide_name": 0,
+          "bits": [ 63 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:21.17-21.24"
+          }
+        },
+        "L390gat": {
+          "hide_name": 0,
+          "bits": [ 64 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:21.26-21.33"
+          }
+        },
+        "L391gat": {
+          "hide_name": 0,
+          "bits": [ 65 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:21.35-21.42"
+          }
+        },
+        "L418gat": {
+          "hide_name": 0,
+          "bits": [ 66 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:21.44-21.51"
+          }
+        },
+        "L419gat": {
+          "hide_name": 0,
+          "bits": [ 67 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:21.53-21.60"
+          }
+        },
+        "L420gat": {
+          "hide_name": 0,
+          "bits": [ 68 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:21.62-21.69"
+          }
+        },
+        "L421gat": {
+          "hide_name": 0,
+          "bits": [ 69 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:21.71-21.78"
+          }
+        },
+        "L422gat": {
+          "hide_name": 0,
+          "bits": [ 70 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:22.5-22.12"
+          }
+        },
+        "L423gat": {
+          "hide_name": 0,
+          "bits": [ 71 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:22.14-22.21"
+          }
+        },
+        "L42gat": {
+          "hide_name": 0,
+          "bits": [ 9 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:13.62-13.68"
+          }
+        },
+        "L446gat": {
+          "hide_name": 0,
+          "bits": [ 72 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:22.23-22.30"
+          }
+        },
+        "L447gat": {
+          "hide_name": 0,
+          "bits": [ 73 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:22.32-22.39"
+          }
+        },
+        "L448gat": {
+          "hide_name": 0,
+          "bits": [ 74 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:22.41-22.48"
+          }
+        },
+        "L449gat": {
+          "hide_name": 0,
+          "bits": [ 75 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:22.50-22.57"
+          }
+        },
+        "L450gat": {
+          "hide_name": 0,
+          "bits": [ 76 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:22.59-22.66"
+          }
+        },
+        "L51gat": {
+          "hide_name": 0,
+          "bits": [ 10 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:13.70-13.76"
+          }
+        },
+        "L55gat": {
+          "hide_name": 0,
+          "bits": [ 11 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:14.5-14.11"
+          }
+        },
+        "L59gat": {
+          "hide_name": 0,
+          "bits": [ 12 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:14.13-14.19"
+          }
+        },
+        "L68gat": {
+          "hide_name": 0,
+          "bits": [ 13 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:14.21-14.27"
+          }
+        },
+        "L72gat": {
+          "hide_name": 0,
+          "bits": [ 14 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:14.29-14.35"
+          }
+        },
+        "L73gat": {
+          "hide_name": 0,
+          "bits": [ 15 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:14.37-14.43"
+          }
+        },
+        "L74gat": {
+          "hide_name": 0,
+          "bits": [ 16 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:14.45-14.51"
+          }
+        },
+        "L75gat": {
+          "hide_name": 0,
+          "bits": [ 17 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:14.53-14.59"
+          }
+        },
+        "L767gat": {
+          "hide_name": 0,
+          "bits": [ 77 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:22.68-22.75"
+          }
+        },
+        "L768gat": {
+          "hide_name": 0,
+          "bits": [ 78 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:23.5-23.12"
+          }
+        },
+        "L80gat": {
+          "hide_name": 0,
+          "bits": [ 18 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:14.61-14.67"
+          }
+        },
+        "L850gat": {
+          "hide_name": 0,
+          "bits": [ 79 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:23.14-23.21"
+          }
+        },
+        "L85gat": {
+          "hide_name": 0,
+          "bits": [ 19 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:14.69-14.75"
+          }
+        },
+        "L863gat": {
+          "hide_name": 0,
+          "bits": [ 80 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:23.23-23.30"
+          }
+        },
+        "L864gat": {
+          "hide_name": 0,
+          "bits": [ 81 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:23.32-23.39"
+          }
+        },
+        "L865gat": {
+          "hide_name": 0,
+          "bits": [ 82 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:23.41-23.48"
+          }
+        },
+        "L866gat": {
+          "hide_name": 0,
+          "bits": [ 83 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:23.50-23.57"
+          }
+        },
+        "L86gat": {
+          "hide_name": 0,
+          "bits": [ 20 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:15.5-15.11"
+          }
+        },
+        "L874gat": {
+          "hide_name": 0,
+          "bits": [ 84 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:23.59-23.66"
+          }
+        },
+        "L878gat": {
+          "hide_name": 0,
+          "bits": [ 85 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:23.68-23.75"
+          }
+        },
+        "L879gat": {
+          "hide_name": 0,
+          "bits": [ 86 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:24.5-24.12"
+          }
+        },
+        "L87gat": {
+          "hide_name": 0,
+          "bits": [ 21 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:15.13-15.19"
+          }
+        },
+        "L880gat": {
+          "hide_name": 0,
+          "bits": [ 87 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:24.14-24.21"
+          }
+        },
+        "L88gat": {
+          "hide_name": 0,
+          "bits": [ 22 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:15.21-15.27"
+          }
+        },
+        "L89gat": {
+          "hide_name": 0,
+          "bits": [ 23 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:15.29-15.35"
+          }
+        },
+        "L8gat": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:13.15-13.20"
+          }
+        },
+        "L90gat": {
+          "hide_name": 0,
+          "bits": [ 24 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:15.37-15.43"
+          }
+        },
+        "L91gat": {
+          "hide_name": 0,
+          "bits": [ 25 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:15.45-15.51"
+          }
+        },
+        "L96gat": {
+          "hide_name": 0,
+          "bits": [ 26 ],
+          "attributes": {
+            "src": "examples/iscas85/c880g.v:15.53-15.59"
+          }
+        }
+      }
+    }
+  }
+}
