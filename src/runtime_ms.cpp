@@ -36,7 +36,7 @@ int main(int argc, char** argv){
     
 
 #ifdef perf_measure
-    std::chrono::system_clock::time_point start, init, shutdown;
+    std::chrono::system_clock::time_point start, init, insert, end, shutdown;
     //start = MPI_Wtime();
     start = std::chrono::system_clock::now();
 #endif    
@@ -148,7 +148,13 @@ int main(int argc, char** argv){
                 0);
         }
     }
-    
+#ifdef perf_measure 	
+  insert = std::chrono::system_clock::now(); 	
+#endif 
+    starpu_task_wait_for_all(); 
+#ifdef perf_measure 	
+end = std::chrono::system_clock::now(); 	
+#endif 
     for(int i = 0; i < numwires[0]; i++){
         starpu_data_unregister(wire_handles[i]);
     }
@@ -169,6 +175,16 @@ int main(int argc, char** argv){
             .count() /
         1000.0);
     std::cout << "init time : " << time << " [ms]" << std::endl;
+    time = static_cast<double>(
+        std::chrono::duration_cast<std::chrono::microseconds>(insert - init)
+            .count() /
+        1000.0);
+    std::cout << "insert time : " << time << " [ms]" << std::endl;
+    time = static_cast<double>(
+        std::chrono::duration_cast<std::chrono::microseconds>(end - insert)
+            .count() /
+        1000.0);
+    std::cout << "execution time : " << time << " [ms]" << std::endl;
     time = static_cast<double>(
         std::chrono::duration_cast<std::chrono::microseconds>(shutdown - start)
             .count() /
