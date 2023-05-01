@@ -11,6 +11,7 @@ option(use_lvl0 "use TLWElvl0 as a format of coded message" OFF)
 
 add_subdirectory(src)
 add_subdirectory(lib)
+set(ENABLE_SHARED ON  CACHE BOOL "Build as shared libraries" FORCE)
 add_subdirectory(thirdparties/TFHEpp)
 #add_subdirectory(thirdparties/cuFHE/)
 

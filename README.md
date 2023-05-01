@@ -12,7 +12,8 @@ In order to utilize MPI utility(runtime_mpi), option "--enable-mpi" is required 
 In order to utilize Main-Support utility(runtime_ms), option "--enable-mpi-master-slave" is required when building StarPU
 
 It is required to build TFHEpp as shared library.
-(Build option as shared library soon will be implemented on TFHEpp. since then, you must edit thirdparties/TFHEpp/src/CMakelists.txt, and thirdparties/TFHEpp/thirdparties/spqlios/CMakelists.txt)
+(It can be done automatically in current version)
+(If you want to try older version, you must edit thirdparties/TFHEpp/src/CMakelists.txt, and thirdparties/TFHEpp/thirdparties/spqlios/CMakelists.txt)
 
 ```
 $ git submodule update --init --recursive
