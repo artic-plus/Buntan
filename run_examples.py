@@ -6,9 +6,9 @@ import csv
 import datetime
 import subprocess
 
-numthreads = 2;
-hosts = 'futago,kazura' # define hostnames to run on
-rep = 10;
+numthreads = ;
+hosts = '' # define hostnames to run on
+rep = 1;
 
 def main():
 	args = sys.argv
@@ -19,8 +19,8 @@ def main():
 	ls_v = glob.glob(args[1] + "*.json")
 	print(len(ls_v))
 	datestr = datetime.datetime.now().strftime('%Y:%m:%d_%H:%M')
-	if(os.path.exists("./meas") == 0):
-		os.mkdir("./meas")
+#	if(os.path.exists("./meas/" + args[1].split('/')[len(args[1].split('/')) - 2]) == 0):
+#		os.mkdir("./meas" + args[1].split('/')[len(args[1].split('/')) - 2])
 	with open("meas/meas_mpi_" + datestr + ".csv", "w") as f:
 		writer = csv.writer(f)
 		writer.writerow(["circuit",  "unode_init", "unode_insert","unode_exec","unode_total", "mpi_init","mpi_insert","mpi_exec", "mpi_total"])
@@ -34,11 +34,16 @@ def main():
 				time = [0,0,0,0,0,0,0,0]
 				for i in range(rep):
 #					print('unode')
+					os.environ['STARPU_FXT_SUFFIX'] = name + '_unode'
 					unode = subprocess.run(['./build/src/runtime_ms', '--circuit', c, '--repetition', str(clk)], capture_output=True, text=True).stdout
 #					print('mpi')
+					os.environ['STARPU_FXT_SUFFIX'] = name + '_mpi'
 					mpi = subprocess.run(['mpirun','-n', str(numthreads), '-host', hosts, './build/src/runtime_ms', '--circuit', c, '--repetition', str(clk)], capture_output=True, text=True).stdout
+#					os.chdir("./meas" + args[1])
+#					subprocess.run(['starpu_fxt_tool' '-i' '/tmp/' + c + '_unode_0'])
+#					os.chdir("../")
 #					print(unode.split())
-					print(mpi.split())
+					print(mpi)
 					time[0] += float(unode.split()[7])
 					time[1] += float(unode.split()[12])
 					time[2] += float(unode.split()[17])
